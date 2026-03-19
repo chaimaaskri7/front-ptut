@@ -41,7 +41,7 @@
           <p class="text-[#7f7f7f] text-[14px]">Medecin généraliste</p>
         </div>
         <svg class="w-[24px] h-[24px]" fill="none" viewBox="0 0 24 24">
-          <path clip-rule="evenodd" d="M12.53 16.28a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 011.06-1.06L12 14.69l6.97-6.97a.75.75 0 111.06 1.06l-7.5 7.5z" clip-rule="evenodd" fill="#7F7F7F" />
+          <path clip-rule="evenodd" d="M12.53 16.28a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 011.06-1.06L12 14.69l6.97-6.97a.75.75 0 111.06 1.06l-7.5 7.5z" fill="#7F7F7F" />
         </svg>
       </div>
     </div>
