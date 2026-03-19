@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareWay - Dashboard Patients</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: white;
+            overflow-x: hidden;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 289px;
+            background: white;
+            border-right: 1px solid #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 21px 19px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 35px;
+            background: #168BD9;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-family: 'Geologica', sans-serif;
+            font-weight: bold;
+            font-size: 24px;
+            color: #0c284f;
+        }
+
+        .divider {
+            width: 100%;
+            height: 1px;
+            background: #f8f8f8;
+            margin: 20px 0;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 0 19px;
+            margin-top: 19px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 7px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .nav-item:hover {
+            background: rgba(44, 216, 255, 0.08);
+        }
+
+        .nav-item.active {
+            background: rgba(44, 216, 255, 0.12);
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .nav-item span {
+            font-size: 16px;
+            font-weight: 600;
+            color: #7f7f7f;
+        }
+
+        .nav-item.active span {
+            color: #168bd9;
+        }
+
+        .nav-bottom {
+            margin-top: auto;
+            padding: 0 28px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 19px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 289px;
+            flex: 1;
+            background: #f8f8f8;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 14px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .header-left h1 {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1b1b1b;
+        }
+
+        .header-left p {
+            font-size: 14px;
+            color: #168bd9;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .search-bar {
+            background: #f8f8f8;
+            border: 1px solid #f0f0f0;
+            border-radius: 10px;
+            padding: 8px 13px;
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            width: 381px;
+        }
+
+        .search-bar input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 16px;
+            color: #7f7f7f;
+            flex: 1;
+        }
+
+        .notification-icon {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #f0f0f0;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50px;
+            background: #168bd9;
+            overflow: hidden;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-info .name {
+            font-size: 16px;
+            font-weight: 500;
+            color: #1b1b1b;
+        }
+
+        .user-info .role {
+            font-size: 14px;
+            color: #7f7f7f;
+        }
+
+        /* Content Area */
+        .content-wrapper {
+            padding: 22px 20px;
+        }
+
+        .content-card {
+            background: white;
+            border: 1px solid #f0f0f0;
+            border-radius: 10px;
+            padding: 16px;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .content-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1b1b1b;
+        }
+
+        .actions {
+            display: flex;
+            gap: 25px;
+        }
+
+        .btn {
+            padding: 7px 18px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: opacity 0.3s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-primary {
+            background: #168bd9;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #7f7f7f;
+            border: 1px solid #f0f0f0;
+        }
+
+        /* Table */
+        .table-container {
+            background: white;
+            border: 1px solid #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f9f9fb;
+        }
+
+        th {
+            text-align: left;
+            padding: 14px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #666e7d;
+            text-transform: uppercase;
+            font-family: 'Inter', sans-serif;
+        }
+
+        tbody tr {
+            border-top: 1px solid #f0f0f0;
+        }
+
+        tbody tr:hover {
+            background: #fafafa;
+        }
+
+        tbody tr.selected {
+            background: rgba(44, 216, 255, 0.12);
+        }
+
+        td {
+            padding: 12px 16px;
+            font-size: 14px;
+            color: rgba(0, 0, 0, 0.87);
+        }
+
+        .action-icons {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .action-icons svg {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            color: #7f7f7f;
+        }
+
+        .prescription-btn {
+            background: #168bd9;
+            color: white;
+            border: none;
+            padding: 7px 18px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .pagination-left {
+            display: flex;
+            gap: 0;
+            align-items: center;
+        }
+
+        .pagination-btn {
+            padding: 6px 10px;
+            border: 1px solid #f0f0f0;
+            background: white;
+            cursor: pointer;
+            font-size: 14px;
+            color: #1b1b1b;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .pagination-btn:first-child {
+            border-radius: 5px 0 0 5px;
+        }
+
+        .pagination-btn:last-child {
+            border-radius: 0 5px 5px 0;
+        }
+
+        .pagination-btn.active {
+            background: #168bd9;
+            color: white;
+            border-color: #168bd9;
+        }
+
+        .pagination-right {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            font-size: 14px;
+            color: #1b1b1b;
+        }
+
+        .page-select {
+            padding: 6px 10px;
+            border: 1px solid #f0f0f0;
+            border-radius: 5px;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Icons */
+        .icon {
+            width: 20px;
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo-container">
+                <div class="logo-icon">C</div>
+                <div class="logo-text">CareWay</div>
+            </div>
+
+            <div class="divider"></div>
+
+            <nav class="nav-menu">
+                <div class="nav-item">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/>
+                    </svg>
+                    <span>Dashboard</span>
+                </div>
+
+                <div class="nav-item active">
+                    <svg fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M4.5 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM14.25 8.625a3.375 3.375 0 116.75 0 3.375 3.375 0 01-6.75 0zM1.5 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM17.25 19.128l-.001.144a2.25 2.25 0 01-.233.96 10.088 10.088 0 005.06-1.01.75.75 0 00.42-.643 4.875 4.875 0 00-6.957-4.611 8.586 8.586 0 011.71 5.157v.003z"/>
+                    </svg>
+                    <span>Patients</span>
+                </div>
+
+                <div class="nav-item">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
+                    </svg>
+                    <span>Prescriptions</span>
+                </div>
+            </nav>
+
+            <div class="nav-bottom">
+                <div class="divider"></div>
+                <div class="nav-item">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"/>
+                    </svg>
+                    <span>Help</span>
+                </div>
+                <div class="nav-item">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127a.75.75 0 00.96-.064l1.217-.826a1.125 1.125 0 011.37.198l1.833 1.834c.459.459.578 1.148.198 1.37l-.826 1.218a.75.75 0 00-.064.96c.044.073.087.146.127.22.183.332.495.582.87.645l1.28.213c.543.09.94.56.94 1.11v2.594c0 .55-.397 1.02-.94 1.11l-1.28.213a.75.75 0 00-.87.645 8.217 8.217 0 01-.128.22.75.75 0 00.065.96l.826 1.218c.38.222.26.91-.198 1.37l-1.834 1.833a1.125 1.125 0 01-1.369.198l-1.218-.826a.75.75 0 00-.96.064 8.217 8.217 0 01-.22.128.75.75 0 00-.645.87l-.213 1.28c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.02-.397-1.11-.94l-.213-1.28a.75.75 0 00-.645-.87 8.217 8.217 0 01-.22-.128.75.75 0 00-.96.064l-1.217.826a1.125 1.125 0 01-1.37-.198l-1.833-1.834a1.125 1.125 0 01-.198-1.37l.826-1.217a.75.75 0 00.064-.96 8.217 8.217 0 01-.127-.22.75.75 0 00-.87-.645l-1.281-.213a1.125 1.125 0 01-.94-1.11V12c0-.55.398-1.02.94-1.11l1.281-.213a.75.75 0 00.87-.645c.041-.074.084-.147.128-.22a.75.75 0 00-.065-.96l-.826-1.218a1.125 1.125 0 01.198-1.37l1.834-1.833a1.125 1.125 0 011.37-.198l1.217.826c.3.203.686.25.96.064a8.217 8.217 0 01.22-.127.75.75 0 00.645-.87l.213-1.28z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <span>Settings</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <h1>Dashboard</h1>
+                    <p>Patients</p>
+                </div>
+                <div class="header-right">
+                    <div class="search-bar">
+                        <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#7f7f7f">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/>
+                        </svg>
+                        <input type="text" placeholder="Search">
+                    </div>
+                    <div class="notification-icon">
+                        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#7f7f7f">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/>
+                        </svg>
+                    </div>
+                    <div class="user-profile">
+                        <div class="user-avatar"></div>
+                        <div class="user-info">
+                            <div class="name">Dr Amirul Haque</div>
+                            <div class="role">Medecin généraliste</div>
+                        </div>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="#7f7f7f">
+                            <path fill-rule="evenodd" d="M12.53 16.28a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 011.06-1.06L12 14.69l6.97-6.97a.75.75 0 111.06 1.06l-7.5 7.5z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <div class="content-wrapper">
+                <div class="content-card">
+                    <div class="content-header">
+                        <h2 class="content-title">Patients List</h2>
+                        <div class="actions">
+                            <button class="btn btn-primary">
+                                <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.5v15m7.5-7.5h-15"/>
+                                </svg>
+                                Add Patient
+                            </button>
+                            <button class="btn btn-secondary">
+                                <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/>
+                                </svg>
+                                Filter
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ADMITTED</th>
+                                    <th>PATIENT</th>
+                                    <th>AREA OF CONCERN</th>
+                                    <th>CONTACT</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>27 Dec, 2024</td>
+                                    <td>Dianne Russell</td>
+                                    <td>Upper Abdomen General</td>
+                                    <td>
+                                        <div class="action-icons">
+                                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>
+                                            </svg>
+                                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"/>
+                                            </svg>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="prescription-btn">
+                                            <span>📋</span>
+                                            Faire une prescription
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>03 Feb, 2023</td>
+                                    <td>Bessie Cooper</td>
+                                    <td>Gynecologic Disorders</td>
+                                    <td>
+                                        <div class="action-icons">
+                                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 01-.825-.242m9.345-8.334a2.126 2.126 0 00-.476-.095 48.64 48.64 0 00-8.048 0c-1.131.094-1.976 1.057-1.976 2.192v4.286c0 .837.46 1.58 1.155 1.951m9.345-8.334V6.75a2.25 2.25 0 00-2.25-2.25h-13.5A2.25 2.25 0 003 6.75v10.5A2.25 2.25 0 005.25 19.5h10.706a2.25 2.25 0 001.591-.659l2.847-2.847a2.25 2.25 0 00.659-1.591V6.75z"/>
+                                            </svg>
+                                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"/>
+                                            </svg>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="prescription-btn">
+                                            <span>📋</span>
+                                            Faire une prescription
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr class="selected">
+                                    <td>02 Mar, 2023</td>
+                                    <td>Marvin McKinney</td>
+                                    <td>Brain, Spinal Cord, and Nerve Disorders</td>
+                                    <td>
+                                        <div class="action-icons">
+                                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"/>
+                                            </svg>
+                                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"/>
+                                            </svg>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="prescription-btn">
+                                            <span>📋</span>
+                                            Faire une prescription
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>02 Mar, 2023</td>
+                                    <td>Esther Howard</td>
+                                    <td>Digestive Disorders</td>
+                                    <td>
+                                        <div class="action-icons">
+                                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"/>
+                                            </svg>
+                                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"/>
+                                            </svg>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="prescription-btn">
+                                            <span>📋</span>
+                                            Faire une prescription
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>02 Mar, 2023</td>
+                                    <td>Marvin McKinney</td>
+                                    <td>Upper Abdomen General</td>
+                                    <td>
+                                        <div class="action-icons">
+                                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"/>
+                                            </svg>
+                                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"/>
+                                            </svg>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="prescription-btn">
+                                            <span>📋</span>
+                                            Faire une prescription
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Pagination -->
+                        <div class="pagination">
+                            <div class="pagination-left">
+                                <button class="pagination-btn">
+                                    ← Previous
+                                </button>
+                                <button class="pagination-btn">1</button>
+                                <button class="pagination-btn active">2</button>
+                                <button class="pagination-btn">3</button>
+                                <button class="pagination-btn">4</button>
+                                <button class="pagination-btn">5</button>
+                                <button class="pagination-btn">...</button>
+                                <button class="pagination-btn">10</button>
+                                <button class="pagination-btn">
+                                    Next →
+                                </button>
+                            </div>
+                            <div class="pagination-right">
+                                <span>Page</span>
+                                <div class="page-select">
+                                    <span>2</span>
+                                    <svg width="18" height="18" viewBox="0 0 18 18" fill="#7f7f7f">
+                                        <path fill-rule="evenodd" d="M9.398 12.21a.75.75 0 01-1.061 0l-5.625-5.625a.75.75 0 011.061-1.061L9 10.75l5.227-5.227a.75.75 0 111.061 1.061l-5.625 5.625z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <span>of</span>
+                                <span>34</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
