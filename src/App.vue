@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="flex min-h-screen bg-white">
     <Sidebar />
-    <main class="flex-1 ml-[289px]">
+    <main class="flex-1 ml-[289px] overflow-y-auto">
       <router-view />
     </main>
   </div>

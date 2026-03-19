@@ -1,5 +1,5 @@
 <template>
-  <div class="flex-1 bg-[#f8f8f8]">
+  <div class="w-full bg-[#f8f8f8]">
     <Header subtitle="Patients" />
     
     <div class="p-8">
