@@ -94,7 +94,7 @@ import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
-const currentRoute = computed(() => route.name);
+const currentRoute = computed(() => route.path.split('/')[1] || 'dashboard');
 </script>
 
 <style scoped>

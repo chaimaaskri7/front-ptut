@@ -1,12 +1,9 @@
 <template>
-  <div class="flex min-h-screen bg-white">
-    <Sidebar />
+  <div class="flex-1 bg-[#f8f8f8]">
+    <Header subtitle="Dashboard" />
     
-    <main class="ml-[289px] flex-1 bg-[#f8f8f8]">
-      <Header subtitle="Dashboard" />
-      
-      <div class="p-8">
-        <!-- Stats Cards -->
+    <div class="p-8">
+      <!-- Stats Cards -->
         <div class="grid grid-cols-4 gap-6 mb-8">
           <StatsCard title="Appointments" :value="213" icon-bg="rgba(85, 142, 255, 0.1)">
             <template #icon>
@@ -198,8 +195,7 @@
             </div>
           </div>
         </div>
-      </div>
-    </main>
+    </div>
   </div>
 </template>
 

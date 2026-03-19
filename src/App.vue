@@ -1,10 +1,14 @@
 <template>
-  <div id="app">
-    <router-view />
+  <div id="app" class="flex min-h-screen bg-white">
+    <Sidebar />
+    <main class="flex-1 ml-[289px]">
+      <router-view />
+    </main>
   </div>
 </template>
 
 <script setup lang="ts">
+import Sidebar from './components/Sidebar.vue'
 </script>
 
 <style>

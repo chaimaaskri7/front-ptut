@@ -1,11 +1,8 @@
 <template>
-  <div class="flex min-h-screen bg-white">
-    <Sidebar />
+  <div class="flex-1 bg-[#f8f8f8]">
+    <Header subtitle="Prescription" />
     
-    <main class="ml-[289px] flex-1 bg-[#f8f8f8]">
-      <Header subtitle="Prescription" />
-      
-      <div class="p-8">
+    <div class="p-8">
         <div class="bg-white border border-[#f0f0f0] rounded-[10px] p-4">
           <!-- Header -->
           <div class="flex justify-between items-center mb-6">
@@ -158,12 +155,11 @@
           </div>
         </div>
       </div>
-    </main>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import Sidebar from '../Sidebar.vue';
 import Header from '../Header.vue';
 import Checkbox from '../Checkbox.vue';
 </script>

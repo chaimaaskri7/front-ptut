@@ -10,14 +10,17 @@ const routes = [
   },
   {
     path: '/dashboard',
+    name: 'Dashboard',
     component: Dashboard
   },
   {
     path: '/patients',
+    name: 'Patients',
     component: PatientsList
   },
   {
     path: '/prescriptions',
+    name: 'Prescriptions',
     component: PrescriptionsList
   }
 ]
