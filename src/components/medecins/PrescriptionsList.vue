@@ -5,37 +5,41 @@
     <div class="p-4 md:p-6 lg:p-8">
         <div class="bg-white border border-[#f0f0f0] rounded-[10px] p-4">
           <!-- Header -->
-          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-            <h2 class="font-semibold text-[18px] text-[#1b1b1b]">Les prescriptions</h2>
-            <button class="border border-[#f0f0f0] px-[18px] py-[7px] rounded-[10px] flex items-center gap-[10px] hover:bg-gray-50">
-              <svg class="w-[24px] h-[24px]" fill="none" viewBox="0 0 24 24" stroke="#7F7F7F" stroke-width="1.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0m-3.75 0H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
-              </svg>
-              Filter
-            </button>
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+            <h2 class="font-semibold text-[18px] text-[#1b1b1b]">Prescriptions List</h2>
+            <div class="flex gap-2 w-full sm:w-auto">
+              <button class="flex-1 sm:flex-none bg-[#168bd9] text-white px-4 py-2 rounded-[8px] text-sm font-medium hover:opacity-90 transition-opacity">
+                + Add
+              </button>
+              <button class="flex-1 sm:flex-none border border-[#f0f0f0] px-4 py-2 rounded-[8px] text-sm hover:bg-gray-50 transition-colors">
+                Filter
+              </button>
+            </div>
           </div>
 
           <!-- Table -->
-          <div class="border border-[#f0f0f0] rounded-[10px] overflow-x-auto">
-            <table class="w-full">
-              <thead class="bg-[#f9f9fb]">
-                <tr>
-                  <th class="text-left px-3 py-2 text-[11px] font-semibold text-[#666e7d] uppercase">DATE</th>
-                  <th class="text-left px-3 py-2 text-[11px] font-semibold text-[#666e7d] uppercase">PATIENT</th>
-                  <th class="text-left px-3 py-2 text-[11px] font-semibold text-[#666e7d] uppercase">TRANSPORT TYPE</th>
-                  <th class="text-center px-3 py-2 text-[11px] font-semibold text-[#666e7d] uppercase">STATUS</th>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-[#f0f0f0] bg-[#f9f9fb]">
+                  <th class="text-left px-4 py-3 text-[11px] font-semibold text-[#666e7d] uppercase">Date</th>
+                  <th class="text-left px-4 py-3 text-[11px] font-semibold text-[#666e7d] uppercase">Patient</th>
+                  <th class="text-left px-4 py-3 text-[11px] font-semibold text-[#666e7d] uppercase hidden md:table-cell">Transport</th>
+                  <th class="text-center px-4 py-3 text-[11px] font-semibold text-[#666e7d] uppercase">Status</th>
+                  <th class="text-center px-4 py-3 text-[11px] font-semibold text-[#666e7d] uppercase">Action</th>
                 </tr>
               </thead>
               <tbody>
                 <tr 
                   v-for="(prescription, index) in prescriptions" 
                   :key="index"
-                  class="border-t border-[#f0f0f0] hover:bg-gray-50 transition-colors"
+                  class="border-b border-[#f0f0f0] hover:bg-[#f8f8f8] transition-colors"
                 >
-                  <td class="px-3 py-2 text-[13px] text-[rgba(0,0,0,0.87)]">{{ prescription.admitted }}</td>
-                  <td class="px-3 py-2 text-[13px] text-[rgba(0,0,0,0.87)] font-medium">{{ prescription.patient }}</td>
-                  <td class="px-3 py-2 text-[13px]">
-                    <span class="px-2 py-1 rounded-full text-[11px] font-medium"
+                  <td class="px-4 py-3 text-[13px] text-[#666666]">{{ prescription.admitted }}</td>
+                  <td class="px-4 py-3 text-[13px] font-medium text-[#1b1b1b]">{{ prescription.patient }}</td>
+                  <td class="px-4 py-3 hidden md:table-cell">
+                    <span 
+                      class="px-3 py-1 rounded-full text-xs font-medium inline-block"
                       :class="{
                         'bg-blue-100 text-blue-700': prescription.transportType === 'VSL',
                         'bg-red-100 text-red-700': prescription.transportType === 'Ambulance',
@@ -45,19 +49,27 @@
                       {{ prescription.transportType }}
                     </span>
                   </td>
-                  <td class="px-3 py-2 text-center">
-                    <span class="px-2 py-1 rounded-full text-[11px] bg-green-100 text-green-700 font-medium">
-                      Actif
+                  <td class="px-4 py-3 text-center">
+                    <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                      Active
                     </span>
+                  </td>
+                  <td class="px-4 py-3 text-center">
+                    <button class="bg-blue-600 text-white px-3 py-1 rounded text-xs font-medium hover:bg-blue-700 transition-colors">
+                      View
+                    </button>
                   </td>
                 </tr>
               </tbody>
             </table>
+          </div>
 
-            <!-- Pagination -->
+          <!-- Pagination -->
+          <div class="flex justify-between items-center mt-4">
+            <span class="text-sm text-gray-600">Page {{ currentPage }} of 12</span>
             <Pagination 
               :current-page="currentPage" 
-              :total-pages="34"
+              :total-pages="12"
               @previous="currentPage--"
               @next="currentPage++"
               @change-page="(page) => currentPage = page"
