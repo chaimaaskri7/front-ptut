@@ -1,5 +1,5 @@
 <template>
-  <header class="bg-white border-b border-[#f0f0f0] px-[40px] py-[14px] flex items-center justify-center sticky top-0 z-10">
+  <header class="bg-white border-b border-[#f0f0f0] px-[40px] py-[14px] flex items-center justify-center sticky top-0 z-[60]">
     <!-- Center Section -->
     <div class="flex flex-col leading-normal text-center">
       <p class="font-bold text-[24px] text-[#1b1b1b]">Dashboard</p>
