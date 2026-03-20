@@ -16,24 +16,40 @@
           </div>
 
           <!-- Table -->
-          <div class="border border-[#f0f0f0] rounded-[10px] overflow-hidden">
+          <div class="border border-[#f0f0f0] rounded-[10px] overflow-x-auto">
             <table class="w-full">
               <thead class="bg-[#f9f9fb]">
                 <tr>
-                  <th class="text-left px-4 py-3 text-[12px] font-semibold text-[#666e7d] uppercase">ADMITTED</th>
-                  <th class="text-left px-4 py-3 text-[12px] font-semibold text-[#666e7d] uppercase">PATIENT</th>
-                  <th class="text-left px-4 py-3 text-[12px] font-semibold text-[#666e7d] uppercase">TRANSPORT TYPE</th>
+                  <th class="text-left px-3 py-2 text-[11px] font-semibold text-[#666e7d] uppercase">DATE</th>
+                  <th class="text-left px-3 py-2 text-[11px] font-semibold text-[#666e7d] uppercase">PATIENT</th>
+                  <th class="text-left px-3 py-2 text-[11px] font-semibold text-[#666e7d] uppercase">TRANSPORT TYPE</th>
+                  <th class="text-center px-3 py-2 text-[11px] font-semibold text-[#666e7d] uppercase">STATUS</th>
                 </tr>
               </thead>
               <tbody>
                 <tr 
                   v-for="(prescription, index) in prescriptions" 
                   :key="index"
-                  class="border-t border-[#f0f0f0] hover:bg-gray-50"
+                  class="border-t border-[#f0f0f0] hover:bg-gray-50 transition-colors"
                 >
-                  <td class="px-4 py-3 text-[14px] text-[rgba(0,0,0,0.87)]">{{ prescription.admitted }}</td>
-                  <td class="px-4 py-3 text-[14px] text-[rgba(0,0,0,0.87)]">{{ prescription.patient }}</td>
-                  <td class="px-4 py-3 text-[14px] text-[rgba(0,0,0,0.87)]">{{ prescription.transportType }}</td>
+                  <td class="px-3 py-2 text-[13px] text-[rgba(0,0,0,0.87)]">{{ prescription.admitted }}</td>
+                  <td class="px-3 py-2 text-[13px] text-[rgba(0,0,0,0.87)] font-medium">{{ prescription.patient }}</td>
+                  <td class="px-3 py-2 text-[13px]">
+                    <span class="px-2 py-1 rounded-full text-[11px] font-medium"
+                      :class="{
+                        'bg-blue-100 text-blue-700': prescription.transportType === 'VSL',
+                        'bg-red-100 text-red-700': prescription.transportType === 'Ambulance',
+                        'bg-yellow-100 text-yellow-700': prescription.transportType === 'Taxi'
+                      }"
+                    >
+                      {{ prescription.transportType }}
+                    </span>
+                  </td>
+                  <td class="px-3 py-2 text-center">
+                    <span class="px-2 py-1 rounded-full text-[11px] bg-green-100 text-green-700 font-medium">
+                      Actif
+                    </span>
+                  </td>
                 </tr>
               </tbody>
             </table>
