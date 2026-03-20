@@ -1,10 +1,10 @@
 <template>
-  <div class="w-full bg-[#f8f8f8]">
+  <div class="w-full bg-[#f8f8f8] min-h-screen">
     <Header subtitle="Dashboard" />
     
-    <div class="p-8">
+    <div class="p-4 md:p-6 lg:p-8">
       <!-- Stats Cards -->
-        <div class="grid grid-cols-4 gap-6 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-6 mb-6 md:mb-8">
           <StatsCard title="Appointments" :value="213" icon-bg="rgba(85, 142, 255, 0.1)">
             <template #icon>
               <svg class="w-[24px] h-[24px]" fill="none" viewBox="0 0 24 24">
@@ -39,7 +39,7 @@
         </div>
 
         <!-- Main Content Grid -->
-        <div class="grid grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 md:gap-4 lg:gap-6">
           <!-- Income Chart -->
           <div class="col-span-2 bg-white rounded-[10px] border border-[#f0f0f0] p-6">
             <div class="flex justify-between items-center mb-4">

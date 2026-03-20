@@ -1,13 +1,13 @@
 <template>
-  <div class="w-full bg-[#f8f8f8]">
+  <div class="w-full bg-[#f8f8f8] min-h-screen">
     <Header subtitle="Patients" />
     
-    <div class="p-8">
+    <div class="p-4 md:p-6 lg:p-8">
         <div class="bg-white border border-[#f0f0f0] rounded-[10px] p-4">
           <!-- Header -->
-          <div class="flex justify-between items-center mb-6">
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
             <h2 class="font-semibold text-[18px] text-[#1b1b1b]">Patients List</h2>
-            <div class="flex gap-[25px]">
+            <div class="flex flex-col md:flex-row gap-2 md:gap-[25px] w-full md:w-auto">
               <button class="bg-[#168bd9] text-white px-[18px] py-[7px] rounded-[10px] flex items-center gap-[6px] hover:opacity-90">
                 <svg class="w-[24px] h-[24px]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />

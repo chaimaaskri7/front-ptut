@@ -105,6 +105,7 @@ aside {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  transition: width 0.3s ease;
 }
 
 nav {
@@ -114,5 +115,24 @@ nav {
 
 a {
   text-decoration: none;
+}
+
+/* Tablet: Reduce sidebar width */
+@media (max-width: 1023px) and (min-width: 768px) {
+  aside {
+    width: 100px;
+  }
+  
+  aside p,
+  aside span {
+    display: none;
+  }
+}
+
+/* Mobile: Hide sidebar */
+@media (max-width: 767px) {
+  aside {
+    display: none;
+  }
 }
 </style>

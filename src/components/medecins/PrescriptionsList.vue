@@ -1,11 +1,11 @@
 <template>
-  <div class="w-full bg-[#f8f8f8]">
+  <div class="w-full bg-[#f8f8f8] min-h-screen">
     <Header subtitle="Prescription" />
     
-    <div class="p-8">
+    <div class="p-4 md:p-6 lg:p-8">
         <div class="bg-white border border-[#f0f0f0] rounded-[10px] p-4">
           <!-- Header -->
-          <div class="flex justify-between items-center mb-6">
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
             <h2 class="font-semibold text-[18px] text-[#1b1b1b]">Les prescriptions</h2>
             <button class="border border-[#f0f0f0] px-[18px] py-[7px] rounded-[10px] flex items-center gap-[10px] hover:bg-gray-50">
               <svg class="w-[24px] h-[24px]" fill="none" viewBox="0 0 24 24" stroke="#7F7F7F" stroke-width="1.5">
