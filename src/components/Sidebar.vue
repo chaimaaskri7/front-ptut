@@ -1,5 +1,5 @@
 <template>
-  <aside class="w-[289px] bg-white border-r border-[#f0f0f0] h-screen overflow-clip fixed left-0 top-0">
+  <aside class="w-[289px] bg-white border-r border-[#f0f0f0] h-screen flex flex-col fixed left-0 top-0 z-50">
     <!-- Logo -->
     <div class="flex gap-[6px] items-center px-[19px] py-[21px]">
       <div class="flex items-center justify-center p-[13.522px] w-[40px] h-[34.872px]">
@@ -90,11 +90,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 
-const route = useRoute();
-const currentRoute = computed(() => route.path.split('/')[1] || 'dashboard');
+const route = useRoute()
+const currentRoute = computed(() => route.path.split('/')[1] || 'dashboard')
 </script>
 
 <style scoped>
