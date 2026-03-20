@@ -1,7 +1,7 @@
 <template>
-  <div id="app" class="flex min-h-screen bg-white">
+  <div id="app" class="min-h-screen bg-white">
     <Sidebar />
-    <main class="flex-1 ml-[289px] overflow-y-auto">
+    <main class="ml-[289px]">
       <router-view />
     </main>
   </div>
@@ -12,15 +12,21 @@ import Sidebar from './components/Sidebar.vue'
 </script>
 
 <style>
-* {
+html, body {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
 }
 
-body {
-  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: white;
-  overflow-x: hidden;
+#app {
+  width: 100%;
+  height: 100vh;
+  display: block;
+}
+
+main {
+  height: 100vh;
+  overflow-y: auto;
 }
 </style>

@@ -93,6 +93,25 @@ const currentRoute = computed(() => route.path.split('/')[1] || 'dashboard')
 </script>
 
 <style scoped>
+aside {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 289px;
+  height: 100vh;
+  background: white;
+  border-right: 1px solid #f0f0f0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+nav {
+  flex: 1;
+  overflow-y: auto;
+}
+
 a {
   text-decoration: none;
 }
