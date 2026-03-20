@@ -56,6 +56,18 @@
             @next="currentPage++"
             @change-page="(page) => currentPage = page"
           />
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+import Header from '../Header.vue';
+import Pagination from '../Pagination.vue';
+
+const currentPage = ref(2);
 
 const patients = ref([
   { admitted: '27 Dec, 2024', name: 'Dianne Russell', concern: 'Upper Abdomen General', contactType: 'email', selected: false },
