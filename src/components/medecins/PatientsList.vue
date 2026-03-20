@@ -58,10 +58,10 @@
               @change-page="(page) => currentPage = page"
             />
           </div>
-          </div>
         </div>
       </div>
     </div>
+  </div>
 </template>
 
 <script setup lang="ts">
