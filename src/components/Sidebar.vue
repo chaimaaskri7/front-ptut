@@ -22,7 +22,7 @@
     </div>
 
     <!-- Navigation Menu -->
-    <nav class="flex flex-col gap-[20px] px-[19px] mt-[39px]">
+    <nav class="flex-1 flex flex-col gap-[20px] px-[19px] mt-[39px] overflow-y-auto">
       <router-link 
         to="/dashboard" 
         class="flex gap-[10px] items-center px-[15px] py-[7px] rounded-[10px] transition-colors"
@@ -64,12 +64,7 @@
     </nav>
 
     <!-- Bottom Menu -->
-    <div class="absolute bottom-[40px] left-[28px] flex flex-col gap-[19px]">
-      <div class="h-0 w-[293px] relative mb-4">
-        <svg class="block w-full h-full" fill="none" preserveAspectRatio="none" viewBox="0 0 293 1">
-          <line stroke="#F8F8F8" x2="293" y1="0.5" y2="0.5" />
-        </svg>
-      </div>
+    <div class="border-t border-[#f0f0f0] px-[19px] py-[20px] flex flex-col gap-[19px]">
 
       <div class="flex gap-[10px] items-center cursor-pointer">
         <svg class="w-[24px] h-[24px]" fill="none" viewBox="0 0 24 24" stroke="#7F7F7F" stroke-width="1.5">
