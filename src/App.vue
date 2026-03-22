@@ -1,14 +1,23 @@
 <template>
   <div id="app" class="min-h-screen bg-white">
-    <Sidebar />
-    <main class="ml-[289px]">
+    <NavToggle />
+    <PatientSidebar v-if="isPatientRoute" />
+    <Sidebar v-else />
+    <main class="ml-[289px] pt-[64px]">
       <router-view />
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 import Sidebar from './components/Sidebar.vue'
+import PatientSidebar from './components/patient/PatientSidebar.vue'
+import NavToggle from './components/NavToggle.vue'
+
+const route = useRoute()
+const isPatientRoute = computed(() => route.path.startsWith('/patient'))
 </script>
 
 <style>
@@ -26,10 +35,10 @@ html, body {
 }
 
 main {
-  height: 100vh;
+  height: calc(100vh - 64px);
   overflow-y: auto;
   transition: margin-left 0.3s ease;
-  padding-top: 62px;
+  margin-top: 64px;
 }
 
 /* Desktop: Sidebar visible */
