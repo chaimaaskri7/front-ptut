@@ -29,6 +29,7 @@ main {
   height: 100vh;
   overflow-y: auto;
   transition: margin-left 0.3s ease;
+  padding-top: 62px;
 }
 
 /* Desktop: Sidebar visible */
