@@ -2,31 +2,37 @@
 import { ref } from 'vue'
 
 const favoriteCarriers = ref([
-  { id: '001', name: 'CareMed Taxi', rating: 4.8, phone: '+212 6XX XXX XXX' },
-  { id: '002', name: 'Health Transport', rating: 4.5, phone: '+212 6XX XXX XXX' },
-  { id: '003', name: 'MediCar', rating: 4.9, phone: '+212 6XX XXX XXX' },
+  { id: '001', name: 'Dianne Russell', type: 'VSL', heart: true },
+  { id: '002', name: 'Marvin McKinney', type: 'Ambulance', heart: true },
+  { id: '003', name: 'Esther Howard', type: 'Taxi', heart: true },
 ])
-
-const addCarrier = () => {
-  alert('Transporteur ajouté aux favoris!')
-}
 </script>
 
 <template>
-  <div class="p-6">
-    <h1 class="text-3xl font-bold mb-6 text-[#4e55d7]">Transporteurs favoris</h1>
+  <div class="p-6 bg-white">
+    <button class="text-[#4e55d7] font-semibold mb-6 flex items-center">
+      ← Favourite carrier
+    </button>
 
-    <div class="space-y-3">
-      <div v-for="carrier in favoriteCarriers" :key="carrier.id" class="bg-white rounded-lg shadow p-4 flex justify-between items-center">
-        <div>
-          <p class="font-semibold">{{ carrier.name }}</p>
-          <p class="text-sm text-gray-600">{{ carrier.phone }}</p>
-          <p class="text-sm text-yellow-500">⭐ {{ carrier.rating }}/5</p>
-        </div>
-        <button class="bg-[#4e55d7] text-white px-4 py-2 rounded font-semibold hover:opacity-90">
-          Appeler
-        </button>
-      </div>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="border-b-2 border-gray-300">
+          <tr>
+            <th class="text-left py-4 px-4 font-bold text-gray-600">TRANSPORTEUR</th>
+            <th class="text-left py-4 px-4 font-bold text-gray-600">TRANSPORT TYPE</th>
+            <th class="text-left py-4 px-4 font-bold text-gray-600"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="carrier in favoriteCarriers" :key="carrier.id" class="border-b border-gray-200 hover:bg-gray-50">
+            <td class="py-4 px-4">{{ carrier.name }}</td>
+            <td class="py-4 px-4">{{ carrier.type }}</td>
+            <td class="py-4 px-4 text-right">
+              <button class="text-3xl hover:scale-110">❤️</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>

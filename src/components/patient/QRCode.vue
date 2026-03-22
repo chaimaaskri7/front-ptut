@@ -8,10 +8,10 @@ onMounted(async () => {
   if (qrCanvas.value) {
     try {
       await QRCode.toCanvas(qrCanvas.value, 'https://careway.example.com/patient/123456', {
-        width: 418,
+        width: 300,
         margin: 10,
         color: {
-          dark: '#4e55d7',
+          dark: '#000000',
           light: '#ffffff',
         },
       })
@@ -23,11 +23,23 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="p-6 flex flex-col items-center justify-center min-h-screen">
-    <h1 class="text-3xl font-bold mb-6 text-[#4e55d7]">Mon QR Code</h1>
-    <div class="bg-white rounded-lg shadow-lg p-6">
-      <canvas ref="qrCanvas"></canvas>
-      <p class="text-center text-sm text-gray-600 mt-4">Montrez ce QR Code lors de vos rendez-vous</p>
+  <div class="p-6 bg-white flex items-center justify-center min-h-screen">
+    <div class="text-center">
+      <button class="text-[#4e55d7] font-semibold mb-6 flex items-center">
+        ← QR Code
+      </button>
+      
+      <p class="text-lg mb-8 text-gray-600">
+        A faire scanner par le <strong class="text-blue-600">transporteur</strong> au <strong class="text-blue-600">départ</strong> du trajet.
+      </p>
+      
+      <div class="bg-white rounded-lg shadow-lg p-8 inline-block">
+        <canvas ref="qrCanvas"></canvas>
+      </div>
+      
+      <p class="text-sm text-gray-600 mt-8">
+        <a href="#" class="text-blue-600 font-semibold">Prochains QR codes →</a>
+      </p>
     </div>
   </div>
 </template>

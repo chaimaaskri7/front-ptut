@@ -18,31 +18,34 @@ const changePassword = () => {
 </script>
 
 <template>
-  <div class="p-6">
-    <RouterLink to="/patient/settings" class="text-[#4e55d7] font-semibold hover:underline mb-6 inline-block">
-      ← Retour aux paramètres
-    </RouterLink>
+  <div class="p-6 bg-white">
+    <button class="text-[#4e55d7] font-semibold mb-6 flex items-center">
+      ← Settings
+    </button>
 
-    <h1 class="text-3xl font-bold mb-6 text-[#4e55d7]">Changer le mot de passe</h1>
+    <div class="max-w-xl">
+      <div class="border-4 border-blue-600 rounded-lg p-8">
+        <h1 class="text-2xl font-bold mb-2">Set a new password</h1>
+        <p class="text-gray-600 text-sm mb-6">Create a new password. Ensure it differs from previous ones for security</p>
 
-    <div class="bg-white rounded-lg shadow-lg p-6 max-w-md">
-      <form @submit.prevent="changePassword" class="space-y-4">
-        <div>
-          <label class="block text-sm font-semibold mb-1">Mot de passe actuel</label>
-          <input v-model="passwords.current" type="password" class="w-full border border-gray-300 rounded px-3 py-2" />
-        </div>
-        <div>
-          <label class="block text-sm font-semibold mb-1">Nouveau mot de passe</label>
-          <input v-model="passwords.new" type="password" class="w-full border border-gray-300 rounded px-3 py-2" />
-        </div>
-        <div>
-          <label class="block text-sm font-semibold mb-1">Confirmer le mot de passe</label>
-          <input v-model="passwords.confirm" type="password" class="w-full border border-gray-300 rounded px-3 py-2" />
-        </div>
-        <button type="submit" class="w-full bg-[#4e55d7] text-white py-2 rounded font-semibold hover:opacity-90">
-          Mettre à jour
-        </button>
-      </form>
+        <form @submit.prevent="changePassword" class="space-y-4">
+          <div>
+            <label class="block text-sm font-semibold mb-2">Password</label>
+            <input v-model="passwords.current" type="password" placeholder="Enter your password" class="w-full border border-gray-300 rounded px-3 py-2" />
+          </div>
+          <div>
+            <label class="block text-sm font-semibold mb-2">New Password</label>
+            <input v-model="passwords.new" type="password" placeholder="Enter your new password" class="w-full border border-gray-300 rounded px-3 py-2" />
+          </div>
+          <div>
+            <label class="block text-sm font-semibold mb-2">Confirm Password</label>
+            <input v-model="passwords.confirm" type="password" placeholder="Re-enter your new password" class="w-full border border-gray-300 rounded px-3 py-2" />
+          </div>
+          <button type="submit" class="w-full bg-[#4e55d7] text-white py-2 rounded font-semibold hover:opacity-90 mt-6">
+            Update Password
+          </button>
+        </form>
+      </div>
     </div>
   </div>
 </template>

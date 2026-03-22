@@ -21,7 +21,7 @@ const statusClass = computed(() => statusColors[props.transport.status])
 </script>
 
 <template>
-  <div class="bg-white rounded-lg shadow p-4 border-l-4" :class="statusClass.split(' ')[0]">
+  <div class="bg-white rounded-lg shadow p-4 border-l-4 border-blue-500">
     <div class="flex justify-between items-start">
       <div>
         <p class="font-semibold">{{ transport.carrier }}</p>
