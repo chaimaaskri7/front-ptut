@@ -89,9 +89,8 @@ header {
     display: none;
   }
 }
-  
-  .notification {
-    margin-left: auto;
-  }
+
+.notification {
+  margin-left: auto;
 }
 </style>
