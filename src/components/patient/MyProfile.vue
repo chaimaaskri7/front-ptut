@@ -5,10 +5,8 @@ const profile = ref({
   nom: 'Rawles',
   prenom: 'Alexa',
   email: 'alexarawles@gmail.com',
-  nom_last: 'Last Name',
-  prenom_first: 'First Name',
-  genre: 'Femme',
-  pays: 'France',
+  genre: 'Your Gender',
+  pays: 'Your Country',
   adresse: 'Your Address',
   telephone: 'Your Phone Number',
 })
@@ -50,8 +48,8 @@ const updateProfile = () => {
       </button>
     </div>
 
-    <!-- Main Content -->
-    <div v-if="isEditing" class="grid grid-cols-2 gap-6">
+    <!-- Form Content (Edit Mode & Display Mode) -->
+    <div v-if="isEditing" class="grid grid-cols-2 gap-6 mb-8">
       <div>
         <label class="block text-sm font-semibold mb-2">Last Name</label>
         <input v-model="profile.nom" type="text" class="w-full border border-gray-300 rounded px-3 py-2" />
@@ -63,6 +61,7 @@ const updateProfile = () => {
       <div>
         <label class="block text-sm font-semibold mb-2">Gender</label>
         <select v-model="profile.genre" class="w-full border border-gray-300 rounded px-3 py-2">
+          <option>Your Gender</option>
           <option>Femme</option>
           <option>Homme</option>
         </select>
@@ -85,19 +84,47 @@ const updateProfile = () => {
     </div>
 
     <div v-else>
+      <!-- Display Mode - All Fields -->
+      <div class="grid grid-cols-2 gap-6 mb-8">
+        <div>
+          <label class="block text-xs text-gray-500 font-semibold mb-1">Last Name</label>
+          <p class="text-gray-400">{{ profile.nom }}</p>
+        </div>
+        <div>
+          <label class="block text-xs text-gray-500 font-semibold mb-1">First Name</label>
+          <p class="text-gray-400">{{ profile.prenom }}</p>
+        </div>
+        <div>
+          <label class="block text-xs text-gray-500 font-semibold mb-1">Gender</label>
+          <p class="text-gray-400">{{ profile.genre }}</p>
+        </div>
+        <div>
+          <label class="block text-xs text-gray-500 font-semibold mb-1">Country</label>
+          <p class="text-gray-400">{{ profile.pays }}</p>
+        </div>
+        <div class="col-span-2">
+          <label class="block text-xs text-gray-500 font-semibold mb-1">Address</label>
+          <p class="text-gray-400">{{ profile.adresse }}</p>
+        </div>
+        <div>
+          <label class="block text-xs text-gray-500 font-semibold mb-1">Phone Number</label>
+          <p class="text-gray-400">{{ profile.telephone }}</p>
+        </div>
+      </div>
+
       <!-- Email Section -->
       <div class="mb-8">
         <h2 class="text-lg font-bold mb-4">My email Address</h2>
         <div class="bg-blue-50 rounded-lg p-4 flex items-center justify-between mb-4">
           <div class="flex items-center gap-3">
-            <div class="w-8 h-8 bg-blue-500 rounded flex items-center justify-center text-white">✓</div>
+            <div class="w-6 h-6 bg-blue-500 rounded flex items-center justify-center text-white text-sm">✓</div>
             <div>
-              <p class="font-semibold">{{ profile.email }}</p>
+              <p class="font-semibold text-gray-800">{{ profile.email }}</p>
               <p class="text-sm text-gray-600">1 month ago</p>
             </div>
           </div>
         </div>
-        <button class="text-[#4e55d7] font-semibold">+ Add Email Address</button>
+        <button class="text-[#4e55d7] font-semibold text-sm">+ Add Email Address</button>
       </div>
     </div>
   </div>
