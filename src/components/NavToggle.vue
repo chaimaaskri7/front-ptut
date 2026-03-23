@@ -1,16 +1,11 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
 const route = useRoute()
 
-const isPatientRoute = computed(() => {
-  return route.path.startsWith('/patient')
-})
-
 const goToPatient = () => {
-  router.push('/patient/profile')
+  router.push('/patients')
 }
 
 const goToDoctor = () => {
@@ -26,7 +21,7 @@ const goToDoctor = () => {
       <!-- Patient Icon -->
       <button
         @click="goToPatient"
-        :class="isPatientRoute ? 'text-white bg-white bg-opacity-20 rounded-lg p-2' : 'text-white text-opacity-70 hover:text-opacity-100'"
+        :class="route.path === '/patients' ? 'text-white bg-white bg-opacity-20 rounded-lg p-2' : 'text-white text-opacity-70 hover:text-opacity-100'"
         class="text-2xl transition-all duration-200"
         title="Patient Interface"
       >
@@ -39,7 +34,7 @@ const goToDoctor = () => {
       <!-- Doctor Icon -->
       <button
         @click="goToDoctor"
-        :class="!isPatientRoute ? 'text-white bg-white bg-opacity-20 rounded-lg p-2' : 'text-white text-opacity-70 hover:text-opacity-100'"
+        :class="route.path === '/dashboard' || route.path === '/prescriptions' ? 'text-white bg-white bg-opacity-20 rounded-lg p-2' : 'text-white text-opacity-70 hover:text-opacity-100'"
         class="text-2xl transition-all duration-200"
         title="Doctor Interface"
       >
