@@ -1,39 +1,49 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 
-const isPatient = ref(true)
 const router = useRouter()
+const route = useRoute()
 
-import { useRouter } from 'vue-router'
+const isPatientRoute = computed(() => {
+  return route.path.startsWith('/patient')
+})
 
 const goToPatient = () => {
-  isPatient.value = true
   router.push('/patient/profile')
 }
 
 const goToDoctor = () => {
-  isPatient.value = false
   router.push('/dashboard')
 }
 </script>
 
 <template>
-  <div class="fixed top-0 left-0 right-0 bg-[#4e55d7] text-white px-6 py-3 z-[100] flex justify-between items-center h-[64px]">
+  <div class="fixed top-0 left-0 right-0 bg-[#4e55d7] text-white px-6 z-[100] flex justify-between items-center h-[64px]">
     <h1 class="text-2xl font-bold">CareWay</h1>
-    <div class="flex space-x-4">
+    
+    <div class="flex items-center gap-6">
+      <!-- Patient Icon -->
       <button
         @click="goToPatient"
-        :class="isPatient ? 'bg-white text-[#4e55d7]' : 'bg-transparent border border-white'"
-        class="px-4 py-2 rounded font-semibold transition hover:opacity-80"
+        :class="isPatientRoute ? 'text-white bg-white bg-opacity-20 rounded-lg p-2' : 'text-white text-opacity-70 hover:text-opacity-100'"
+        class="text-2xl transition-all duration-200"
+        title="Patient Interface"
       >
-        Patient
+        👤
       </button>
+
+      <!-- Divider -->
+      <div class="w-px h-8 bg-white bg-opacity-30"></div>
+
+      <!-- Doctor Icon -->
       <button
         @click="goToDoctor"
-        :class="!isPatient ? 'bg-white text-[#4e55d7]' : 'bg-transparent border border-white'"
-        class="px-4 py-2 rounded font-semibold transition hover:opacity-80"
+        :class="!isPatientRoute ? 'text-white bg-white bg-opacity-20 rounded-lg p-2' : 'text-white text-opacity-70 hover:text-opacity-100'"
+        class="text-2xl transition-all duration-200"
+        title="Doctor Interface"
       >
-        Doctor
+        👨‍⚕️
       </button>
     </div>
   </div>
