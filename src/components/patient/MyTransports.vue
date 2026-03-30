@@ -32,6 +32,7 @@ const openDetails = () => {
 }
 </script>
 
+<template>
   <div class="p-6 bg-white">
     <button class="text-[#4e55d7] font-semibold mb-6 flex items-center">
       ← My transports
@@ -119,3 +120,4 @@ const openDetails = () => {
       </div>
     </div>
   </div>
+</template>
