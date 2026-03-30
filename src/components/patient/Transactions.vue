@@ -68,12 +68,13 @@ onMounted(() => {
     </div>
 
     <div v-else>
-      <div v-for="stat in stats" :key="stat.label" class="border-2 border-blue-300 border-dashed rounded-lg p-4 text-center">
-        <div class="text-2xl mb-1">{{ stat.icon }}</div>
-        <p class="text-gray-600 text-sm">{{ stat.label }}</p>
-        <p class="text-xl font-bold text-[#4e55d7]">{{ stat.value }}</p>
+      <!-- Stats -->
+      <div class="grid grid-cols-3 gap-4 mb-8">
+        <div v-for="stat in stats" :key="stat.label" class="border-2 border-blue-300 border-dashed rounded-lg p-4 text-center">
+          <p class="text-gray-600 text-sm">{{ stat.label }}</p>
+          <p class="text-xl font-bold text-[#4e55d7]">{{ stat.value }}</p>
+        </div>
       </div>
-    </div>
 
     <!-- Filters -->
     <div class="flex gap-3 mb-6">
@@ -92,12 +93,12 @@ onMounted(() => {
     <div class="space-y-3">
       <div v-for="transaction in filteredTransactions" :key="transaction.id" class="bg-white rounded-lg border border-gray-200 p-4 flex justify-between items-center">
         <div class="flex gap-4 items-center flex-1">
-          <div class="w-12 h-12 bg-blue-100 rounded flex items-center justify-center text-2xl">🏥</div>
+          <div class="w-12 h-12 bg-blue-100 rounded flex items-center justify-center text-lg font-bold">H</div>
           <div class="flex-1">
             <p class="font-semibold">{{ transaction.description }}</p>
             <div class="flex gap-4 text-sm">
               <span class="text-blue-600 font-semibold">{{ transaction.status }}</span>
-              <span class="text-blue-600 font-semibold">● remboursé au transporteur</span>
+              <span class="text-blue-600 font-semibold">remboursé au transporteur</span>
             </div>
           </div>
         </div>

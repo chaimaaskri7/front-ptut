@@ -5,7 +5,7 @@
     <div class="p-4 md:p-6 lg:p-8">
       <!-- Stats Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-6 mb-6 md:mb-8">
-          <StatsCard title="Appointments" :value="213" icon-bg="rgba(85, 142, 255, 0.1)">
+          <StatsCard title="Appointments" :value="stats.appointments" icon-bg="rgba(85, 142, 255, 0.1)">
             <template #icon>
               <svg class="w-[24px] h-[24px]" fill="none" viewBox="0 0 24 24">
                 <path d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" stroke="#558EFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -13,7 +13,7 @@
             </template>
           </StatsCard>
 
-          <StatsCard title="New Patients" :value="104" icon-bg="rgba(85, 142, 255, 0.1)">
+          <StatsCard title="New Patients" :value="stats.newPatients" icon-bg="rgba(85, 142, 255, 0.1)">
             <template #icon>
               <svg class="w-[24px] h-[24px]" fill="none" viewBox="0 0 24 24">
                 <path d="M19 21v-2a4 4 0 00-4-4H9a4 4 0 00-4 4v2M16 7a4 4 0 11-8 0 4 4 0 018 0z" stroke="#558EFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -21,7 +21,7 @@
             </template>
           </StatsCard>
 
-          <StatsCard title="Operations" :value="24" icon-bg="rgba(85, 142, 255, 0.1)">
+          <StatsCard title="Operations" :value="stats.operations" icon-bg="rgba(85, 142, 255, 0.1)">
             <template #icon>
               <svg class="w-[24px] h-[24px]" fill="none" viewBox="0 0 24 24">
                 <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke="#558EFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -29,7 +29,7 @@
             </template>
           </StatsCard>
 
-          <StatsCard title="Transport cost" value="$ 12,174" icon-bg="rgba(85, 142, 255, 0.1)">
+          <StatsCard title="Transport cost" :value="`$ ${stats.transportCost.toFixed(0)}`" icon-bg="rgba(85, 142, 255, 0.1)">
             <template #icon>
               <svg class="w-[24px] h-[24px]" fill="none" viewBox="0 0 24 24">
                 <path d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" stroke="#558EFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
