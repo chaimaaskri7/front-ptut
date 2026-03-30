@@ -21,6 +21,7 @@ export const fetchData = async <T>(endpoint: string): Promise<T> => {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       method: 'GET',
       headers: getHeaders(),
+      credentials: 'include',
     });
 
     if (!response.ok) {
@@ -41,6 +42,7 @@ export const postData = async <T>(endpoint: string, data: any): Promise<T> => {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify(data),
+      credentials: 'include',
     });
 
     if (!response.ok) {
@@ -61,6 +63,7 @@ export const putData = async <T>(endpoint: string, data: any): Promise<T> => {
       method: 'PUT',
       headers: getHeaders(),
       body: JSON.stringify(data),
+      credentials: 'include',
     });
 
     if (!response.ok) {
@@ -80,6 +83,7 @@ export const deleteData = async (endpoint: string): Promise<void> => {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       method: 'DELETE',
       headers: getHeaders(),
+      credentials: 'include',
     });
 
     if (!response.ok) {
