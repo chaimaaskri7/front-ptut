@@ -13,11 +13,13 @@ const fetchTransports = async () => {
   loading.value = true
   error.value = null
   try {
-    const data = await transportService.getAllTransports()
-    transports.value = data
+    // TODO: À implémenter après
+    throw new Error('Fonctionnalité à venir')
+    // const data = await transportService.getAllTransports()
+    // transports.value = data
   } catch (err) {
     console.error('Erreur lors de la récupération des transports:', err)
-    error.value = 'Impossible de charger les transports'
+    error.value = 'Les transports seront bientôt disponibles'
   } finally {
     loading.value = false
   }

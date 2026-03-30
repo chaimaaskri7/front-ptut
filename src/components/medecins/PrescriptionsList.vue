@@ -94,7 +94,6 @@
 import { ref, onMounted } from 'vue';
 import Header from '../Header.vue';
 import Pagination from '../Pagination.vue';
-import { prescriptionService } from '../../services/prescriptionService';
 
 const currentPage = ref(1);
 const prescriptions = ref<any[]>([]);
@@ -105,11 +104,24 @@ const fetchPrescriptions = async () => {
   loading.value = true;
   error.value = null;
   try {
-    const data = await prescriptionService.getAllPrescriptions();
+    // Direct fetch pour dépaner
+    const response = await fetch('http://localhost:8080/prescriptions', {
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    const data = await response.json();
+    console.log('Prescriptions reçues:', data);
     prescriptions.value = data;
-  } catch (err) {
+  } catch (err: any) {
     console.error('Erreur lors de la récupération des prescriptions:', err);
-    error.value = 'Impossible de charger les prescriptions';
+    error.value = `Erreur: ${err.message}`;
   } finally {
     loading.value = false;
   }
