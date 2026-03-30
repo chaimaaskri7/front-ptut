@@ -11,11 +11,17 @@ import Settings from '../components/patient/Settings.vue'
 import ChangePassword from '../components/patient/ChangePassword.vue'
 import FavoriteCarrier from '../components/patient/FavoriteCarrier.vue'
 import Documents from '../components/patient/Documents.vue'
+import TestDataDisplay from '../components/TestDataDisplay.vue'
 
 const routes = [
   {
     path: '/',
-    redirect: '/patient/profile'
+    redirect: '/test'
+  },
+  {
+    path: '/test',
+    name: 'Test',
+    component: TestDataDisplay
   },
   // Doctor routes
   {
