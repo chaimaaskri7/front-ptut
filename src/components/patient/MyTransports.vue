@@ -1,105 +1,82 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { transportService } from '../../services/transportService'
 
-const transports = ref([
-  { 
-    id: '001', 
-    carrier: 'Jean D.', 
-    company: 'AmbuSt, VSL',
-    date: 'lundi 23 juin 2025',
-    time: '10:00 - 10:30',
-    status: 'Tout' as const,
-    distance: '5.2km',
-    color: 'blue'
-  },
-  { 
-    id: '002', 
-    carrier: 'Jean D.', 
-    company: 'AmbuSt, VSL',
-    date: 'lundi 23 juin 2025',
-    time: '11:00 - 11:30',
-    status: 'Terminé' as const,
-    distance: '8.2km',
-    color: 'blue'
-  },
-  { 
-    id: '003', 
-    carrier: 'Hélène A.', 
-    company: 'Taxi Côte, taxi conventionné',
-    date: 'mercredi 7 mars 2025',
-    time: '8:30 - 9:00',
-    status: 'Terminé' as const,
-    distance: '12.5km',
-    color: 'green'
-  },
-])
-
+const transports = ref<any[]>([])
+const loading = ref(false)
+const error = ref<string | null>(null)
 const showFeedback = ref(false)
 const showRating = ref(false)
 const rating = ref(0)
+
+const fetchTransports = async () => {
+  loading.value = true
+  error.value = null
+  try {
+    const data = await transportService.getAllTransports()
+    transports.value = data
+  } catch (err) {
+    console.error('Erreur lors de la récupération des transports:', err)
+    error.value = 'Impossible de charger les transports'
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(() => {
+  fetchTransports()
+})
 
 const openDetails = () => {
   showFeedback.value = true
 }
 </script>
 
-<template>
   <div class="p-6 bg-white">
     <button class="text-[#4e55d7] font-semibold mb-6 flex items-center">
       ← My transports
     </button>
 
-    <p class="text-gray-600 text-sm mb-6">The upcoming transport:</p>
+    <!-- Error Message -->
+    <div v-if="error" class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+      {{ error }}
+    </div>
 
-    <!-- Upcoming Transports -->
-    <div class="space-y-4 mb-8">
-      <div v-for="transport in transports.slice(0, 2)" :key="transport.id" class="bg-blue-600 text-white rounded-lg p-6">
-        <div class="flex justify-between items-center">
-          <div class="flex gap-4 items-center flex-1">
-            <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-2xl">👤</div>
-            <div>
-              <p class="font-bold text-lg">{{ transport.carrier }}</p>
-              <p class="text-blue-100">{{ transport.company }}</p>
-            </div>
-          </div>
-          <button class="text-white hover:opacity-80">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-        </div>
-        <div class="flex gap-6 mt-4 text-blue-100 text-sm">
-          <span>📅 {{ transport.date }}</span>
-          <span>🕐 {{ transport.time }}</span>
-        </div>
-        <div class="flex gap-3 mt-4">
-          <button class="bg-blue-500 px-4 py-2 rounded font-semibold hover:bg-blue-700">Tout</button>
-          <button class="bg-transparent border border-white px-4 py-2 rounded font-semibold hover:bg-white hover:text-blue-600">Terminé</button>
-          <button class="bg-transparent border border-white px-4 py-2 rounded font-semibold hover:bg-white hover:text-blue-600">À venir</button>
-        </div>
+    <!-- Loading -->
+    <div v-if="loading" class="text-center py-8">
+      <p class="text-gray-500">Chargement des transports...</p>
+    </div>
+
+    <!-- Content -->
+    <div v-else>
+      <p class="text-gray-600 text-sm mb-6">Total transports: {{ transports.length }}</p>
+
+      <div v-if="transports.length === 0" class="text-center py-8 text-gray-500">
+        Aucun transport trouvé.
       </div>
 
-      <!-- Third Transport (Different Color) -->
-      <div class="bg-green-600 text-white rounded-lg p-6">
-        <div class="flex justify-between items-center">
-          <div class="flex gap-4 items-center flex-1">
-            <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-2xl">👩</div>
+      <!-- Transports List -->
+      <div class="space-y-4">
+        <div v-for="transport in transports" :key="transport.idtransport" class="bg-blue-600 text-white rounded-lg p-6">
+          <div class="flex justify-between items-center">
             <div>
-              <p class="font-bold text-lg">Hélène A.</p>
-              <p class="text-green-100">Taxi Côte, taxi conventionné</p>
+              <p class="font-bold text-lg">Transport #{{ transport.idtransport }}</p>
+              <p class="text-blue-100 text-sm">{{ transport.typetransport }}</p>
             </div>
+            <button class="text-white hover:opacity-80">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
           </div>
-          <button class="text-white hover:opacity-80">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
+          <div class="flex gap-6 mt-4 text-blue-100 text-sm flex-wrap">
+            <span>📅 {{ transport.datetransport }}</span>
+            <span>📍 {{ transport.lieudepart }} → {{ transport.lieuarrive }}</span>
+          </div>
+          <button @click="showFeedback = true" class="mt-4 w-full bg-white text-blue-600 px-4 py-2 rounded font-semibold hover:bg-blue-100">
+            Détails
           </button>
         </div>
-        <div class="flex gap-6 mt-4 text-green-100 text-sm">
-          <span>📅 mercredi 7 mars 2025</span>
-          <span>🕐 8:30 - 9:00</span>
-        </div>
-        <button class="mt-4 w-full bg-white text-green-600 px-4 py-2 rounded font-semibold hover:bg-green-100">Détails</button>
       </div>
     </div>
 
@@ -142,4 +119,3 @@ const openDetails = () => {
       </div>
     </div>
   </div>
-</template>

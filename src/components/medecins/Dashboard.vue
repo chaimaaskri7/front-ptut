@@ -203,16 +203,18 @@
 import { ref, onMounted } from 'vue';
 import Header from '../Header.vue';
 import StatsCard from '../StatsCard.vue';
-import { dashboardService } from '../../services/dashboardService';
+import { patientService } from '../../services/patientService';
+import { prescriptionService } from '../../services/prescriptionService';
+import { transactionService } from '../../services/transactionService';
 
 const loading = ref(false);
 const error = ref<string | null>(null);
 
 const stats = ref({
-  appointments: 213,
-  newPatients: 104,
-  operations: 24,
-  transportCost: 12174,
+  appointments: 0,
+  newPatients: 0,
+  operations: 0,
+  transportCost: 0,
 });
 
 const chartData = ref([40, 70, 55, 45, 65, 50, 60]);
@@ -222,11 +224,28 @@ const fetchDashboardStats = async () => {
   loading.value = true;
   error.value = null;
   try {
-    const data = await dashboardService.getStats();
-    stats.value = data;
+    // Fetch real data from backend
+    const patients = await patientService.getAllPatients();
+    const prescriptions = await prescriptionService.getAllPrescriptions();
+    const transactions = await transactionService.getAllTransactions();
+
+    // Calculate stats from real data
+    stats.value = {
+      appointments: prescriptions.length,
+      newPatients: patients.length,
+      operations: prescriptions.filter((p: any) => p.typetransport === 'Ambulance').length,
+      transportCost: transactions.reduce((sum: number, t: any) => sum + (t.amount || 0), 0),
+    };
   } catch (err) {
     console.error('Erreur lors de la récupération des statistiques:', err);
     error.value = 'Impossible de charger les statistiques';
+    // Keep fallback values
+    stats.value = {
+      appointments: 0,
+      newPatients: 0,
+      operations: 0,
+      transportCost: 0,
+    };
   } finally {
     loading.value = false;
   }

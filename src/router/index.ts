@@ -16,7 +16,7 @@ import TestDataDisplay from '../components/TestDataDisplay.vue'
 const routes = [
   {
     path: '/',
-    redirect: '/test'
+    redirect: '/dashboard'
   },
   {
     path: '/test',
