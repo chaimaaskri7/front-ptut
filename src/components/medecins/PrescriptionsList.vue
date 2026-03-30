@@ -2,7 +2,18 @@
   <div class="w-full bg-[#f8f8f8] min-h-screen">
     <Header subtitle="Prescription" />
     <div class="p-4 md:p-6 lg:p-8">
-      <div class="bg-white border border-[#f0f0f0] rounded-[10px] p-4">
+      <!-- Message d'erreur -->
+      <div v-if="error" class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+        {{ error }}
+      </div>
+
+      <!-- Loading -->
+      <div v-if="loading" class="text-center py-8">
+        <p class="text-gray-500">Chargement des prescriptions...</p>
+      </div>
+
+      <!-- Contenu principal -->
+      <div v-else class="bg-white border border-[#f0f0f0] rounded-[10px] p-4">
         <!-- Header -->
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <h2 class="font-semibold text-[18px] text-[#1b1b1b]">Prescriptions List</h2>
@@ -75,22 +86,37 @@
           />
         </div>
       </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import Header from '../Header.vue';
 import Pagination from '../Pagination.vue';
+import { prescriptionService } from '../../services/prescriptionService';
 
-const currentPage = ref(2);
+const currentPage = ref(1);
+const prescriptions = ref<any[]>([]);
+const loading = ref(false);
+const error = ref<string | null>(null);
 
-const prescriptions = ref([
-  { admitted: '27 Dec, 2024', patient: 'Dianne Russell', transportType: 'VSL' },
-  { admitted: '03 Feb, 2023', patient: 'Bessie Cooper', transportType: 'Ambulance' },
-  { admitted: '02 Mar, 2023', patient: 'Marvin McKinney', transportType: 'Ambulance' },
-  { admitted: '02 Mar, 2023', patient: 'Esther Howard', transportType: 'Taxi' },
-  { admitted: '02 Mar, 2023', patient: 'Marvin McKinney', transportType: 'VSL' },
-]);
+const fetchPrescriptions = async () => {
+  loading.value = true;
+  error.value = null;
+  try {
+    const data = await prescriptionService.getAllPrescriptions();
+    prescriptions.value = data;
+  } catch (err) {
+    console.error('Erreur lors de la récupération des prescriptions:', err);
+    error.value = 'Impossible de charger les prescriptions';
+  } finally {
+    loading.value = false;
+  }
+};
+
+onMounted(() => {
+  fetchPrescriptions();
+});
 </script>

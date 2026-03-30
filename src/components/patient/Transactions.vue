@@ -1,20 +1,52 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import TransactionCard from './TransactionCard.vue'
+import { transactionService } from '../../services/transactionService'
 
 const filterTab = ref('Tout')
+const loading = ref(false)
+const error = ref<string | null>(null)
 
-const transactions = ref([
-  { id: '001', description: 'Domicile > Hôpital de Castres', amount: 18.50, status: 'completed' as const, date: '9 Jun', color: 'blue' },
-  { id: '002', description: 'Domicile > Clinique St. Pierre', amount: 12, status: 'completed' as const, date: '4 Jun', color: 'orange' },
-  { id: '003', description: 'Domicile > Clinique St. Martin', amount: 25, status: 'completed' as const, date: '18 Jun', color: 'yellow' },
-])
+const transactions = ref<any[]>([])
 
-const stats = ref([
-  { label: 'Remboursés', value: '5', icon: '✓', color: 'green' },
-  { label: 'Total remboursé', value: '90,50€', icon: '💰', color: 'blue' },
-  { label: 'En cours', value: '2', icon: '⏳', color: 'orange' },
-])
+const stats = computed(() => {
+  const completed = transactions.value.filter(t => t.status === 'completed').length
+  const pending = transactions.value.filter(t => t.status === 'pending').length
+  const total = transactions.value.reduce((sum, t) => sum + t.amount, 0)
+  
+  return [
+    { label: 'Remboursés', value: completed.toString(), icon: '✓', color: 'green' },
+    { label: 'Total remboursé', value: total.toFixed(2) + '€', icon: '💰', color: 'blue' },
+    { label: 'En cours', value: pending.toString(), icon: '⏳', color: 'orange' },
+  ]
+})
+
+const filteredTransactions = computed(() => {
+  if (filterTab.value === 'En cours') {
+    return transactions.value.filter(t => t.status === 'pending')
+  } else if (filterTab.value === 'Remboursés') {
+    return transactions.value.filter(t => t.status === 'completed')
+  }
+  return transactions.value
+})
+
+const fetchTransactions = async () => {
+  loading.value = true
+  error.value = null
+  try {
+    const data = await transactionService.getAllTransactions()
+    transactions.value = data
+  } catch (err) {
+    console.error('Erreur lors de la récupération des transactions:', err)
+    error.value = 'Impossible de charger les transactions'
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(() => {
+  fetchTransactions()
+})
 </script>
 
 <template>
@@ -25,8 +57,17 @@ const stats = ref([
 
     <p class="text-gray-600 text-sm mb-6">Suivez ici l'ensemble de vos remboursements liés aux trajets médicaux.</p>
 
-    <!-- Stats -->
-    <div class="grid grid-cols-3 gap-4 mb-8">
+    <!-- Message d'erreur -->
+    <div v-if="error" class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+      {{ error }}
+    </div>
+
+    <!-- Loading -->
+    <div v-if="loading" class="text-center py-8">
+      <p class="text-gray-500">Chargement des transactions...</p>
+    </div>
+
+    <div v-else>
       <div v-for="stat in stats" :key="stat.label" class="border-2 border-blue-300 border-dashed rounded-lg p-4 text-center">
         <div class="text-2xl mb-1">{{ stat.icon }}</div>
         <p class="text-gray-600 text-sm">{{ stat.label }}</p>
@@ -49,7 +90,7 @@ const stats = ref([
 
     <!-- Transactions List -->
     <div class="space-y-3">
-      <div v-for="transaction in transactions" :key="transaction.id" class="bg-white rounded-lg border border-gray-200 p-4 flex justify-between items-center">
+      <div v-for="transaction in filteredTransactions" :key="transaction.id" class="bg-white rounded-lg border border-gray-200 p-4 flex justify-between items-center">
         <div class="flex gap-4 items-center flex-1">
           <div class="w-12 h-12 bg-blue-100 rounded flex items-center justify-center text-2xl">🏥</div>
           <div class="flex-1">
@@ -65,6 +106,7 @@ const stats = ref([
           <div class="w-24 h-1 bg-gradient-to-r from-blue-300 to-transparent rounded mt-1"></div>
         </div>
       </div>
+    </div>
     </div>
   </div>
 </template>

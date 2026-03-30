@@ -200,10 +200,39 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import Header from '../Header.vue';
 import StatsCard from '../StatsCard.vue';
+import { dashboardService } from '../../services/dashboardService';
+
+const loading = ref(false);
+const error = ref<string | null>(null);
+
+const stats = ref({
+  appointments: 213,
+  newPatients: 104,
+  operations: 24,
+  transportCost: 12174,
+});
 
 const chartData = ref([40, 70, 55, 45, 65, 50, 60]);
 const chartLabels = ref(['1 July', '8 July', '16 July', '24 July', '31 July']);
+
+const fetchDashboardStats = async () => {
+  loading.value = true;
+  error.value = null;
+  try {
+    const data = await dashboardService.getStats();
+    stats.value = data;
+  } catch (err) {
+    console.error('Erreur lors de la récupération des statistiques:', err);
+    error.value = 'Impossible de charger les statistiques';
+  } finally {
+    loading.value = false;
+  }
+};
+
+onMounted(() => {
+  fetchDashboardStats();
+});
 </script>
