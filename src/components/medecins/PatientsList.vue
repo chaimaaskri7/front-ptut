@@ -44,9 +44,9 @@
                 :key="index"
                 class="border-b border-[#f0f0f0] hover:bg-[#f8f8f8] transition-colors"
               >
-                <td class="px-4 py-3 text-[13px] text-[#666666]">{{ patient.admitted }}</td>
-                <td class="px-4 py-3 text-[13px] font-medium text-[#1b1b1b]">{{ patient.name }}</td>
-                <td class="px-4 py-3 text-[13px] text-[#666666] hidden md:table-cell">{{ patient.concern }}</td>
+                <td class="px-4 py-3 text-[13px] text-[#666666]">{{ patient.datenaiss }}</td>
+                <td class="px-4 py-3 text-[13px] font-medium text-[#1b1b1b]">{{ patient.prenom }} {{ patient.nom }}</td>
+                <td class="px-4 py-3 text-[13px] text-[#666666] hidden md:table-cell">{{ patient.mail }}</td>
                 <td class="px-4 py-3 text-center">
                   <button class="bg-blue-600 text-white px-3 py-1 rounded text-xs font-medium hover:bg-blue-700 transition-colors">
                     Rx

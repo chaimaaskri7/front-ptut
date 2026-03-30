@@ -40,23 +40,23 @@
               </tr>
             </thead>
             <tbody>
-              <tr 
-                v-for="(prescription, index) in prescriptions" 
+              <tr
+                v-for="(prescription, index) in prescriptions"
                 :key="index"
                 class="border-b border-[#f0f0f0] hover:bg-[#f8f8f8] transition-colors"
               >
-                <td class="px-4 py-3 text-[13px] text-[#666666]">{{ prescription.admitted }}</td>
-                <td class="px-4 py-3 text-[13px] font-medium text-[#1b1b1b]">{{ prescription.patient }}</td>
+                <td class="px-4 py-3 text-[13px] text-[#666666]">{{ prescription.dateprescription }}</td>
+                <td class="px-4 py-3 text-[13px] font-medium text-[#1b1b1b]">{{ prescription.idpatient }}</td>
                 <td class="px-4 py-3 hidden md:table-cell">
-                  <span 
+                  <span
                     class="px-3 py-1 rounded-full text-xs font-medium inline-block"
                     :class="{
-                      'bg-blue-100 text-blue-700': prescription.transportType === 'VSL',
-                      'bg-red-100 text-red-700': prescription.transportType === 'Ambulance',
-                      'bg-yellow-100 text-yellow-700': prescription.transportType === 'Taxi'
+                      'bg-blue-100 text-blue-700': prescription.typetransport === 'VSL',
+                      'bg-red-100 text-red-700': prescription.typetransport === 'Ambulance',
+                      'bg-yellow-100 text-yellow-700': prescription.typetransport === 'Taxi'
                     }"
                   >
-                    {{ prescription.transportType }}
+                    {{ prescription.typetransport }}
                   </span>
                 </td>
                 <td class="px-4 py-3 text-center">
