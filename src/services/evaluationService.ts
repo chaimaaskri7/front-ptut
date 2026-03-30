@@ -1,4 +1,4 @@
-import apiClient from './api-config';
+import { fetchData, postData, putData, deleteData } from './api-config';
 
 export interface Evaluation {
   id?: number;
@@ -13,8 +13,7 @@ export const evaluationService = {
   // Récupérer toutes les évaluations
   getAllEvaluations: async (): Promise<Evaluation[]> => {
     try {
-      const response = await apiClient.get('/evaluations');
-      return response.data;
+      return await fetchData<Evaluation[]>('/evaluations');
     } catch (error) {
       console.error('Erreur lors de la récupération des évaluations:', error);
       throw error;
@@ -24,8 +23,7 @@ export const evaluationService = {
   // Récupérer une évaluation par ID
   getEvaluationById: async (id: number): Promise<Evaluation> => {
     try {
-      const response = await apiClient.get(`/evaluations/${id}`);
-      return response.data;
+      return await fetchData<Evaluation>(`/evaluations/${id}`);
     } catch (error) {
       console.error(`Erreur lors de la récupération de l'évaluation ${id}:`, error);
       throw error;
@@ -35,8 +33,7 @@ export const evaluationService = {
   // Créer une nouvelle évaluation
   createEvaluation: async (evaluationData: Evaluation): Promise<Evaluation> => {
     try {
-      const response = await apiClient.post('/evaluations', evaluationData);
-      return response.data;
+      return await postData<Evaluation>('/evaluations', evaluationData);
     } catch (error) {
       console.error('Erreur lors de la création de l\'évaluation:', error);
       throw error;
@@ -46,8 +43,7 @@ export const evaluationService = {
   // Mettre à jour une évaluation
   updateEvaluation: async (id: number, evaluationData: Evaluation): Promise<Evaluation> => {
     try {
-      const response = await apiClient.put(`/evaluations/${id}`, evaluationData);
-      return response.data;
+      return await putData<Evaluation>(`/evaluations/${id}`, evaluationData);
     } catch (error) {
       console.error(`Erreur lors de la mise à jour de l'évaluation ${id}:`, error);
       throw error;
@@ -57,7 +53,7 @@ export const evaluationService = {
   // Supprimer une évaluation
   deleteEvaluation: async (id: number): Promise<void> => {
     try {
-      await apiClient.delete(`/evaluations/${id}`);
+      await deleteData(`/evaluations/${id}`);
     } catch (error) {
       console.error(`Erreur lors de la suppression de l'évaluation ${id}:`, error);
       throw error;
