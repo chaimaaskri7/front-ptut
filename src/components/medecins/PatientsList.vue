@@ -1,73 +1,93 @@
 <template>
-  <div class="w-full bg-[#f8f8f8] min-h-screen">
-    <Header subtitle="Patients" />
-    <div class="p-4 md:p-6 lg:p-8">
-      <!-- Message d'erreur -->
-      <div v-if="error" class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+  <div class="w-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 min-h-screen">
+    <Header subtitle="Vos Patients" />
+    
+    <div class="p-4 md:p-8 max-w-7xl mx-auto">
+      <!-- Welcome Section -->
+      <div class="mb-8">
+        <h1 class="text-3xl md:text-4xl font-bold text-slate-900 mb-2">
+          Mes Patients
+        </h1>
+        <p class="text-lg text-slate-600">
+          Gérez et consultez vos <span class="font-semibold text-indigo-600">{{ patients.length }} patients</span>
+        </p>
+      </div>
+
+      <!-- Error Message -->
+      <div v-if="error" class="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
         {{ error }}
       </div>
 
       <!-- Loading -->
-      <div v-if="loading" class="text-center py-8">
-        <p class="text-gray-500">Chargement des patients...</p>
+      <div v-if="loading" class="text-center py-16">
+        <div class="inline-block">
+          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+          <p class="text-slate-600 mt-4">Chargement des patients...</p>
+        </div>
       </div>
 
-      <!-- Contenu principal -->
-      <div v-else class="bg-white border border-[#f0f0f0] rounded-[10px] p-4">
-        <!-- Header -->
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-            <h2 class="font-semibold text-[18px] text-[#1b1b1b]">Patients List</h2>
-            <div class="flex gap-2 w-full sm:w-auto">
-              <button class="flex-1 sm:flex-none bg-[#168bd9] text-white px-4 py-2 rounded-[8px] text-sm font-medium hover:opacity-90 transition-opacity">
-                + Add Patient
-              </button>
-              <button class="flex-1 sm:flex-none border border-[#f0f0f0] px-4 py-2 rounded-[8px] text-sm hover:bg-gray-50 transition-colors">
-                Filter
-              </button>
-            </div>
-          </div>
-
-        <!-- Table -->
+      <!-- Patients Table -->
+      <div v-else-if="patients.length > 0" class="bg-white rounded-xl shadow-lg overflow-hidden">
         <div class="overflow-x-auto">
-          <table class="w-full text-sm">
+          <table class="w-full">
             <thead>
-              <tr class="border-b border-[#f0f0f0] bg-[#f9f9fb]">
-                <th class="text-left px-4 py-3 text-[11px] font-semibold text-[#666e7d] uppercase">Date</th>
-                <th class="text-left px-4 py-3 text-[11px] font-semibold text-[#666e7d] uppercase">Patient</th>
-                <th class="text-left px-4 py-3 text-[11px] font-semibold text-[#666e7d] uppercase hidden md:table-cell">Concern</th>
-                <th class="text-center px-4 py-3 text-[11px] font-semibold text-[#666e7d] uppercase">Action</th>
+              <tr class="bg-gradient-to-r from-indigo-50 to-blue-50 border-b border-slate-200">
+                <th class="text-left px-6 py-4 text-sm font-semibold text-slate-700 uppercase">Nom & Prénom</th>
+                <th class="text-left px-6 py-4 text-sm font-semibold text-slate-700 uppercase">NSS</th>
+                <th class="text-left px-6 py-4 text-sm font-semibold text-slate-700 uppercase">Condition</th>
+                <th class="text-left px-6 py-4 text-sm font-semibold text-slate-700 uppercase">Âge</th>
+                <th class="text-left px-6 py-4 text-sm font-semibold text-slate-700 uppercase">Contact</th>
+                <th class="text-center px-6 py-4 text-sm font-semibold text-slate-700 uppercase">Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-slate-200">
               <tr 
                 v-for="(patient, index) in patients" 
                 :key="index"
-                class="border-b border-[#f0f0f0] hover:bg-[#f8f8f8] transition-colors"
+                class="hover:bg-slate-50 transition-colors"
               >
-                <td class="px-4 py-3 text-[13px] text-[#666666]">{{ patient.datenaiss }}</td>
-                <td class="px-4 py-3 text-[13px] font-medium text-[#1b1b1b]">{{ patient.prenom }} {{ patient.nom }}</td>
-                <td class="px-4 py-3 text-[13px] text-[#666666] hidden md:table-cell">{{ patient.mail }}</td>
-                <td class="px-4 py-3 text-center">
-                  <button class="bg-blue-600 text-white px-3 py-1 rounded text-xs font-medium hover:bg-blue-700 transition-colors">
-                    Rx
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                      <span class="text-indigo-600 font-semibold text-sm">{{ patient.prenom.charAt(0) }}{{ patient.nom.charAt(0) }}</span>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-slate-900">{{ patient.prenom }} {{ patient.nom }}</p>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-slate-600 text-sm">{{ patient.nss }}</td>
+                <td class="px-6 py-4">
+                  <span class="inline-block bg-rose-100 text-rose-700 px-3 py-1 rounded-full text-sm font-medium">
+                    {{ patient.maladie }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-slate-600 text-sm">{{ calculateAge(patient.datenaiss) }} ans</td>
+                <td class="px-6 py-4 text-slate-600 text-sm">
+                  <div class="space-y-1">
+                    <p class="text-xs">{{ patient.mail }}</p>
+                    <p class="text-xs">{{ patient.tel || 'N/A' }}</p>
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-center">
+                  <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">
+                    Prescriptions
                   </button>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
+      </div>
 
-        <!-- Pagination -->
-        <div class="flex justify-between items-center mt-4">
-          <span class="text-sm text-gray-600">Page {{ currentPage }} of 34</span>
-          <Pagination 
-            :current-page="currentPage" 
-            :total-pages="34"
-            @previous="currentPage--"
-            @next="currentPage++"
-            @change-page="(page) => currentPage = page"
-          />
+      <!-- Empty State -->
+      <div v-else class="bg-white rounded-xl shadow-lg p-12 text-center">
+        <div class="mb-4">
+          <svg class="w-16 h-16 text-slate-300 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.856-1.487M15 10a3 3 0 11-6 0 3 3 0 016 0zM6 20h12a6 6 0 00-6-6 6 6 0 00-6 6z" />
+          </svg>
         </div>
+        <p class="text-slate-600 text-lg">Aucun patient attribué pour le moment</p>
       </div>
     </div>
   </div>
@@ -77,13 +97,34 @@
 import { ref, onMounted } from 'vue';
 import { useAuth } from '../../composables/useAuth';
 import Header from '../Header.vue';
-import Pagination from '../Pagination.vue';
+
+interface Patient {
+  idpatient: number
+  prenom: string
+  nom: string
+  maladie: string
+  nss: string
+  mail: string
+  tel?: string
+  datenaiss: string
+}
 
 const auth = useAuth();
-const currentPage = ref(1);
-const patients = ref<any[]>([]);
+const patients = ref<Patient[]>([]);
 const loading = ref(false);
 const error = ref<string | null>(null);
+
+// Calculer l'âge du patient
+const calculateAge = (birthDate: string): number => {
+  const birth = new Date(birthDate);
+  const today = new Date();
+  let age = today.getFullYear() - birth.getFullYear();
+  const monthDiff = today.getMonth() - birth.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+    age--;
+  }
+  return age;
+};
 
 // Récupérer les patients du médecin connecté
 const fetchPatients = async () => {
