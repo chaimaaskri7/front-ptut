@@ -85,6 +85,22 @@
           </div>
           <p class="text-xs text-slate-500">Plus traitée</p>
         </div>
+
+        <!-- Average Age Card -->
+        <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 border-l-4 border-purple-500">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex-1">
+              <p class="text-sm font-medium text-slate-600 mb-1">Âge Moyen</p>
+              <p class="text-3xl font-bold text-slate-900">{{ averagePatientAge.toFixed(1) }}</p>
+            </div>
+            <div class="bg-purple-100 rounded-full p-3">
+              <svg class="w-8 h-8 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+          </div>
+          <p class="text-xs text-slate-500">Patients attribués</p>
+        </div>
       </div>
 
       <!-- Main Content Grid -->
@@ -117,29 +133,7 @@
           </div>
         </div>
 
-        <!-- Performance Indicator -->
-        <div class="bg-white rounded-xl shadow-lg p-6 border-t-4 border-emerald-500">
-          <h2 class="text-xl font-bold text-slate-900 mb-4">Performance</h2>
-          <div class="space-y-6">
-            <div>
-              <div class="flex justify-between mb-2">
-                <span class="text-sm font-medium text-slate-700">Activité</span>
-                <span class="text-sm font-bold text-emerald-600">{{ performancePercentage }}%</span>
-              </div>
-              <div class="w-full bg-slate-200 rounded-full h-3">
-                <div class="bg-gradient-to-r from-emerald-400 to-emerald-600 h-3 rounded-full transition-all duration-500" 
-                     :style="{ width: performancePercentage + '%' }"></div>
-              </div>
-            </div>
-            <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
-              <p class="text-sm text-emerald-700">
-                <span v-if="performancePercentage >= 100" class="font-bold">Excellent! 🚀</span>
-                <span v-else-if="performancePercentage >= 80" class="font-bold">Très bon! 👍</span>
-                <span v-else class="font-bold">En progression 📈</span>
-              </p>
-            </div>
-          </div>
-        </div>
+
       </div>
 
       <!-- Prescriptions & Patients Section -->
@@ -235,6 +229,7 @@ interface Patient {
   nom: string
   maladie: string
   nss: string
+  datenaiss: string
 }
 
 interface TransportStats {
@@ -324,10 +319,21 @@ const transportChartData = computed(() => {
   }
 })
 
-const performancePercentage = computed(() => {
-  if (stats.value.averagePrescriptions === 0) return 0
-  const percentage = (stats.value.prescriptionsCount / stats.value.averagePrescriptions) * 100
-  return Math.min(percentage, 100)
+const averagePatientAge = computed(() => {
+  if (patients.value.length === 0) return 0
+  
+  const totalAge = patients.value.reduce((sum, patient) => {
+    const birthDate = new Date(patient.datenaiss)
+    const today = new Date()
+    let age = today.getFullYear() - birthDate.getFullYear()
+    const monthDiff = today.getMonth() - birthDate.getMonth()
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--
+    }
+    return sum + age
+  }, 0)
+  
+  return totalAge / patients.value.length
 })
 
 const calculateTransportStats = () => {
