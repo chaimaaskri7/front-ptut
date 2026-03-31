@@ -89,17 +89,31 @@
 
       <!-- Main Content Grid -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Transport Stats -->
+        <!-- Transport Stats with Pie Chart -->
         <div class="lg:col-span-2 bg-white rounded-xl shadow-lg p-6 border-t-4 border-indigo-500">
-          <h2 class="text-xl font-bold text-slate-900 mb-4 flex items-center">
+          <h2 class="text-xl font-bold text-slate-900 mb-6 flex items-center">
             <svg class="w-6 h-6 text-indigo-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
             </svg>
-            Type de Transport Préféré
+            Distribution des Types de Transport
           </h2>
-          <div class="bg-gradient-to-r from-indigo-50 to-indigo-100 rounded-lg p-8 text-center">
-            <p class="text-4xl font-bold text-indigo-600 mb-2">{{ stats.topTransportType }}</p>
-            <p class="text-slate-600">Transport le plus prescrit</p>
+          <div v-if="transportStats.labels && transportStats.labels.length > 0" class="flex items-center justify-center">
+            <Pie 
+              :data="transportChartData" 
+              :options="chartOptions"
+              class="w-full max-w-sm"
+            />
+          </div>
+          <div v-else class="text-center py-8">
+            <p class="text-slate-500">Aucune prescription disponible</p>
+          </div>
+          
+          <!-- Transport Stats Details -->
+          <div class="grid grid-cols-2 gap-3 mt-6 pt-6 border-t border-slate-200">
+            <div v-for="(percentage, type) in transportStats.percentages" :key="type" class="text-center">
+              <div class="text-2xl font-bold text-indigo-600">{{ percentage }}%</div>
+              <div class="text-xs text-slate-600 truncate">{{ type }}</div>
+            </div>
           </div>
         </div>
 
@@ -184,8 +198,18 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import { Pie } from 'vue-chartjs'
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  ChartOptions
+} from 'chart.js'
 import Header from '../Header.vue'
 import { useAuth } from '../../composables/useAuth'
+
+ChartJS.register(ArcElement, Tooltip, Legend)
 
 const auth = useAuth()
 
@@ -213,6 +237,12 @@ interface Patient {
   nss: string
 }
 
+interface TransportStats {
+  labels: string[]
+  counts: number[]
+  percentages: Record<string, number>
+}
+
 const stats = ref<Stats>({
   prescriptionsCount: 0,
   averagePrescriptions: 0,
@@ -224,11 +254,105 @@ const stats = ref<Stats>({
 const prescriptions = ref<Prescription[]>([])
 const patients = ref<Patient[]>([])
 
+const transportStats = ref<TransportStats>({
+  labels: [],
+  counts: [],
+  percentages: {}
+})
+
+const chartOptions = ref<ChartOptions<'pie'>>({
+  responsive: true,
+  maintainAspectRatio: true,
+  plugins: {
+    legend: {
+      position: 'bottom' as const,
+      labels: {
+        padding: 15,
+        font: {
+          size: 12,
+          weight: 'bold'
+        },
+        color: '#1e293b'
+      }
+    },
+    tooltip: {
+      backgroundColor: 'rgba(15, 23, 42, 0.8)',
+      padding: 12,
+      titleFont: {
+        size: 14,
+        weight: 'bold'
+      },
+      bodyFont: {
+        size: 13
+      },
+      callbacks: {
+        label: function(context) {
+          const label = context.label || ''
+          const value = context.parsed || 0
+          const total = transportStats.value.counts.reduce((a, b) => a + b, 0)
+          const percentage = ((value / total) * 100).toFixed(1)
+          return `${label}: ${value} (${percentage}%)`
+        }
+      }
+    }
+  }
+})
+
+const transportChartData = computed(() => {
+  const colors = [
+    '#4f46e5', // indigo
+    '#06b6d4', // cyan
+    '#10b981', // emerald
+    '#f59e0b', // amber
+    '#ef4444', // red
+    '#8b5cf6', // violet
+    '#ec4899', // pink
+    '#14b8a6'  // teal
+  ]
+
+  return {
+    labels: transportStats.value.labels,
+    datasets: [
+      {
+        data: transportStats.value.counts,
+        backgroundColor: colors.slice(0, transportStats.value.labels.length),
+        borderColor: 'white',
+        borderWidth: 2,
+        hoverOffset: 4
+      }
+    ]
+  }
+})
+
 const performancePercentage = computed(() => {
   if (stats.value.averagePrescriptions === 0) return 0
   const percentage = (stats.value.prescriptionsCount / stats.value.averagePrescriptions) * 100
   return Math.min(percentage, 100)
 })
+
+const calculateTransportStats = () => {
+  if (prescriptions.value.length === 0) {
+    transportStats.value = { labels: [], counts: [], percentages: {} }
+    return
+  }
+
+  const transportMap: Record<string, number> = {}
+  prescriptions.value.forEach(p => {
+    const type = p.typetransport || 'Inconnu'
+    transportMap[type] = (transportMap[type] || 0) + 1
+  })
+
+  const labels = Object.keys(transportMap)
+  const counts = Object.values(transportMap)
+  const total = counts.reduce((a, b) => a + b, 0)
+  const percentages: Record<string, number> = {}
+  
+  labels.forEach((label, idx) => {
+    percentages[label] = Math.round((counts[idx] / total) * 100)
+  })
+
+  transportStats.value = { labels, counts, percentages }
+}
 
 const fetchStats = async () => {
   try {
@@ -247,6 +371,7 @@ const fetchPrescriptions = async () => {
     if (response.ok) {
       const data = await response.json()
       prescriptions.value = Array.isArray(data) ? data : [data]
+      calculateTransportStats()
     }
   } catch (error) {
     console.error('Erreur lors du chargement des prescriptions:', error)
