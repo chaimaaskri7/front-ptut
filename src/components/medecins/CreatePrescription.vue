@@ -243,21 +243,25 @@ const form = ref({
 
 const handleSubmit = async () => {
   try {
-    // Create prescription
+    // Envoyer les données au backend pour génération PDF
     const prescriptionData = {
-      idpatient: patientId,
-      medecin: auth.userId.value,
-      motifmedical: 'Transport médical',
-      typetransport: form.value.mode_transport,
-      situationPatient: form.value.situation1.join(', '),
-      trajetDepart: form.value.trajet_depart,
-      trajetArrivee: form.value.trajet_arrivee,
-      nombreTransports: form.value.nombre_transports,
-      exoneration: form.value.exoneration.includes('oui'),
-      pensionMilitaire: form.value.pension_militaire.includes('oui')
+      patientId: parseInt(patientId),
+      medecinId: auth.userId.value,
+      situation1: form.value.situation1,
+      date_at_mp: form.value.date_at_mp,
+      mode_transport: form.value.mode_transport,
+      trajet_depart: form.value.trajet_depart,
+      trajet_depart_autre: form.value.trajet_depart_autre,
+      trajet_depart_structure: form.value.trajet_depart_structure,
+      trajet_arrivee: form.value.trajet_arrivee,
+      trajet_arrivee_autre: form.value.trajet_arrivee_autre,
+      trajet_arrivee_structure: form.value.trajet_arrivee_structure,
+      nombre_transports: form.value.nombre_transports,
+      exoneration: form.value.exoneration,
+      pension_militaire: form.value.pension_militaire
     }
 
-    const response = await fetch('http://localhost:8080/prescriptions', {
+    const response = await fetch('http://localhost:8080/prescriptions/create-with-pdf', {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -267,14 +271,37 @@ const handleSubmit = async () => {
     })
 
     if (response.ok) {
-      alert('Prescription créée avec succès!')
+      const prescription = await response.json()
+      
+      // Télécharger le PDF généré
+      const pdfResponse = await fetch(`http://localhost:8080/prescriptions/${prescription.idprescription}/pdf`, {
+        method: 'GET',
+        credentials: 'include'
+      })
+      
+      if (pdfResponse.ok) {
+        const blob = await pdfResponse.blob()
+        const url = window.URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        link.download = `prescription_${prescription.idprescription}.pdf`
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        window.URL.revokeObjectURL(url)
+        
+        alert('Prescription créée avec succès ! Le PDF a été téléchargé.')
+      }
+      
       router.push('/patients')
     } else {
+      const error = await response.text()
+      console.error('Erreur:', error)
       alert('Erreur lors de la création de la prescription')
     }
   } catch (error) {
     console.error('Erreur:', error)
-    alert('Erreur lors de la création de la prescription')
+    alert('Erreur lors de la création de la prescription: ' + error.message)
   }
 }
 </script>
