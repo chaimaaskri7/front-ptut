@@ -3,6 +3,7 @@ import LoginPage from '../components/LoginPage.vue'
 import Dashboard from '../components/medecins/Dashboard.vue'
 import PatientsList from '../components/medecins/PatientsList.vue'
 import PrescriptionsList from '../components/medecins/PrescriptionsList.vue'
+import CreatePrescription from '../components/medecins/CreatePrescription.vue'
 import MyProfile from '../components/patient/MyProfile.vue'
 import MyTransports from '../components/patient/MyTransports.vue'
 import Notifications from '../components/patient/Notifications.vue'
@@ -48,6 +49,12 @@ const routes = [
     path: '/prescriptions',
     name: 'Prescriptions',
     component: PrescriptionsList,
+    meta: { requiresAuth: true, role: 'medecin' }
+  },
+  {
+    path: '/prescription/create/:patientId',
+    name: 'CreatePrescription',
+    component: CreatePrescription,
     meta: { requiresAuth: true, role: 'medecin' }
   },
   // Patient routes

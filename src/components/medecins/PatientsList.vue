@@ -70,9 +70,12 @@
                   </div>
                 </td>
                 <td class="px-6 py-4 text-center">
-                  <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors">
+                  <router-link 
+                    :to="`/prescription/create/${patient.idpatient}`"
+                    class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
+                  >
                     Prescriptions
-                  </button>
+                  </router-link>
                 </td>
               </tr>
             </tbody>
