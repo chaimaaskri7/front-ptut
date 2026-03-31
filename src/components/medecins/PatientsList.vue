@@ -75,25 +75,38 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { useAuth } from '../../composables/useAuth';
 import Header from '../Header.vue';
 import Pagination from '../Pagination.vue';
-import { patientService } from '../../services/patientService';
 
+const auth = useAuth();
 const currentPage = ref(1);
 const patients = ref<any[]>([]);
 const loading = ref(false);
 const error = ref<string | null>(null);
 
-// Récupérer les patients du backend
+// Récupérer les patients du médecin connecté
 const fetchPatients = async () => {
   loading.value = true;
   error.value = null;
   try {
-    const data = await patientService.getAllPatients();
+    const response = await fetch(`http://localhost:8080/patients/medecin/${auth.userId.value}`, {
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    const data = await response.json();
+    console.log('Patients du médecin reçus:', data);
     patients.value = data;
-  } catch (err) {
+  } catch (err: any) {
     console.error('Erreur lors de la récupération des patients:', err);
-    error.value = 'Impossible de charger les patients';
+    error.value = `Erreur: ${err.message}`;
   } finally {
     loading.value = false;
   }

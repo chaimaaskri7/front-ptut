@@ -38,13 +38,13 @@
         <div class="w-[32px] h-[32px] rounded-full overflow-hidden">
           <img 
             src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=100&h=100&fit=crop" 
-            alt="Dr Amirul Haque" 
+            :alt="auth.userName.value || 'User'" 
             class="w-full h-full object-cover"
           />
         </div>
         <div class="flex flex-col font-medium leading-tight hidden md:flex">
-          <p class="text-[#1b1b1b] text-[13px]">Dr Amirul Haque</p>
-          <p class="text-[#7f7f7f] text-[11px]">Medecin généraliste</p>
+          <p class="text-[#1b1b1b] text-[13px]">Dr {{ auth.userName.value }}</p>
+          <p class="text-[#7f7f7f] text-[11px]">{{ auth.specialite.value || 'Utilisateur' }}</p>
         </div>
         <svg class="w-[20px] h-[20px]" fill="none" viewBox="0 0 24 24">
           <path clip-rule="evenodd" d="M12.53 16.28a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 011.06-1.06L12 14.69l6.97-6.97a.75.75 0 111.06 1.06l-7.5 7.5z" fill="#7F7F7F" />
@@ -55,6 +55,10 @@
 </template>
 
 <script setup lang="ts">
+import { useAuth } from '../composables/useAuth'
+
+const auth = useAuth()
+
 defineProps<{
   subtitle: string;
 }>();

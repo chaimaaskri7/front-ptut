@@ -1,9 +1,9 @@
 <template>
-  <div id="app" class="min-h-screen bg-white">
-    <NavToggle />
+  <div id="app">
+    <NavToggle v-if="!isLoginPage" />
     <PatientSidebar v-if="isPatientRoute" />
-    <Sidebar v-else />
-    <main class="ml-[289px] pt-[64px]">
+    <Sidebar v-else-if="!isLoginPage" />
+    <main :class="isLoginPage ? 'login-main' : 'default-main'">
       <router-view />
     </main>
   </div>
@@ -18,6 +18,7 @@ import NavToggle from './components/NavToggle.vue'
 
 const route = useRoute()
 const isPatientRoute = computed(() => route.path.startsWith('/patient'))
+const isLoginPage = computed(() => route.path === '/login')
 </script>
 
 <style>
@@ -26,6 +27,7 @@ html, body {
   padding: 0;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 
 #app {
@@ -35,22 +37,33 @@ html, body {
 }
 
 main {
-  height: calc(100vh - 64px);
   overflow-y: auto;
   transition: margin-left 0.3s ease;
+}
+
+main.login-main {
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+main.default-main {
+  height: calc(100vh - 64px);
   margin-top: 64px;
+  margin-left: 0;
 }
 
 /* Desktop: Sidebar visible */
 @media (min-width: 1024px) {
-  main {
+  main.default-main {
     margin-left: 289px;
   }
 }
 
 /* Tablet: Sidebar visible but smaller */
 @media (min-width: 768px) and (max-width: 1023px) {
-  main {
+  main.default-main {
     margin-left: 100px;
   }
   
@@ -66,7 +79,7 @@ main {
 
 /* Mobile: Sidebar hidden */
 @media (max-width: 767px) {
-  main {
+  main.default-main {
     margin-left: 0;
   }
   

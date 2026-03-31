@@ -92,9 +92,11 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { useAuth } from '../../composables/useAuth';
 import Header from '../Header.vue';
 import Pagination from '../Pagination.vue';
 
+const auth = useAuth();
 const currentPage = ref(1);
 const prescriptions = ref<any[]>([]);
 const loading = ref(false);
@@ -104,8 +106,8 @@ const fetchPrescriptions = async () => {
   loading.value = true;
   error.value = null;
   try {
-    // Direct fetch pour dépaner
-    const response = await fetch('http://localhost:8080/prescriptions', {
+    // Fetch prescriptions for the connected medecin
+    const response = await fetch(`http://localhost:8080/prescriptions/medecin/${auth.userId.value}`, {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
@@ -117,7 +119,7 @@ const fetchPrescriptions = async () => {
     }
     
     const data = await response.json();
-    console.log('Prescriptions reçues:', data);
+    console.log('Prescriptions du médecin reçues:', data);
     prescriptions.value = data;
   } catch (err: any) {
     console.error('Erreur lors de la récupération des prescriptions:', err);
