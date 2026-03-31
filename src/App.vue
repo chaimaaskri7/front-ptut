@@ -17,7 +17,7 @@ import PatientSidebar from './components/patient/PatientSidebar.vue'
 import NavToggle from './components/NavToggle.vue'
 
 const route = useRoute()
-const isPatientRoute = computed(() => route.path.startsWith('/patient'))
+const isPatientRoute = computed(() => route.path.startsWith('/patient/') || route.path === '/patient')
 const isLoginPage = computed(() => route.path === '/login')
 </script>
 
