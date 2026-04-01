@@ -1,6 +1,6 @@
 <template>
   <div class="w-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 min-h-screen">
-    <Header subtitle="Vos Patients" />
+    <Header subtitle="Vos Patients" @search="handleSearch" />
     
     <div class="p-4 md:p-8 max-w-7xl mx-auto">
       <!-- Welcome Section -->
@@ -10,6 +10,7 @@
         </h1>
         <p class="text-lg text-slate-600">
           Gérez et consultez vos <span class="font-semibold text-indigo-600">{{ patients.length }} patients</span>
+          <span v-if="searchQuery" class="text-slate-500">(filtré de {{ allPatients.length }})</span>
         </p>
       </div>
 
@@ -90,14 +91,15 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.856-1.487M15 10a3 3 0 11-6 0 3 3 0 016 0zM6 20h12a6 6 0 00-6-6 6 6 0 00-6 6z" />
           </svg>
         </div>
-        <p class="text-slate-600 text-lg">Aucun patient attribué pour le moment</p>
+        <p v-if="searchQuery" class="text-slate-600 text-lg">Aucun patient ne correspond à votre recherche : <span class="font-semibold">"{{ searchQuery }}"</span></p>
+        <p v-else class="text-slate-600 text-lg">Aucun patient attribué pour le moment</p>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useAuth } from '../../composables/useAuth';
 import Header from '../Header.vue';
 
@@ -113,9 +115,29 @@ interface Patient {
 }
 
 const auth = useAuth();
-const patients = ref<Patient[]>([]);
+const allPatients = ref<Patient[]>([]);
+const searchQuery = ref('');
 const loading = ref(false);
 const error = ref<string | null>(null);
+
+// Propriété computed pour les patients filtrés
+const patients = computed(() => {
+  if (!searchQuery.value.trim()) {
+    return allPatients.value;
+  }
+  
+  const query = searchQuery.value.toLowerCase();
+  return allPatients.value.filter(patient => 
+    patient.nom.toLowerCase().includes(query) ||
+    patient.prenom.toLowerCase().includes(query) ||
+    patient.nss.toLowerCase().includes(query)
+  );
+});
+
+// Gestionnaire pour l'événement de recherche
+const handleSearch = (query: string) => {
+  searchQuery.value = query;
+};
 
 // Calculer l'âge du patient
 const calculateAge = (birthDate: string): number => {
@@ -147,7 +169,7 @@ const fetchPatients = async () => {
     
     const data = await response.json();
     console.log('Patients du médecin reçus:', data);
-    patients.value = data;
+    allPatients.value = data;
   } catch (err: any) {
     console.error('Erreur lors de la récupération des patients:', err);
     error.value = `Erreur: ${err.message}`;

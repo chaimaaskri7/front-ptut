@@ -20,14 +20,16 @@
       <input 
         type="text" 
         placeholder="Search" 
+        v-model="searchQuery"
+        @input="$emit('search', searchQuery)"
         class="bg-transparent border-none outline-none font-normal text-[14px] text-[#7f7f7f] flex-1"
       />
     </div>
 
     <!-- Right Section -->
     <div class="flex gap-[20px] items-center">
-      <!-- Notification Icon -->
-      <div class="notification w-[32px] h-[32px] border border-[#f0f0f0] rounded-[5px] flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors">
+      <!-- Notification Icon - Only for Patients -->
+      <div v-if="auth.isPatient.value" class="notification w-[32px] h-[32px] border border-[#f0f0f0] rounded-[5px] flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors">
         <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="#7F7F7F" stroke-width="1.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
         </svg>
@@ -56,11 +58,17 @@
 
 <script setup lang="ts">
 import { useAuth } from '../composables/useAuth'
+import { ref } from 'vue'
 
 const auth = useAuth()
+const searchQuery = ref('')
 
 defineProps<{
   subtitle: string;
+}>();
+
+defineEmits<{
+  search: [query: string]
 }>();
 </script>
 
