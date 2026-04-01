@@ -55,4 +55,13 @@ export const transportService = {
       throw error;
     }
   },
+
+  getTransportsByPatient: async (idpatient: number): Promise<Transport[]> => {
+    try {
+      return await fetchData<Transport[]>(`/transports/patient/${idpatient}`);
+    } catch (error) {
+      console.error(`Erreur lors de la récupération des transports du patient ${idpatient}:`, error);
+      throw error;
+    }
+  },
 };

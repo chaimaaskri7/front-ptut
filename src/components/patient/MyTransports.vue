@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { transportService } from '../../services/transportService'
+import { useAuth } from '../../composables/useAuth'
 
+const { userId } = useAuth()
 const transports = ref<any[]>([])
 const loading = ref(false)
 const error = ref<string | null>(null)
@@ -13,13 +15,14 @@ const fetchTransports = async () => {
   loading.value = true
   error.value = null
   try {
-    // TODO: À implémenter après
-    throw new Error('Fonctionnalité à venir')
-    // const data = await transportService.getAllTransports()
-    // transports.value = data
+    if (!userId.value) {
+      throw new Error('Utilisateur non authentifié')
+    }
+    const data = await transportService.getTransportsByPatient(userId.value)
+    transports.value = data
   } catch (err) {
     console.error('Erreur lors de la récupération des transports:', err)
-    error.value = 'Les transports seront bientôt disponibles'
+    error.value = err instanceof Error ? err.message : 'Erreur lors du chargement des transports'
   } finally {
     loading.value = false
   }
@@ -60,11 +63,22 @@ const openDetails = () => {
 
       <!-- Transports List -->
       <div class="space-y-4">
-        <div v-for="transport in transports" :key="transport.idtransport" class="bg-blue-600 text-white rounded-lg p-6">
+        <div v-for="transport in transports" :key="transport.idtransport" :class="[
+          'rounded-lg p-6 text-white',
+          transport.statut === 'TERMINE' ? 'bg-green-600' : transport.statut === 'EN_COURS' ? 'bg-orange-600' : 'bg-blue-600'
+        ]">
           <div class="flex justify-between items-center">
             <div>
               <p class="font-bold text-lg">Transport #{{ transport.idtransport }}</p>
-              <p class="text-blue-100 text-sm">{{ transport.typetransport }}</p>
+              <div class="flex gap-3 items-center">
+                <p class="text-sm opacity-80">{{ transport.typetransport }}</p>
+                <span :class="[
+                  'px-2 py-1 text-xs font-semibold rounded',
+                  transport.statut === 'TERMINE' ? 'bg-green-800' : transport.statut === 'EN_COURS' ? 'bg-orange-800' : 'bg-blue-800'
+                ]">
+                  {{ transport.statut === 'TERMINE' ? '✓ Terminé' : transport.statut === 'EN_COURS' ? '⟳ En cours' : '📅 Planifié' }}
+                </span>
+              </div>
             </div>
             <button class="text-white hover:opacity-80">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -72,11 +86,12 @@ const openDetails = () => {
               </svg>
             </button>
           </div>
-          <div class="flex gap-6 mt-4 text-blue-100 text-sm flex-wrap">
-            <span>📅 {{ transport.datetransport }}</span>
+          <div class="flex gap-6 mt-4 text-sm opacity-90 flex-wrap">
+            <span>📅 {{ new Date(transport.datetransport).toLocaleDateString('fr-FR') }}</span>
+            <span>⏰ {{ new Date(transport.datetransport).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) }}</span>
             <span>📍 {{ transport.lieudepart }} → {{ transport.lieuarrive }}</span>
           </div>
-          <button @click="showFeedback = true" class="mt-4 w-full bg-white text-blue-600 px-4 py-2 rounded font-semibold hover:bg-blue-100">
+          <button @click="showFeedback = true" class="mt-4 w-full px-4 py-2 rounded font-semibold hover:opacity-90" :class="transport.statut === 'TERMINE' ? 'bg-white text-green-600' : transport.statut === 'EN_COURS' ? 'bg-white text-orange-600' : 'bg-white text-blue-600'">
             Détails
           </button>
         </div>
