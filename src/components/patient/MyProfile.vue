@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useAuth } from '../../composables/useAuth'
 
+const router = useRouter()
 const auth = useAuth()
 const loading = ref(false)
 const error = ref<string | null>(null)
@@ -98,6 +100,17 @@ const updateProfile = async () => {
   }
 }
 
+// Fonction de déconnexion
+const logout = () => {
+  if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+    localStorage.removeItem('user')
+    localStorage.removeItem('userId')
+    localStorage.removeItem('role')
+    auth.userId.value = null
+    router.push('/')
+  }
+}
+
 // Charger le profil au montage du composant
 onMounted(() => {
   if (auth.userId.value) {
@@ -147,6 +160,10 @@ onMounted(() => {
 
         <button @click="isEditing = !isEditing" class="bg-[#4e55d7] text-white px-6 py-2 rounded font-semibold">
           {{ isEditing ? 'Annuler' : 'Edit' }}
+        </button>
+
+        <button @click="logout" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded font-semibold transition">
+          Déconnexion
         </button>
       </div>
 
