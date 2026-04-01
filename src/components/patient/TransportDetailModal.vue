@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
@@ -31,7 +31,17 @@ const formattedTime = computed(() => {
 })
 
 const initMap = () => {
-  if (!mapContainer.value || map) return
+  // Attendre que la div existe
+  if (!mapContainer.value) {
+    setTimeout(initMap, 100)
+    return
+  }
+  
+  // Détruire la carte existante
+  if (map) {
+    map.remove()
+    map = null
+  }
 
   // Coordonnées de démonstration (Paris)
   const centerCoords: [number, number] = [48.8566, 2.3522]
@@ -73,6 +83,16 @@ const initMap = () => {
     opacity: 0.7,
     dashArray: '5, 5'
   }).addTo(map)
+}
+
+// Initialiser la carte quand le modal s'ouvre
+watch(() => props.isOpen, (newVal) => {
+  if (newVal) {
+    setTimeout(() => {
+      initMap()
+    }, 100)
+  }
+})
 </script>
 
 <template>
