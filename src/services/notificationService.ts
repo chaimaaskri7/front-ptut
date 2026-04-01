@@ -65,4 +65,13 @@ export const notificationService = {
       throw error;
     }
   },
+
+  getNotificationsByPatient: async (patientId: number): Promise<Notification[]> => {
+    try {
+      return await fetchData<Notification[]>(`/notifications/patient/${patientId}`);
+    } catch (error) {
+      console.error(`Erreur lors de la récupération des notifications du patient ${patientId}:`, error);
+      throw error;
+    }
+  },
 };
