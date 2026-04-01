@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { transportService } from '../../services/transportService'
 import { useAuth } from '../../composables/useAuth'
+import TransportDetailModal from './TransportDetailModal.vue'
 
 const { userId } = useAuth()
 const transports = ref<any[]>([])
@@ -10,6 +11,19 @@ const error = ref<string | null>(null)
 const showFeedback = ref(false)
 const showRating = ref(false)
 const rating = ref(0)
+const activeFilter = ref<'all' | 'termine' | 'coming'>('all')
+const selectedTransport = ref<any>(null)
+const showDetailModal = ref(false)
+
+const filteredTransports = computed(() => {
+  if (activeFilter.value === 'all') {
+    return transports.value
+  } else if (activeFilter.value === 'termine') {
+    return transports.value.filter(t => t.statut === 'TERMINE')
+  } else {
+    return transports.value.filter(t => t.statut === 'EN_COURS' || t.statut === 'PLANIFIE')
+  }
+})
 
 const fetchTransports = async () => {
   loading.value = true
@@ -35,6 +49,16 @@ onMounted(() => {
 const openDetails = () => {
   showFeedback.value = true
 }
+
+const openDetailModal = (transport: any) => {
+  selectedTransport.value = transport
+  showDetailModal.value = true
+}
+
+const closeDetailModal = () => {
+  showDetailModal.value = false
+  selectedTransport.value = null
+}
 </script>
 
 <template>
@@ -57,13 +81,50 @@ const openDetails = () => {
     <div v-else>
       <p class="text-gray-600 text-sm mb-6">Total transports: {{ transports.length }}</p>
 
-      <div v-if="transports.length === 0" class="text-center py-8 text-gray-500">
+      <!-- Filter Tabs -->
+      <div class="flex gap-2 mb-6 border-b border-gray-200">
+        <button
+          @click="activeFilter = 'all'"
+          :class="[
+            'pb-2 px-4 font-semibold transition-all',
+            activeFilter === 'all'
+              ? 'border-b-2 border-blue-600 text-blue-600'
+              : 'text-gray-600 hover:text-gray-800'
+          ]"
+        >
+          Tout
+        </button>
+        <button
+          @click="activeFilter = 'termine'"
+          :class="[
+            'pb-2 px-4 font-semibold transition-all',
+            activeFilter === 'termine'
+              ? 'border-b-2 border-green-600 text-green-600'
+              : 'text-gray-600 hover:text-gray-800'
+          ]"
+        >
+          Terminés
+        </button>
+        <button
+          @click="activeFilter = 'coming'"
+          :class="[
+            'pb-2 px-4 font-semibold transition-all',
+            activeFilter === 'coming'
+              ? 'border-b-2 border-orange-600 text-orange-600'
+              : 'text-gray-600 hover:text-gray-800'
+          ]"
+        >
+          À venir
+        </button>
+      </div>
+
+      <div v-if="filteredTransports.length === 0" class="text-center py-8 text-gray-500">
         Aucun transport trouvé.
       </div>
 
       <!-- Transports List -->
       <div class="space-y-4">
-        <div v-for="transport in transports" :key="transport.idtransport" :class="[
+        <div v-for="transport in filteredTransports" :key="transport.idtransport" :class="[
           'rounded-lg p-6 text-white',
           transport.statut === 'TERMINE' ? 'bg-green-600' : transport.statut === 'EN_COURS' ? 'bg-orange-600' : 'bg-blue-600'
         ]">
@@ -91,7 +152,7 @@ const openDetails = () => {
             <span>⏰ {{ new Date(transport.datetransport).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) }}</span>
             <span>📍 {{ transport.lieudepart }} → {{ transport.lieuarrive }}</span>
           </div>
-          <button @click="showFeedback = true" class="mt-4 w-full px-4 py-2 rounded font-semibold hover:opacity-90" :class="transport.statut === 'TERMINE' ? 'bg-white text-green-600' : transport.statut === 'EN_COURS' ? 'bg-white text-orange-600' : 'bg-white text-blue-600'">
+          <button @click="openDetailModal(transport)" class="mt-4 w-full px-4 py-2 rounded font-semibold hover:opacity-90" :class="transport.statut === 'TERMINE' ? 'bg-white text-green-600' : transport.statut === 'EN_COURS' ? 'bg-white text-orange-600' : 'bg-white text-blue-600'">
             Détails
           </button>
         </div>
@@ -136,5 +197,12 @@ const openDetails = () => {
         </div>
       </div>
     </div>
+
+    <!-- Transport Detail Modal -->
+    <TransportDetailModal 
+      :transport="selectedTransport" 
+      :isOpen="showDetailModal" 
+      @close="closeDetailModal" 
+    />
   </div>
 </template>
