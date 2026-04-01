@@ -48,9 +48,9 @@ export const notificationService = {
     }
   },
 
-  markAsRead: async (id: number): Promise<Notification> => {
+  markAsRead: async (id: number): Promise<void> => {
     try {
-      return await putData<Notification>(`/notifications/${id}/read`, {});
+      await putData(`/notifications/${id}/read`, {});
     } catch (error) {
       console.error(`Erreur lors du marquage de la notification ${id} comme lue:`, error);
       throw error;
