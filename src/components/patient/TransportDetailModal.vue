@@ -43,49 +43,56 @@ const initMap = () => {
     map = null
   }
 
-  // Coordonnées de Paris
-  const startCoords: [number, number] = [48.8566, 2.3522]
-  const endCoords: [number, number] = [48.8816, 2.2675]
-  
-  map = L.map(mapContainer.value, { preferCanvas: true }).setView(startCoords, 13)
-  
-  // Ajouter le fond de carte OSM
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors',
-    maxZoom: 19
-  }).addTo(map!)
+  try {
+    // Coordonnées de Paris
+    const startCoords: [number, number] = [48.8566, 2.3522]
+    const endCoords: [number, number] = [48.8816, 2.2675]
+    
+    // Créer la carte
+    map = L.map(mapContainer.value).setView([48.87, 2.35], 12)
+    
+    // Ajouter la couche de tuiles avec Mapbox (gratuitement)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom: 19,
+      minZoom: 1
+    }).addTo(map)
 
-  // Marqueur de départ (vert)
-  L.circleMarker(startCoords, {
-    radius: 10,
-    fillColor: '#22c55e',
-    color: '#16a34a',
-    weight: 2,
-    opacity: 1,
-    fillOpacity: 0.8
-  }).bindPopup('Départ').addTo(map!)
+    // Ajouter un cercle pour le départ
+    L.circle(startCoords, {
+      color: '#22c55e',
+      fillColor: '#86efac',
+      fillOpacity: 0.7,
+      radius: 200,
+      weight: 3
+    }).bindPopup('<b>Départ</b>').openPopup().addTo(map)
 
-  // Marqueur d'arrivée (rouge)
-  L.circleMarker(endCoords, {
-    radius: 10,
-    fillColor: '#ef4444',
-    color: '#dc2626',
-    weight: 2,
-    opacity: 1,
-    fillOpacity: 0.8
-  }).bindPopup('Arrivée').addTo(map!)
+    // Ajouter un cercle pour l'arrivée
+    L.circle(endCoords, {
+      color: '#ef4444',
+      fillColor: '#fca5a5',
+      fillOpacity: 0.7,
+      radius: 200,
+      weight: 3
+    }).bindPopup('<b>Arrivée</b>').addTo(map)
 
-  // Tracer une línea entre les points
-  L.polyline([startCoords, endCoords], {
-    color: '#4f46e5',
-    weight: 3,
-    opacity: 0.7,
-    dashArray: '5, 5'
-  }).addTo(map!)
-  
-  // Adapter la vue aux deux points
-  map!.fitBounds([startCoords, endCoords], { padding: [50, 50] })
-}
+    // Tracer la route
+    L.polyline([startCoords, endCoords], {
+      color: '#2563eb',
+      weight: 4,
+      opacity: 0.8,
+      dashArray: '10, 5'
+    }).addTo(map)
+
+    // Afficher les deux points dans la vue
+    const group = new L.FeatureGroup([
+      L.marker(startCoords),
+      L.marker(endCoords)
+    ])
+    map.fitBounds(group.getBounds().pad(0.1))
+  } catch (err) {
+    console.error('Erreur lors de l\'initialisation de la carte:', err)
+  }
 }
 
 // Initialiser la carte quand le modal s'ouvre
