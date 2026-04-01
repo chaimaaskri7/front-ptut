@@ -362,7 +362,7 @@ const calculateTransportStats = () => {
 
 const fetchStats = async () => {
   try {
-    const response = await fetch(`http://localhost:8080/medecins/${auth.userId.value}/stats`)
+    const response = await fetch(`http://localhost:8081/medecins/${auth.userId.value}/stats`)
     if (response.ok) {
       stats.value = await response.json()
     }
@@ -373,7 +373,7 @@ const fetchStats = async () => {
 
 const fetchPrescriptions = async () => {
   try {
-    const response = await fetch(`http://localhost:8080/prescriptions/medecin/${auth.userId.value}`)
+    const response = await fetch(`http://localhost:8081/prescriptions/medecin/${auth.userId.value}`)
     if (response.ok) {
       const data = await response.json()
       prescriptions.value = Array.isArray(data) ? data : [data]
@@ -386,7 +386,7 @@ const fetchPrescriptions = async () => {
 
 const fetchPatients = async () => {
   try {
-    const response = await fetch(`http://localhost:8080/patients/medecin/${auth.userId.value}`)
+    const response = await fetch(`http://localhost:8081/patients/medecin/${auth.userId.value}`)
     if (response.ok) {
       patients.value = await response.json()
     }

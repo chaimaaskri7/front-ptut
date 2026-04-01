@@ -107,7 +107,7 @@ const fetchPrescriptions = async () => {
   error.value = null;
   try {
     // Fetch prescriptions for the connected medecin
-    const response = await fetch(`http://localhost:8080/prescriptions/medecin/${auth.userId.value}`, {
+    const response = await fetch(`http://localhost:8081/prescriptions/medecin/${auth.userId.value}`, {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',

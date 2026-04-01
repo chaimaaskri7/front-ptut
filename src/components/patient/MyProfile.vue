@@ -27,7 +27,7 @@ const fetchPatientProfile = async () => {
   loading.value = true
   error.value = null
   try {
-    const response = await fetch(`http://localhost:8080/patients/${auth.userId.value}`, {
+    const response = await fetch(`http://localhost:8081/patients/${auth.userId.value}`, {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
@@ -65,7 +65,7 @@ const fetchPatientProfile = async () => {
 
 const updateProfile = async () => {
   try {
-    const response = await fetch(`http://localhost:8080/patients/${auth.userId.value}`, {
+    const response = await fetch(`http://localhost:8081/patients/${auth.userId.value}`, {
       method: 'PUT',
       credentials: 'include',
       headers: {

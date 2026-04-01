@@ -156,7 +156,7 @@ const fetchPatients = async () => {
   loading.value = true;
   error.value = null;
   try {
-    const response = await fetch(`http://localhost:8080/patients/medecin/${auth.userId.value}`, {
+    const response = await fetch(`http://localhost:8081/patients/medecin/${auth.userId.value}`, {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',

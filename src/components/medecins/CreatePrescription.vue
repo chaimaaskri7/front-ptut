@@ -261,7 +261,7 @@ const handleSubmit = async () => {
       pension_militaire: form.value.pension_militaire
     }
 
-    const response = await fetch('http://localhost:8080/prescriptions/create-with-pdf', {
+    const response = await fetch('http://localhost:8081/prescriptions/create-with-pdf', {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -274,7 +274,7 @@ const handleSubmit = async () => {
       const prescription = await response.json()
       
       // Télécharger le PDF généré
-      const pdfResponse = await fetch(`http://localhost:8080/prescriptions/${prescription.idprescription}/pdf`, {
+      const pdfResponse = await fetch(`http://localhost:8081/prescriptions/${prescription.idprescription}/pdf`, {
         method: 'GET',
         credentials: 'include'
       })
