@@ -3,6 +3,7 @@ import { ref, computed, onMounted } from 'vue'
 import { transportService } from '../../services/transportService'
 import { useAuth } from '../../composables/useAuth'
 import TransportDetailModal from './TransportDetailModal.vue'
+import EvaluationModal from './EvaluationModal.vue'
 
 const { userId } = useAuth()
 const transports = ref<any[]>([])
@@ -14,6 +15,8 @@ const rating = ref(0)
 const activeFilter = ref<'all' | 'termine' | 'coming'>('all')
 const selectedTransport = ref<any>(null)
 const showDetailModal = ref(false)
+const showEvaluationModal = ref(false)
+const selectedTransportForEval = ref<any>(null)
 
 const filteredTransports = computed(() => {
   if (activeFilter.value === 'all') {
@@ -58,6 +61,21 @@ const openDetailModal = (transport: any) => {
 const closeDetailModal = () => {
   showDetailModal.value = false
   selectedTransport.value = null
+}
+
+const openEvaluationModal = (transport: any) => {
+  selectedTransportForEval.value = transport
+  showEvaluationModal.value = true
+}
+
+const closeEvaluationModal = () => {
+  showEvaluationModal.value = false
+  selectedTransportForEval.value = null
+}
+
+const handleEvaluationSubmitted = () => {
+  // Optional: refresh transports or show success message
+  closeEvaluationModal()
 }
 </script>
 
@@ -152,51 +170,25 @@ const closeDetailModal = () => {
             <span>⏰ {{ new Date(transport.datetransport).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) }}</span>
             <span>📍 {{ transport.lieudepart }} → {{ transport.lieuarrive }}</span>
           </div>
-          <button @click="openDetailModal(transport)" class="mt-4 w-full px-4 py-2 rounded font-semibold hover:opacity-90" :class="transport.statut === 'TERMINE' ? 'bg-white text-green-600' : transport.statut === 'EN_COURS' ? 'bg-white text-orange-600' : 'bg-white text-blue-600'">
-            Détails
-          </button>
+          <div class="mt-4 flex gap-2">
+            <button @click="openDetailModal(transport)" class="flex-1 px-4 py-2 rounded font-semibold hover:opacity-90" :class="transport.statut === 'TERMINE' ? 'bg-white text-green-600' : transport.statut === 'EN_COURS' ? 'bg-white text-orange-600' : 'bg-white text-blue-600'">
+              Détails
+            </button>
+            <button v-if="transport.statut === 'TERMINE'" @click="openEvaluationModal(transport)" class="flex-1 px-4 py-2 rounded font-semibold bg-yellow-500 hover:bg-yellow-600 text-white transition">
+              Évaluer
+            </button>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Feedback Modal -->
-    <div v-if="showFeedback" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4 border-4 border-purple-300">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-xl font-bold">Share your feedback</h2>
-          <button @click="showFeedback = false" class="text-2xl">×</button>
-        </div>
-        
-        <div class="space-y-4">
-          <div>
-            <p class="font-semibold mb-3">How was the transport ?</p>
-            <div class="flex gap-3 justify-center">
-              <button v-for="i in 5" :key="i" class="text-3xl hover:scale-110">😊</button>
-            </div>
-          </div>
-
-          <div>
-            <p class="font-semibold mb-2">Can you tell us more?</p>
-            <textarea class="w-full border border-gray-300 rounded p-2" placeholder="Add feedback"></textarea>
-          </div>
-
-          <div>
-            <p class="font-semibold mb-2">Rate the driver !</p>
-            <div class="flex gap-2 justify-center">
-              <button v-for="i in 5" :key="i" @click="rating = i" class="text-2xl" :class="i <= rating ? '⭐' : '☆'">
-                {{ i <= rating ? '⭐' : '☆' }}
-              </button>
-            </div>
-            <p class="text-xs text-gray-600 text-center mt-2">Help us improve our tool to best suit your needs by rating us here!</p>
-          </div>
-        </div>
-
-        <div class="flex gap-3 mt-6">
-          <button @click="showFeedback = false" class="flex-1 border border-gray-300 px-4 py-2 rounded font-semibold">Cancel</button>
-          <button class="flex-1 bg-purple-600 text-white px-4 py-2 rounded font-semibold">Submit</button>
-        </div>
-      </div>
-    </div>
+    <!-- Evaluation Modal -->
+    <EvaluationModal 
+      :isOpen="showEvaluationModal"
+      :transport="selectedTransportForEval"
+      @close="closeEvaluationModal"
+      @submitted="handleEvaluationSubmitted"
+    />
 
     <!-- Transport Detail Modal -->
     <TransportDetailModal 
