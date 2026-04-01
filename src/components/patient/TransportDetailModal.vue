@@ -48,50 +48,75 @@ const initMap = () => {
     const startCoords: [number, number] = [48.8566, 2.3522]
     const endCoords: [number, number] = [48.8816, 2.2675]
     
-    // Créer la carte
-    map = L.map(mapContainer.value).setView([48.87, 2.35], 12)
+    // Créer la carte avec des options de fallback
+    map = L.map(mapContainer.value, {
+      center: [48.87, 2.35],
+      zoom: 12,
+      preferCanvas: false
+    })
     
-    // Ajouter la couche de tuiles avec Mapbox (gratuitement)
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      maxZoom: 19,
-      minZoom: 1
-    }).addTo(map)
+    // Ajouter la couche de tuiles OSM
+    setTimeout(() => {
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19,
+        minZoom: 1,
+        crossOrigin: 'anonymous'
+      }).addTo(map!)
+    }, 100)
 
-    // Ajouter un cercle pour le départ
-    L.circle(startCoords, {
+    // Ajouter un cercle pour le départ (vert)
+    const startCircle = L.circle(startCoords, {
       color: '#22c55e',
       fillColor: '#86efac',
-      fillOpacity: 0.7,
-      radius: 200,
+      fillOpacity: 0.8,
+      radius: 250,
       weight: 3
-    }).bindPopup('<b>Départ</b>').openPopup().addTo(map)
+    }).bindPopup('<strong>🟢 Départ</strong><br>12 rue de la Paix, Paris')
+    
+    startCircle.addTo(map)
 
-    // Ajouter un cercle pour l'arrivée
-    L.circle(endCoords, {
+    // Ajouter un cercle pour l'arrivée (rouge)
+    const endCircle = L.circle(endCoords, {
       color: '#ef4444',
       fillColor: '#fca5a5',
-      fillOpacity: 0.7,
-      radius: 200,
+      fillOpacity: 0.8,
+      radius: 250,
       weight: 3
-    }).bindPopup('<b>Arrivée</b>').addTo(map)
+    }).bindPopup('<strong>🔴 Arrivée</strong><br>Hopital Lariboisiere, Paris')
+    
+    endCircle.addTo(map)
 
-    // Tracer la route
-    L.polyline([startCoords, endCoords], {
+    // Tracer la route avec une ligne pointillée
+    const polyline = L.polyline([startCoords, endCoords], {
       color: '#2563eb',
       weight: 4,
       opacity: 0.8,
-      dashArray: '10, 5'
-    }).addTo(map)
+      dashArray: '10, 5',
+      lineCap: 'round',
+      lineJoin: 'round'
+    })
+    
+    polyline.addTo(map)
 
-    // Afficher les deux points dans la vue
+    // Créer un groupe pour adapter la vue
     const group = new L.FeatureGroup([
       L.marker(startCoords),
       L.marker(endCoords)
     ])
-    map.fitBounds(group.getBounds().pad(0.1))
+    
+    // Adapter la carte aux deux points
+    if (map && group.getBounds().isValid()) {
+      map.fitBounds(group.getBounds(), { padding: [50, 50], maxZoom: 14 })
+    }
+    
+    console.log('Carte initialisée avec succès')
   } catch (err) {
     console.error('Erreur lors de l\'initialisation de la carte:', err)
+    // Afficher un message d'erreur dans la console pour debug
+    if (mapContainer.value) {
+      mapContainer.value.innerHTML = '<div style="padding: 20px; text-align: center; color: #999;">Impossible de charger la carte</div>'
+    }
   }
 }
 
@@ -201,7 +226,11 @@ watch(() => props.isOpen, async (newVal) => {
 
         <!-- Map -->
         <div class="rounded-lg overflow-hidden border border-gray-200">
-          <div ref="mapContainer" class="h-64 w-full"></div>
+          <div 
+            ref="mapContainer" 
+            class="w-full"
+            style="height: 400px; min-height: 400px;">
+          </div>
         </div>
 
         <!-- QR Code Button -->
