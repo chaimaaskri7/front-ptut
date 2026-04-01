@@ -35,22 +35,52 @@
         </svg>
       </div>
 
-      <!-- User Profile -->
-      <div class="user-profile flex gap-[8px] items-center cursor-pointer">
-        <div class="w-[32px] h-[32px] rounded-full overflow-hidden">
-          <img 
-            src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=100&h=100&fit=crop" 
-            :alt="auth.userName.value || 'User'" 
-            class="w-full h-full object-cover"
-          />
+      <!-- User Profile with Dropdown -->
+      <div class="user-profile flex gap-[8px] items-center cursor-pointer relative">
+        <button 
+          @click="showProfileMenu = !showProfileMenu"
+          class="flex gap-[8px] items-center hover:bg-gray-50 px-2 py-1 rounded-lg transition-colors"
+        >
+          <div class="w-[32px] h-[32px] rounded-full overflow-hidden">
+            <img 
+              src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=100&h=100&fit=crop" 
+              :alt="auth.userName.value || 'User'" 
+              class="w-full h-full object-cover"
+            />
+          </div>
+          <div class="flex flex-col font-medium leading-tight hidden md:flex">
+            <p class="text-[#1b1b1b] text-[13px]">Dr {{ auth.userName.value }}</p>
+            <p class="text-[#7f7f7f] text-[11px]">{{ auth.specialite.value || 'Utilisateur' }}</p>
+          </div>
+          <svg 
+            class="w-[20px] h-[20px] transition-transform" 
+            :class="{ 'rotate-180': showProfileMenu }"
+            fill="none" 
+            viewBox="0 0 24 24"
+          >
+            <path clip-rule="evenodd" d="M12.53 16.28a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 011.06-1.06L12 14.69l6.97-6.97a.75.75 0 111.06 1.06l-7.5 7.5z" fill="#7F7F7F" />
+          </svg>
+        </button>
+
+        <!-- Dropdown Menu -->
+        <div 
+          v-if="showProfileMenu" 
+          class="absolute top-[60px] right-0 bg-white border border-[#f0f0f0] rounded-lg shadow-lg min-w-[200px] z-[70]"
+        >
+          <div class="p-3 border-b border-[#f0f0f0] text-sm text-[#7f7f7f]">
+            <p class="font-semibold text-[#1b1b1b]">{{ auth.userName.value }}</p>
+            <p class="text-xs">{{ auth.mail.value }}</p>
+          </div>
+          <button 
+            @click="handleLogout"
+            class="w-full text-left px-4 py-3 text-[#e85d5d] hover:bg-red-50 font-medium text-sm transition-colors flex items-center gap-2"
+          >
+            <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            Déconnexion
+          </button>
         </div>
-        <div class="flex flex-col font-medium leading-tight hidden md:flex">
-          <p class="text-[#1b1b1b] text-[13px]">Dr {{ auth.userName.value }}</p>
-          <p class="text-[#7f7f7f] text-[11px]">{{ auth.specialite.value || 'Utilisateur' }}</p>
-        </div>
-        <svg class="w-[20px] h-[20px]" fill="none" viewBox="0 0 24 24">
-          <path clip-rule="evenodd" d="M12.53 16.28a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 011.06-1.06L12 14.69l6.97-6.97a.75.75 0 111.06 1.06l-7.5 7.5z" fill="#7F7F7F" />
-        </svg>
       </div>
     </div>
   </header>
@@ -58,10 +88,13 @@
 
 <script setup lang="ts">
 import { useAuth } from '../composables/useAuth'
+import { useRouter } from 'vue-router'
 import { ref } from 'vue'
 
 const auth = useAuth()
+const router = useRouter()
 const searchQuery = ref('')
+const showProfileMenu = ref(false)
 
 defineProps<{
   subtitle: string;
@@ -70,6 +103,12 @@ defineProps<{
 defineEmits<{
   search: [query: string]
 }>();
+
+const handleLogout = async () => {
+  auth.logout()
+  showProfileMenu.value = false
+  await router.push('/login')
+}
 </script>
 
 <style scoped>
