@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { notificationService } from '../../services/notificationService'
-import { useAuthStore } from '../../stores/authStore'
+import { useAuth } from '../../composables/useAuth'
 
-const auth = useAuthStore()
+const auth = useAuth()
 const notifications = ref<any[]>([])
 const loading = ref(false)
 const error = ref<string | null>(null)
