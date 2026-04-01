@@ -17,6 +17,7 @@ const profile = ref({
   nss: '',
   maladie: '',
   datenaiss: '',
+  image: '',
 })
 
 const isEditing = ref(false)
@@ -52,6 +53,7 @@ const fetchPatientProfile = async () => {
       nss: data.nss || '',
       maladie: data.maladie || '',
       datenaiss: data.datenaiss || '',
+      image: data.image || '',
     }
   } catch (err: any) {
     console.error('Erreur lors de la récupération du profil:', err)
@@ -80,6 +82,7 @@ const updateProfile = async () => {
         nss: profile.value.nss,
         maladie: profile.value.maladie,
         datenaiss: profile.value.datenaiss,
+        image: profile.value.image,
       })
     })
     
@@ -130,7 +133,7 @@ onMounted(() => {
           <div class="flex-shrink-0">
             <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-[#f0f0f0]">
               <img 
-                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop"
+                :src="profile.image || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop'"
                 :alt="`${profile.prenom} ${profile.nom}`"
                 class="w-full h-full object-cover"
               />
