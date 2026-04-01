@@ -8,6 +8,9 @@ export default defineConfig({
     vue(),
     tailwindcss(),
   ],
+  server: {
+    port: 5188,
+  },
   resolve: {
     alias: {
       // Alias @ to the src directory
