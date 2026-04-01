@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
@@ -43,54 +43,61 @@ const initMap = () => {
     map = null
   }
 
-  // Coordonnées de démonstration (Paris)
-  const centerCoords: [number, number] = [48.8566, 2.3522]
+  // Coordonnées de Paris
+  const startCoords: [number, number] = [48.8566, 2.3522]
+  const endCoords: [number, number] = [48.8816, 2.2675]
   
-  map = L.map(mapContainer.value).setView(centerCoords, 13)
+  map = L.map(mapContainer.value, { preferCanvas: true }).setView(startCoords, 13)
   
+  // Ajouter le fond de carte OSM
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors',
     maxZoom: 19
-  }).addTo(map)
+  }).addTo(map!)
 
-  // Marqueurs de démonstration
-  const startMarker = L.marker([48.8566, 2.3522], {
-    icon: L.icon({
-      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowSize: [41, 41]
-    })
-  }).addTo(map)
-  
-  const endMarker = L.marker([48.8816, 2.2675], {
-    icon: L.icon({
-      iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowSize: [41, 41]
-    })
-  }).addTo(map)
+  // Marqueur de départ (vert)
+  L.circleMarker(startCoords, {
+    radius: 10,
+    fillColor: '#22c55e',
+    color: '#16a34a',
+    weight: 2,
+    opacity: 1,
+    fillOpacity: 0.8
+  }).bindPopup('Départ').addTo(map!)
 
-  // Tracer une ligne entre les points
-  const polyline = L.polyline([[48.8566, 2.3522], [48.8816, 2.2675]], {
+  // Marqueur d'arrivée (rouge)
+  L.circleMarker(endCoords, {
+    radius: 10,
+    fillColor: '#ef4444',
+    color: '#dc2626',
+    weight: 2,
+    opacity: 1,
+    fillOpacity: 0.8
+  }).bindPopup('Arrivée').addTo(map!)
+
+  // Tracer une línea entre les points
+  L.polyline([startCoords, endCoords], {
     color: '#4f46e5',
     weight: 3,
     opacity: 0.7,
     dashArray: '5, 5'
-  }).addTo(map)
+  }).addTo(map!)
+  
+  // Adapter la vue aux deux points
+  map!.fitBounds([startCoords, endCoords], { padding: [50, 50] })
+}
 }
 
 // Initialiser la carte quand le modal s'ouvre
-watch(() => props.isOpen, (newVal) => {
+watch(() => props.isOpen, async (newVal) => {
   if (newVal) {
+    // Attendre que le DOM soit à jour
+    await nextTick()
+    
+    // Puis attendre un peu plus pour que la hauteur soit correctement définie
     setTimeout(() => {
       initMap()
-    }, 100)
+    }, 50)
   }
 })
 </script>
@@ -216,5 +223,45 @@ watch(() => props.isOpen, (newVal) => {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+/* Leaflet map styles */
+:deep(.leaflet-container) {
+  height: 100% !important;
+  width: 100% !important;
+  background-color: #fff;
+}
+
+:deep(.leaflet-pane),
+:deep(.leaflet-tile),
+:deep(.leaflet-marker-shadow),
+:deep(.leaflet-tile-container),
+:deep(.leaflet-object-pane),
+:deep(.leaflet-popup-pane),
+:deep(.leaflet-shadow-pane),
+:deep(.leaflet-marker-pane),
+:deep(.leaflet-overlay-pane),
+:deep(.leaflet-shadow),
+:deep(.leaflet-marker),
+:deep(.leaflet-marker-icon) {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+:deep(.leaflet-container a.leaflet-popup-close-button) {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  padding: 0;
+  border: none;
+  text-align: center;
+  width: 24px;
+  height: 24px;
+  font: 16px/24px Tahoma, Verdana, sans-serif;
+  color: #c3c3c3;
+  text-decoration: none;
+  font-weight: bold;
+  background: transparent;
 }
 </style>
