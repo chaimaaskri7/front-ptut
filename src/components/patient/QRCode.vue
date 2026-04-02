@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, nextTick } from 'vue'
 import { useAuth } from '../../composables/useAuth'
+import QRCode from 'qrcode'
 
 interface QRCode {
   id: number
@@ -27,8 +28,8 @@ const allQRCodes = ref<QRCode[]>([])
 const availableEtapes = ref<Etape[]>([])
 const loading = ref(false)
 const error = ref<string | null>(null)
-const qrSize = ref(250)
-const selectedEtape = ref<number>(6) // Default to etape 6
+const selectedEtape = ref<number>(6)
+const qrCanvases = ref<Map<number, string>>(new Map())
 
 const API_BASE_URL = 'http://localhost:8081'
 
@@ -38,6 +39,10 @@ const fetchQRCodesForEtape = async (id: number) => {
     const response = await fetch(`${API_BASE_URL}/qr-codes/etape/${id}`)
     if (!response.ok) throw new Error('Erreur fetching QR codes')
     allQRCodes.value = await response.json()
+    
+    // Generate QR codes for all fetched codes
+    await nextTick()
+    generateAllQRCodes()
   } catch (err) {
     console.error('Erreur:', err)
     error.value = 'Impossible de charger les QR codes'
@@ -46,9 +51,24 @@ const fetchQRCodesForEtape = async (id: number) => {
   }
 }
 
-const generateQRCodeUrl = (text: string) => {
-  const encodedText = encodeURIComponent(text)
-  return `https://api.qrserver.com/v1/create-qr-code/?size=${qrSize.value}x${qrSize.value}&data=${encodedText}`
+const generateAllQRCodes = async () => {
+  for (const qrCode of allQRCodes.value) {
+    try {
+      const canvas = document.getElementById(`qr-canvas-${qrCode.id}`) as HTMLCanvasElement
+      if (canvas) {
+        await QRCode.toCanvas(canvas, qrCode.code, {
+          width: 250,
+          margin: 2,
+          color: {
+            dark: '#000000',
+            light: '#ffffff'
+          }
+        })
+      }
+    } catch (err) {
+      console.error(`Error generating QR code for id ${qrCode.id}:`, err)
+    }
+  }
 }
 
 const getStatusBadgeClass = (qrCode: QRCode) => {
@@ -80,7 +100,6 @@ const timeUntilExpiry = (expiresAt: string) => {
 }
 
 onMounted(() => {
-  // Load available etapes (for now using hardcoded values from test data)
   availableEtapes.value = [
     { idetape: 6, statut: 'ARRIVE_HOPITAL', idtransport: 11 },
     { idetape: 7, statut: 'RDV_FINI', idtransport: 11 },
@@ -89,7 +108,6 @@ onMounted(() => {
     { idetape: 10, statut: 'DEPART', idtransport: 13 }
   ]
   
-  // Load QR codes for default etape
   if (selectedEtape.value) {
     fetchQRCodesForEtape(selectedEtape.value)
   }
@@ -139,14 +157,13 @@ onMounted(() => {
           class="bg-white border-2 border-gray-200 rounded-lg p-6 hover:shadow-lg transition"
         >
           <div class="flex gap-6">
-            <!-- QR Code Image -->
+            <!-- QR Code Canvas -->
             <div class="flex flex-col items-center">
-              <img 
-                :src="generateQRCodeUrl(qrCode.code)" 
-                :alt="qrCode.code"
-                class="border-4 border-gray-300 rounded-lg"
-              />
-              <p class="text-xs text-gray-500 mt-2 max-w-[250px] break-all text-center">{{ qrCode.code }}</p>
+              <canvas 
+                :id="`qr-canvas-${qrCode.id}`"
+                class="border-4 border-gray-300 rounded-lg bg-white"
+              ></canvas>
+              <p class="text-xs text-gray-500 mt-2 max-w-[250px] break-all text-center font-mono">{{ qrCode.code }}</p>
             </div>
 
             <!-- QR Code Info -->
