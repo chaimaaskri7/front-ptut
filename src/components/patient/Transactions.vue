@@ -12,8 +12,8 @@ const transactions = ref<any[]>([])
 const { user } = useAuth()
 
 const stats = computed(() => {
-  const completed = transactions.value.filter(t => t.status === 'Remboursé').length
-  const pending = transactions.value.filter(t => t.status === 'En cours').length
+  const completed = transactions.value.filter(t => t.status === 'COMPLETED').length
+  const pending = transactions.value.filter(t => t.status === 'PENDING').length
   const total = transactions.value.reduce((sum, t) => sum + t.amount, 0)
   
   return [
@@ -25,9 +25,9 @@ const stats = computed(() => {
 
 const filteredTransactions = computed(() => {
   if (filterTab.value === 'En cours') {
-    return transactions.value.filter(t => t.status === 'En cours')
+    return transactions.value.filter(t => t.status === 'PENDING')
   } else if (filterTab.value === 'Remboursés') {
-    return transactions.value.filter(t => t.status === 'Remboursé')
+    return transactions.value.filter(t => t.status === 'COMPLETED')
   }
   return transactions.value
 })
@@ -104,7 +104,9 @@ onMounted(() => {
           <div class="flex-1">
             <p class="font-semibold">{{ transaction.description }}</p>
             <div class="flex gap-4 text-sm">
-              <span :class="transaction.status === 'Remboursé' ? 'text-green-600 font-semibold' : 'text-orange-600 font-semibold'">{{ transaction.status }}</span>
+              <span :class="transaction.status === 'COMPLETED' ? 'text-green-600 font-semibold' : 'text-orange-600 font-semibold'">
+                {{ transaction.status === 'COMPLETED' ? 'Remboursé' : 'En cours' }}
+              </span>
               <span class="text-gray-500">{{ transaction.date }}</span>
             </div>
           </div>
