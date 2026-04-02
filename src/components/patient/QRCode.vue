@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed, nextTick } from 'vue'
+import { ref, onMounted, computed, nextTick, watch } from 'vue'
 import { useAuth } from '../../composables/useAuth'
 import QRCode from 'qrcode'
 
@@ -29,7 +29,6 @@ const availableEtapes = ref<Etape[]>([])
 const loading = ref(false)
 const error = ref<string | null>(null)
 const selectedEtape = ref<number>(6)
-const qrCanvases = ref<Map<number, string>>(new Map())
 
 const API_BASE_URL = 'http://localhost:8081'
 
@@ -39,10 +38,7 @@ const fetchQRCodesForEtape = async (id: number) => {
     const response = await fetch(`${API_BASE_URL}/qr-codes/etape/${id}`)
     if (!response.ok) throw new Error('Erreur fetching QR codes')
     allQRCodes.value = await response.json()
-    
-    // Generate QR codes for all fetched codes
-    await nextTick()
-    generateAllQRCodes()
+    // Watch will automatically trigger generateAllQRCodes
   } catch (err) {
     console.error('Erreur:', err)
     error.value = 'Impossible de charger les QR codes'
@@ -52,10 +48,17 @@ const fetchQRCodesForEtape = async (id: number) => {
 }
 
 const generateAllQRCodes = async () => {
+  // Wait for DOM to be fully rendered
+  await nextTick()
+  
+  // Small delay to ensure canvas elements are available
+  await new Promise(resolve => setTimeout(resolve, 100))
+  
   for (const qrCode of allQRCodes.value) {
     try {
       const canvas = document.getElementById(`qr-canvas-${qrCode.id}`) as HTMLCanvasElement
       if (canvas) {
+        console.log(`Generating QR code for id ${qrCode.id}`)
         await QRCode.toCanvas(canvas, qrCode.code, {
           width: 250,
           margin: 2,
@@ -64,12 +67,20 @@ const generateAllQRCodes = async () => {
             light: '#ffffff'
           }
         })
+        console.log(`QR code generated for id ${qrCode.id}`)
+      } else {
+        console.error(`Canvas not found for id ${qrCode.id}`)
       }
     } catch (err) {
       console.error(`Error generating QR code for id ${qrCode.id}:`, err)
     }
   }
 }
+
+// Watch for changes in allQRCodes to regenerate QR codes
+watch(allQRCodes, async () => {
+  await generateAllQRCodes()
+}, { deep: true })
 
 const getStatusBadgeClass = (qrCode: QRCode) => {
   const now = new Date()
