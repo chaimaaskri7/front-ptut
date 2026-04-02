@@ -161,6 +161,8 @@ onMounted(() => {
             <div class="flex flex-col items-center">
               <canvas 
                 :id="`qr-canvas-${qrCode.id}`"
+                width="250"
+                height="250"
                 class="border-4 border-gray-300 rounded-lg bg-white"
               ></canvas>
               <p class="text-xs text-gray-500 mt-2 max-w-[250px] break-all text-center font-mono">{{ qrCode.code }}</p>
