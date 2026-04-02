@@ -9,7 +9,7 @@ const loading = ref(false)
 const error = ref<string | null>(null)
 
 const transactions = ref<any[]>([])
-const { user } = useAuth()
+const { userId } = useAuth()
 
 const stats = computed(() => {
   const completed = transactions.value.filter(t => t.status === 'COMPLETED').length
@@ -33,7 +33,7 @@ const filteredTransactions = computed(() => {
 })
 
 const fetchTransactions = async () => {
-  if (!user.value?.id) {
+  if (!userId.value) {
     error.value = 'Patient ID not available'
     return
   }
@@ -41,7 +41,7 @@ const fetchTransactions = async () => {
   loading.value = true
   error.value = null
   try {
-    const data = await transactionService.getTransactionsByPatient(user.value.id)
+    const data = await transactionService.getTransactionsByPatient(userId.value)
     transactions.value = data
   } catch (err) {
     console.error('Erreur lors de la récupération des transactions:', err)
