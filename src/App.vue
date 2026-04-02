@@ -9,7 +9,6 @@
 
     <!-- Pages authentifiées -->
     <template v-else>
-      <NavToggle />
       <PatientSidebar v-if="isPatientRoute" />
       <Sidebar v-else />
       <main class="default-main">
@@ -24,7 +23,6 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import Sidebar from './components/Sidebar.vue'
 import PatientSidebar from './components/patient/PatientSidebar.vue'
-import NavToggle from './components/NavToggle.vue'
 
 const route = useRoute()
 const isPatientRoute = computed(() => route.path.startsWith('/patient/') || route.path === '/patient')

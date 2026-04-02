@@ -61,10 +61,7 @@ const handleReturn = () => {
 
 <template>
   <div class="p-6 bg-white min-h-screen">
-    <!-- Back button -->
-    <button @click="router.back()" class="text-[#4e55d7] font-semibold mb-6 flex items-center hover:opacity-80">
-      ← Settings
-    </button>
+    <h1 class="text-2xl font-bold mb-6">Settings</h1>
 
     <!-- Success Message -->
     <div v-if="showSuccess" class="max-w-xl mx-auto text-center py-16">

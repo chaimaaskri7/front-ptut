@@ -58,9 +58,7 @@ onMounted(() => {
 
 <template>
   <div class="p-6 bg-white">
-    <button class="text-[#4e55d7] font-semibold mb-6 flex items-center">
-      ← My Transactions
-    </button>
+    <h1 class="text-2xl font-bold mb-6">My Transactions</h1>
 
     <p class="text-gray-600 text-sm mb-6">Suivez ici l'ensemble de vos remboursements liés aux trajets médicaux.</p>
 
