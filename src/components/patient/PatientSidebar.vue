@@ -10,6 +10,7 @@ const menuItems = [
   { label: 'Notifications', path: '/patient/notifications', icon: '🔔' },
   { label: 'Transactions', path: '/patient/transactions', icon: '💳' },
   { label: 'QR Code', path: '/patient/qrcode', icon: '📱' },
+  { label: 'Transporteur Favori', path: '/patient/favorite-carrier', icon: '⭐' },
   { label: 'Paramètres', path: '/patient/settings', icon: '⚙️' },
   { label: 'Documents', path: '/patient/documents', icon: '📄' },
 ]
