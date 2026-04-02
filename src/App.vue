@@ -28,7 +28,7 @@ import NavToggle from './components/NavToggle.vue'
 
 const route = useRoute()
 const isPatientRoute = computed(() => route.path.startsWith('/patient/') || route.path === '/patient')
-const isLoginPage = computed(() => route.path === '/login')
+const isLoginPage = computed(() => route.path === '/login' || route.path === '/login/')
 </script>
 
 <style>
