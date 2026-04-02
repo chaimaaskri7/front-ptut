@@ -1,11 +1,21 @@
 <template>
   <div id="app">
-    <NavToggle v-if="!isLoginPage" />
-    <PatientSidebar v-if="isPatientRoute" />
-    <Sidebar v-else-if="!isLoginPage" />
-    <main :class="isLoginPage ? 'login-main' : 'default-main'">
-      <router-view />
-    </main>
+    <!-- Page de Login - isolée complètement -->
+    <template v-if="isLoginPage">
+      <main class="login-main">
+        <router-view />
+      </main>
+    </template>
+
+    <!-- Pages authentifiées -->
+    <template v-else>
+      <NavToggle />
+      <PatientSidebar v-if="isPatientRoute" />
+      <Sidebar v-else />
+      <main class="default-main">
+        <router-view />
+      </main>
+    </template>
   </div>
 </template>
 
