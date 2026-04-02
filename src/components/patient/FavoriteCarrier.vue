@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useAuth } from '../../composables/useAuth'
 import { favoriteCarrierService, type FavoriteCarrier, type TransporteurOption } from '../../services/favoriteCarrierService'
 
@@ -15,6 +15,20 @@ const selectedTransporteurs = ref<{ [key: string]: number | null }>({
   TAXI: null
 })
 
+// Computed property to enrich favorites with details
+const enrichedFavorites = computed(() => {
+  return favoriteCarriers.value.map(carrier => {
+    const transporteur = allTransporteurs.value.find(t => t.idtransporteur === carrier.idTransporteur)
+    return {
+      ...carrier,
+      nomTransporteur: transporteur?.nom || 'Inconnu',
+      prenomTransporteur: transporteur?.prenom || '',
+      telephoneTransporteur: transporteur?.tel || 'N/A',
+      emailTransporteur: transporteur?.mail || 'N/A'
+    }
+  })
+})
+
 const fetchFavoriteCarriers = async () => {
   if (!userId.value) return
   loading.value = true
@@ -24,7 +38,7 @@ const fetchFavoriteCarriers = async () => {
     
     // Populate selected transporteurs
     carriers.forEach(carrier => {
-      selectedTransporteurs.value[carrier.typeTransport] = carrier.idtransporteur
+      selectedTransporteurs.value[carrier.typeTransport] = carrier.idTransporteur
     })
   } catch (err) {
     console.error('Erreur:', err)
@@ -70,13 +84,6 @@ const removeFavoriteCarrier = async (typeTransport: string) => {
     console.error('Erreur:', err)
     error.value = `Impossible de supprimer le transporteur favori pour ${typeTransport}`
   }
-}
-
-const getTransporteursByType = (typeTransport: string) => {
-  return allTransporteurs.value.filter(t => {
-    // Assuming transporteurs have a type or we need to get them from the backend
-    return true // We'll filter by the selection
-  })
 }
 
 const getTransporteurName = (transporteurId: number) => {
@@ -188,7 +195,7 @@ onMounted(() => {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="carrier in favoriteCarriers" :key="`${carrier.idtransporteur}-${carrier.typeTransport}`" 
+              <tr v-for="carrier in enrichedFavorites" :key="`${carrier.idTransporteur}-${carrier.typeTransport}`" 
                   class="border-b border-gray-200 hover:bg-gray-50">
                 <td class="py-4 px-4 font-semibold">{{ carrier.nomTransporteur }} {{ carrier.prenomTransporteur }}</td>
                 <td class="py-4 px-4">

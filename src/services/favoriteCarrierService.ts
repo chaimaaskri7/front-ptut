@@ -1,11 +1,8 @@
 const API_BASE_URL = 'http://localhost:8081'
 
 export interface FavoriteCarrier {
-  idtransporteur: number
-  nomTransporteur: string
-  prenomTransporteur: string
-  telephoneTransporteur: string
-  emailTransporteur: string
+  idPatient: number
+  idTransporteur: number
   typeTransport: string // VSL, AMBULANCE, TAXI
 }
 
@@ -15,6 +12,13 @@ export interface TransporteurOption {
   prenom: string
   tel: string
   mail: string
+}
+
+export interface FavoriteCarrierWithDetails extends FavoriteCarrier {
+  nomTransporteur?: string
+  prenomTransporteur?: string
+  telephoneTransporteur?: string
+  emailTransporteur?: string
 }
 
 export const favoriteCarrierService = {
