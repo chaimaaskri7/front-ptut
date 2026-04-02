@@ -61,12 +61,12 @@ const displayDate = (dateString: string): string => {
 // Traduire le type de transport
 const getTransportLabel = (type: string): string => {
   const labels: { [key: string]: string } = {
-    'Ambulance': 'Ambulance 🚑',
-    'VSL': 'VSL 🚗',
-    'TAXI': 'Taxi 🚕',
-    'Ambulance': 'Ambulance 🚑',
-    'VSL': 'VSL 🚗',
-    'Taxi': 'Taxi 🚕',
+    'Ambulance': 'Ambulance',
+    'VSL': 'VSL',
+    'TAXI': 'Taxi',
+    'Ambulance': 'Ambulance',
+    'VSL': 'VSL',
+    'Taxi': 'Taxi',
   }
   return labels[type] || type
 }
@@ -139,16 +139,6 @@ onMounted(() => {
             </tr>
           </tbody>
         </table>
-      </div>
-
-      <!-- Refresh Button -->
-      <div class="text-center mt-6">
-        <button
-          @click="fetchPrescriptions"
-          class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-2 rounded font-semibold transition"
-        >
-          Actualiser
-        </button>
       </div>
     </div>
   </div>
