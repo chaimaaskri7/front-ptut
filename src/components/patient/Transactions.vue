@@ -12,9 +12,9 @@ const transactions = ref<any[]>([])
 const { userId } = useAuth()
 
 const stats = computed(() => {
-  const completed = transactions.value.filter(t => t.status === 'COMPLETED').length
-  const pending = transactions.value.filter(t => t.status === 'PENDING').length
-  const total = transactions.value.reduce((sum, t) => sum + t.amount, 0)
+  const completed = transactions.value.filter(t => t.statutremboursement === 'Rembourse').length
+  const pending = transactions.value.filter(t => t.statutremboursement === 'En attente').length
+  const total = transactions.value.reduce((sum, t) => sum + t.montant, 0)
   
   return [
     { label: 'Remboursés', value: completed.toString(), icon: '✓', color: 'green' },
@@ -25,9 +25,9 @@ const stats = computed(() => {
 
 const filteredTransactions = computed(() => {
   if (filterTab.value === 'En cours') {
-    return transactions.value.filter(t => t.status === 'PENDING')
+    return transactions.value.filter(t => t.statutremboursement === 'En attente')
   } else if (filterTab.value === 'Remboursés') {
-    return transactions.value.filter(t => t.status === 'COMPLETED')
+    return transactions.value.filter(t => t.statutremboursement === 'Rembourse')
   }
   return transactions.value
 })
@@ -98,21 +98,21 @@ onMounted(() => {
 
     <!-- Transactions List -->
     <div class="space-y-3">
-      <div v-for="transaction in filteredTransactions" :key="transaction.id" class="bg-white rounded-lg border border-gray-200 p-4 flex justify-between items-center">
+      <div v-for="transaction in filteredTransactions" :key="transaction.idremboursement" class="bg-white rounded-lg border border-gray-200 p-4 flex justify-between items-center">
         <div class="flex gap-4 items-center flex-1">
           <div class="w-12 h-12 bg-blue-100 rounded flex items-center justify-center text-lg font-bold">H</div>
           <div class="flex-1">
             <p class="font-semibold">{{ transaction.description }}</p>
             <div class="flex gap-4 text-sm">
-              <span :class="transaction.status === 'COMPLETED' ? 'text-green-600 font-semibold' : 'text-orange-600 font-semibold'">
-                {{ transaction.status === 'COMPLETED' ? 'Remboursé' : 'En cours' }}
+              <span :class="transaction.statutremboursement === 'Rembourse' ? 'text-green-600 font-semibold' : 'text-orange-600 font-semibold'">
+                {{ transaction.statutremboursement === 'Rembourse' ? 'Remboursé' : 'En cours' }}
               </span>
-              <span class="text-gray-500">{{ transaction.date }}</span>
+              <span class="text-gray-500">{{ new Date(transaction.dateremboursement).toLocaleDateString('fr-FR') }}</span>
             </div>
           </div>
         </div>
         <div class="flex-shrink-0">
-          <p class="font-bold text-lg text-right">{{ transaction.amount }}€</p>
+          <p class="font-bold text-lg text-right">{{ transaction.montant }}€</p>
           <div class="w-24 h-1 bg-gradient-to-r from-blue-300 to-transparent rounded mt-1"></div>
         </div>
       </div>
