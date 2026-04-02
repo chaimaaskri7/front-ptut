@@ -23,7 +23,7 @@ const loading = ref(false)
 const error = ref<string | null>(null)
 const showAllQRCodes = ref(false)
 const qrSize = ref(300)
-const etapeId = ref<number | null>(null)
+const etapeId = ref<number>(6) // Default to etape 6 (Transport 11 ARRIVE_HOPITAL)
 
 const API_BASE_URL = 'http://localhost:8081'
 
@@ -108,6 +108,13 @@ const generateQRCodeUrl = (text: string) => {
 // À appeler avec l'etapeId depuis le composant parent
 defineExpose({
   fetchCurrentQRCode
+})
+
+onMounted(() => {
+  // Charger les QR codes pour l'étape par défaut au montage
+  if (etapeId.value) {
+    fetchCurrentQRCode(etapeId.value)
+  }
 })
 </script>
 
