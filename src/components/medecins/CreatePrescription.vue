@@ -107,50 +107,89 @@
           </div>
         </div>
 
-        <!-- Question 3 -->
+        <!-- Question 3 - Type de Véhicule -->
         <div class="border-b border-slate-200 pb-8">
           <h2 class="text-lg font-semibold text-slate-900 mb-6">
-            3. Quel trajet doit effectuer le patient ?
+            3. Quel type de véhicule choisissez-vous ? <span class="text-red-500">*</span>
+          </h2>
+          <div class="space-y-4">
+            <label class="flex items-center gap-4 cursor-pointer hover:bg-slate-50 p-3 rounded-lg transition-colors border-2 rounded-lg p-3" :class="form.vehiculeType === 'VSL' ? 'border-indigo-600 bg-indigo-50' : 'border-slate-200'">
+              <input type="radio" v-model="form.vehiculeType" value="VSL" class="w-5 h-5">
+              <span class="text-slate-700 font-medium">VSL (Véhicule Sanitaire Léger)</span>
+            </label>
+            <label class="flex items-center gap-4 cursor-pointer hover:bg-slate-50 p-3 rounded-lg transition-colors border-2 rounded-lg p-3" :class="form.vehiculeType === 'Ambulance' ? 'border-indigo-600 bg-indigo-50' : 'border-slate-200'">
+              <input type="radio" v-model="form.vehiculeType" value="Ambulance" class="w-5 h-5">
+              <span class="text-slate-700 font-medium">Ambulance</span>
+            </label>
+            <label class="flex items-center gap-4 cursor-pointer hover:bg-slate-50 p-3 rounded-lg transition-colors border-2 rounded-lg p-3" :class="form.vehiculeType === 'Taxi' ? 'border-indigo-600 bg-indigo-50' : 'border-slate-200'">
+              <input type="radio" v-model="form.vehiculeType" value="Taxi" class="w-5 h-5">
+              <span class="text-slate-700 font-medium">Taxi Conventionné</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Question 4 -->
+        <div class="border-b border-slate-200 pb-8">
+          <h2 class="text-lg font-semibold text-slate-900 mb-6">
+            4. Quel trajet doit effectuer le patient ?
           </h2>
           <div class="space-y-6">
-            <div>
+            <div class="space-y-3">
+              <h3 class="font-medium text-slate-800">Lieu de Départ</h3>
               <label class="flex items-center gap-4 mb-3">
                 <input type="radio" v-model="form.trajet_depart" value="domicile" class="w-5 h-5">
-                <span class="text-slate-700">Départ - Domicile</span>
+                <span class="text-slate-700">Domicile du patient</span>
+              </label>
+              <label class="flex items-center gap-4 mb-3">
+                <input type="radio" v-model="form.trajet_depart" value="autre" class="w-5 h-5">
+                <span class="text-slate-700">Autre lieu</span>
               </label>
               <input 
-                v-if="form.trajet_depart === 'domicile'"
+                v-if="form.trajet_depart === 'autre'"
                 type="text" 
                 v-model="form.trajet_depart_autre" 
-                placeholder="Autre lieu"
-                class="ml-9 px-4 py-2 border border-slate-300 rounded-lg text-slate-900"
+                placeholder="Adresse du lieu de départ"
+                class="ml-9 px-4 py-2 border border-slate-300 rounded-lg text-slate-900 w-full"
               >
-              <input 
-                v-else
-                type="text" 
-                v-model="form.trajet_depart_structure" 
-                placeholder="Structure de soins"
-                class="ml-9 px-4 py-2 border border-slate-300 rounded-lg text-slate-900"
-              >
-            </div>
-            <div>
               <label class="flex items-center gap-4 mb-3">
-                <input type="radio" v-model="form.trajet_arrivee" value="domicile" class="w-5 h-5">
-                <span class="text-slate-700">Arrivée - Domicile</span>
+                <input type="radio" v-model="form.trajet_depart" value="structure" class="w-5 h-5">
+                <span class="text-slate-700">Structure de soins</span>
               </label>
               <input 
-                v-if="form.trajet_arrivee === 'domicile'"
+                v-if="form.trajet_depart === 'structure'"
+                type="text" 
+                v-model="form.trajet_depart_structure" 
+                placeholder="Adresse de la structure"
+                class="ml-9 px-4 py-2 border border-slate-300 rounded-lg text-slate-900 w-full"
+              >
+            </div>
+            <div class="space-y-3">
+              <h3 class="font-medium text-slate-800">Lieu d'Arrivée</h3>
+              <label class="flex items-center gap-4 mb-3">
+                <input type="radio" v-model="form.trajet_arrivee" value="domicile" class="w-5 h-5">
+                <span class="text-slate-700">Domicile du patient</span>
+              </label>
+              <label class="flex items-center gap-4 mb-3">
+                <input type="radio" v-model="form.trajet_arrivee" value="autre" class="w-5 h-5">
+                <span class="text-slate-700">Autre lieu</span>
+              </label>
+              <input 
+                v-if="form.trajet_arrivee === 'autre'"
                 type="text" 
                 v-model="form.trajet_arrivee_autre" 
-                placeholder="Autre lieu"
-                class="ml-9 px-4 py-2 border border-slate-300 rounded-lg text-slate-900"
+                placeholder="Adresse du lieu d'arrivée"
+                class="ml-9 px-4 py-2 border border-slate-300 rounded-lg text-slate-900 w-full"
               >
+              <label class="flex items-center gap-4 mb-3">
+                <input type="radio" v-model="form.trajet_arrivee" value="structure" class="w-5 h-5">
+                <span class="text-slate-700">Structure de soins</span>
+              </label>
               <input 
-                v-else
+                v-if="form.trajet_arrivee === 'structure'"
                 type="text" 
                 v-model="form.trajet_arrivee_structure" 
-                placeholder="Structure de soins"
-                class="ml-9 px-4 py-2 border border-slate-300 rounded-lg text-slate-900"
+                placeholder="Adresse de la structure"
+                class="ml-9 px-4 py-2 border border-slate-300 rounded-lg text-slate-900 w-full"
               >
             </div>
             <div>
@@ -230,6 +269,7 @@ const form = ref({
   situation1: [] as string[],
   date_at_mp: '',
   mode_transport: '',
+  vehiculeType: '',
   trajet_depart: 'domicile',
   trajet_depart_autre: '',
   trajet_depart_structure: '',
@@ -243,6 +283,12 @@ const form = ref({
 
 const handleSubmit = async () => {
   try {
+    // Vérifier que le type de véhicule est sélectionné
+    if (!form.value.vehiculeType) {
+      alert('Veuillez sélectionner un type de véhicule')
+      return
+    }
+
     // Envoyer les données au backend pour génération PDF
     const prescriptionData = {
       patientId: parseInt(patientId),
@@ -250,6 +296,7 @@ const handleSubmit = async () => {
       situation1: form.value.situation1,
       date_at_mp: form.value.date_at_mp,
       mode_transport: form.value.mode_transport,
+      vehiculeType: form.value.vehiculeType,
       trajet_depart: form.value.trajet_depart,
       trajet_depart_autre: form.value.trajet_depart_autre,
       trajet_depart_structure: form.value.trajet_depart_structure,

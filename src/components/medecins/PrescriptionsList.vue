@@ -18,9 +18,6 @@
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <h2 class="font-semibold text-[18px] text-[#1b1b1b]">Prescriptions List</h2>
           <div class="flex gap-2 w-full sm:w-auto">
-            <button class="flex-1 sm:flex-none bg-[#168bd9] text-white px-4 py-2 rounded-[8px] text-sm font-medium hover:opacity-90 transition-opacity">
-              + Add
-            </button>
             <button class="flex-1 sm:flex-none border border-[#f0f0f0] px-4 py-2 rounded-[8px] text-sm hover:bg-gray-50 transition-colors">
               Filter
             </button>
@@ -91,12 +88,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import { useAuth } from '../../composables/useAuth';
 import Header from '../Header.vue';
 import Pagination from '../Pagination.vue';
 
 const auth = useAuth();
+const route = useRoute();
 const currentPage = ref(1);
 const prescriptions = ref<any[]>([]);
 const loading = ref(false);
@@ -131,5 +130,12 @@ const fetchPrescriptions = async () => {
 
 onMounted(() => {
   fetchPrescriptions();
+});
+
+// Auto-refresh when returning to the prescriptions page
+watch(() => route.path, (newPath) => {
+  if (newPath === '/prescriptions') {
+    fetchPrescriptions();
+  }
 });
 </script>

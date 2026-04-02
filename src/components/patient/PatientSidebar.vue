@@ -19,10 +19,6 @@ const logout = () => {
   localStorage.removeItem('user')
   router.push('/')
 }
-
-const goToDoctorInterface = () => {
-  router.push('/dashboard')
-}
 </script>
 
 <template>
@@ -31,9 +27,6 @@ const goToDoctorInterface = () => {
     <div class="p-6 border-b border-gray-200">
       <div class="flex items-center justify-between mb-4">
         <h2 class="text-xl font-bold text-gray-800">CareWay</h2>
-        <button @click="goToDoctorInterface" class="bg-[#4e55d7] text-white px-3 py-1 rounded text-sm font-semibold hover:opacity-90">
-          Dr
-        </button>
       </div>
       <p class="text-sm text-gray-600">Patient</p>
     </div>
