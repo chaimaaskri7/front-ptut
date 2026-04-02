@@ -2,16 +2,18 @@
 import { ref, computed, onMounted } from 'vue'
 import TransactionCard from './TransactionCard.vue'
 import { transactionService } from '../../services/transactionService'
+import { useAuth } from '../../composables/useAuth'
 
 const filterTab = ref('Tout')
 const loading = ref(false)
 const error = ref<string | null>(null)
 
 const transactions = ref<any[]>([])
+const { user } = useAuth()
 
 const stats = computed(() => {
-  const completed = transactions.value.filter(t => t.status === 'completed').length
-  const pending = transactions.value.filter(t => t.status === 'pending').length
+  const completed = transactions.value.filter(t => t.status === 'Remboursé').length
+  const pending = transactions.value.filter(t => t.status === 'En cours').length
   const total = transactions.value.reduce((sum, t) => sum + t.amount, 0)
   
   return [
@@ -23,18 +25,23 @@ const stats = computed(() => {
 
 const filteredTransactions = computed(() => {
   if (filterTab.value === 'En cours') {
-    return transactions.value.filter(t => t.status === 'pending')
+    return transactions.value.filter(t => t.status === 'En cours')
   } else if (filterTab.value === 'Remboursés') {
-    return transactions.value.filter(t => t.status === 'completed')
+    return transactions.value.filter(t => t.status === 'Remboursé')
   }
   return transactions.value
 })
 
 const fetchTransactions = async () => {
+  if (!user.value?.id) {
+    error.value = 'Patient ID not available'
+    return
+  }
+  
   loading.value = true
   error.value = null
   try {
-    const data = await transactionService.getAllTransactions()
+    const data = await transactionService.getTransactionsByPatient(user.value.id)
     transactions.value = data
   } catch (err) {
     console.error('Erreur lors de la récupération des transactions:', err)
@@ -97,8 +104,8 @@ onMounted(() => {
           <div class="flex-1">
             <p class="font-semibold">{{ transaction.description }}</p>
             <div class="flex gap-4 text-sm">
-              <span class="text-blue-600 font-semibold">{{ transaction.status }}</span>
-              <span class="text-blue-600 font-semibold">remboursé au transporteur</span>
+              <span :class="transaction.status === 'Remboursé' ? 'text-green-600 font-semibold' : 'text-orange-600 font-semibold'">{{ transaction.status }}</span>
+              <span class="text-gray-500">{{ transaction.date }}</span>
             </div>
           </div>
         </div>

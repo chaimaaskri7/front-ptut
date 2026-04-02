@@ -55,4 +55,13 @@ export const transactionService = {
       throw error;
     }
   },
+
+  getTransactionsByPatient: async (patientId: number): Promise<Transaction[]> => {
+    try {
+      return await fetchData<Transaction[]>(`/transactions/patient/${patientId}`);
+    } catch (error) {
+      console.error(`Erreur lors de la récupération des transactions du patient ${patientId}:`, error);
+      throw error;
+    }
+  },
 };
