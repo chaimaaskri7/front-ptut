@@ -1,5 +1,5 @@
 <template>
-  <aside class="w-[289px] bg-white border-r border-[#f0f0f0] h-screen flex flex-col fixed left-0 top-0 z-50">
+  <aside class="sidebar bg-white border-r border-[#f0f0f0] h-screen flex flex-col fixed left-0 top-0 z-50">
     <!-- Logo -->
     <div class="flex gap-[6px] items-center px-[19px] py-[21px]">
       <div class="flex items-center justify-center p-[13.522px] w-[40px] h-[34.872px]">
@@ -93,6 +93,22 @@ aside {
   transition: width 0.3s ease;
 }
 
+<style scoped>
+aside {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 289px;
+  height: 100vh;
+  background: white;
+  border-right: 1px solid #f0f0f0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: width 0.3s ease;
+}
+
 nav {
   flex: 1;
   overflow-y: auto;
@@ -102,22 +118,23 @@ a {
   text-decoration: none;
 }
 
-/* Tablet: Reduce sidebar width */
+/* Tablet: Collapse sidebar to icon-only */
 @media (max-width: 1023px) and (min-width: 768px) {
   aside {
-    width: 100px;
+    width: 100px !important;
   }
   
   aside p,
   aside span {
-    display: none;
+    display: none !important;
   }
 }
 
 /* Mobile: Hide sidebar */
 @media (max-width: 767px) {
   aside {
-    display: none;
+    display: none !important;
   }
 }
+</style>
 </style>

@@ -22,7 +22,7 @@ const logout = () => {
 </script>
 
 <template>
-  <aside class="w-[289px] bg-white text-gray-800 h-screen flex flex-col fixed left-0 top-[64px] border-r border-gray-200">
+  <aside class="patient-sidebar bg-white text-gray-800 h-screen flex flex-col fixed left-0 top-[64px] border-r border-gray-200">
     <!-- Header -->
     <div class="p-6 border-b border-gray-200">
       <div class="flex items-center justify-between mb-4">
@@ -58,3 +58,30 @@ const logout = () => {
     </div>
   </aside>
 </template>
+
+<style scoped>
+aside.patient-sidebar {
+  width: 289px;
+  transition: width 0.3s ease;
+}
+
+/* Tablet: Collapse sidebar to icon-only */
+@media (max-width: 1023px) and (min-width: 768px) {
+  aside.patient-sidebar {
+    width: 100px !important;
+  }
+  
+  aside.patient-sidebar span:not(.text-xl),
+  aside.patient-sidebar h2,
+  aside.patient-sidebar p {
+    display: none !important;
+  }
+}
+
+/* Mobile: Hide sidebar */
+@media (max-width: 767px) {
+  aside.patient-sidebar {
+    display: none !important;
+  }
+}
+</style>

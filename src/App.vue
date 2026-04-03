@@ -76,41 +76,4 @@ main.default-main {
     padding-top: 16px;
   }
 }
-  margin-top: 64px;
-  margin-left: 0;
-}
-
-/* Desktop: Sidebar visible */
-@media (min-width: 1024px) {
-  main.default-main {
-    margin-left: 289px;
-  }
-}
-
-/* Tablet: Sidebar visible but smaller */
-@media (min-width: 768px) and (max-width: 1023px) {
-  main.default-main {
-    margin-left: 100px;
-  }
-  
-  aside {
-    width: 100px !important;
-  }
-  
-  aside p,
-  aside span {
-    display: none;
-  }
-}
-
-/* Mobile: Sidebar hidden */
-@media (max-width: 767px) {
-  main.default-main {
-    margin-left: 0;
-  }
-  
-  aside {
-    display: none !important;
-  }
-}
 </style>
