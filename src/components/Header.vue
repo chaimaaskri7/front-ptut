@@ -1,20 +1,13 @@
 <template>
-  <header class="bg-white border-b border-[#f0f0f0] px-[40px] py-[14px] flex items-center justify-between sticky top-0 z-[60]">
+  <header class="bg-white border-b border-[#f0f0f0] px-4 md:px-6 lg:px-[40px] py-3 md:py-[14px] flex items-center justify-between sticky top-0 z-[60] gap-4">
     <!-- Left Section - Back arrow + Title -->
-    <div class="flex items-center gap-[16px]">
-      <button class="flex items-center justify-center w-[32px] h-[32px] rounded-[8px] hover:bg-gray-100 transition-colors">
-        <svg class="w-[20px] h-[20px]" fill="none" viewBox="0 0 24 24" stroke="#7F7F7F" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-        </svg>
-      </button>
-      <div class="flex flex-col">
-        <p class="font-semibold text-[18px] text-[#1b1b1b]">{{ subtitle }}</p>
-      </div>
+    <div class="flex items-center gap-2 md:gap-[16px] flex-1 md:flex-none">
+      <h2 class="font-semibold text-base md:text-lg lg:text-[18px] text-[#1b1b1b] truncate">{{ subtitle }}</h2>
     </div>
 
-    <!-- Center Section - Search Bar -->
-    <div class="search-bar bg-[#f8f8f8] border border-[#f0f0f0] rounded-[10px] px-[13px] py-[8px] flex gap-[11px] items-center w-[300px]">
-      <svg class="w-[20px] h-[20px]" fill="none" viewBox="0 0 24 24">
+    <!-- Center Section - Search Bar (Hidden on mobile) -->
+    <div class="hidden md:flex search-bar bg-[#f8f8f8] border border-[#f0f0f0] rounded-[10px] px-3 md:px-[13px] py-2 md:py-[8px] gap-2 md:gap-[11px] items-center w-[200px] md:w-[300px] flex-1">
+      <svg class="w-4 md:w-[20px] h-4 md:h-[20px]" fill="none" viewBox="0 0 24 24">
         <path clip-rule="evenodd" d="M8.25 1.5C4.52208 1.5 1.5 4.52208 1.5 8.25C1.5 11.9779 4.52208 15 8.25 15C10.1142 15 11.8006 14.2453 13.023 13.023C14.2453 11.8006 15 10.1142 15 8.25C15 4.52208 11.9779 1.5 8.25 1.5ZM0 8.25C0 3.69365 3.69365 0 8.25 0C12.8063 0 16.5 3.69365 16.5 8.25C16.5 10.2578 15.782 12.0991 14.5899 13.5293L19.2803 18.2197C19.5732 18.5126 19.5732 18.9874 19.2803 19.2803C18.9874 19.5732 18.5126 19.5732 18.2197 19.2803L13.5293 14.5899C12.0991 15.782 10.2578 16.5 8.25 16.5C3.69365 16.5 0 12.8063 0 8.25Z" fill="#7F7F7F" fill-rule="evenodd" />
       </svg>
       <input 
@@ -22,26 +15,26 @@
         placeholder="Search" 
         v-model="searchQuery"
         @input="$emit('search', searchQuery)"
-        class="bg-transparent border-none outline-none font-normal text-[14px] text-[#7f7f7f] flex-1"
+        class="bg-transparent border-none outline-none font-normal text-sm md:text-[14px] text-[#7f7f7f] flex-1 w-full"
       />
     </div>
 
     <!-- Right Section -->
-    <div class="flex gap-[20px] items-center">
+    <div class="flex gap-2 md:gap-[20px] items-center flex-shrink-0">
       <!-- Notification Icon - Only for Patients -->
-      <div v-if="auth.isPatient.value" class="notification w-[32px] h-[32px] border border-[#f0f0f0] rounded-[5px] flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors">
-        <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="#7F7F7F" stroke-width="1.5">
+      <div v-if="auth.isPatient.value" class="notification w-8 md:w-[32px] h-8 md:h-[32px] border border-[#f0f0f0] rounded-[5px] flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors">
+        <svg class="w-4 md:w-[18px] h-4 md:h-[18px]" fill="none" viewBox="0 0 24 24" stroke="#7F7F7F" stroke-width="1.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
         </svg>
       </div>
 
       <!-- User Profile with Dropdown -->
-      <div class="user-profile flex gap-[8px] items-center cursor-pointer relative">
+      <div class="user-profile flex gap-1 md:gap-[8px] items-center cursor-pointer relative">
         <button 
           @click="showProfileMenu = !showProfileMenu"
-          class="flex gap-[8px] items-center hover:bg-gray-50 px-2 py-1 rounded-lg transition-colors"
+          class="flex gap-1 md:gap-[8px] items-center hover:bg-gray-50 px-2 py-1 rounded-lg transition-colors"
         >
-          <div class="w-[32px] h-[32px] rounded-full overflow-hidden">
+          <div class="w-8 md:w-[32px] h-8 md:h-[32px] rounded-full overflow-hidden flex-shrink-0">
             <img 
               src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=100&h=100&fit=crop" 
               :alt="auth.userName.value || 'User'" 

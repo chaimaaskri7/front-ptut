@@ -57,7 +57,25 @@ main.login-main {
 }
 
 main.default-main {
-  height: calc(100vh - 64px);
+  margin-left: 289px;
+  height: calc(100vh - 0px);
+  transition: margin-left 0.3s ease;
+}
+
+/* Tablet: Reduce sidebar */
+@media (max-width: 1023px) and (min-width: 768px) {
+  main.default-main {
+    margin-left: 100px;
+  }
+}
+
+/* Mobile: Hide sidebar */
+@media (max-width: 767px) {
+  main.default-main {
+    margin-left: 0;
+    padding-top: 16px;
+  }
+}
   margin-top: 64px;
   margin-left: 0;
 }
