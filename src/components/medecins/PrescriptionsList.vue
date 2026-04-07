@@ -90,78 +90,141 @@
 
     <!-- View Prescription Modal -->
     <div v-if="showViewModal && selectedPrescription" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div class="sticky top-0 bg-gradient-to-r from-indigo-600 to-indigo-700 px-6 py-4 text-white flex justify-between items-center">
+      <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+        <!-- Header -->
+        <div class="sticky top-0 bg-gradient-to-r from-indigo-600 via-indigo-700 to-indigo-800 px-8 py-6 text-white flex justify-between items-start">
           <div>
-            <h3 class="text-2xl font-bold">Détails de la Prescription</h3>
-            <p class="text-indigo-100 text-sm mt-1">ID: {{ selectedPrescription.idprescription }}</p>
+            <h3 class="text-3xl font-bold">Détails de la Prescription</h3>
+            <p class="text-indigo-100 text-sm mt-2">Prescription ID: <span class="font-mono font-bold">#{{ selectedPrescription.idprescription }}</span></p>
           </div>
           <button 
             @click="showViewModal = false"
-            class="text-white hover:text-indigo-200 transition-colors"
+            class="text-white hover:bg-indigo-500 hover:rounded-full w-10 h-10 flex items-center justify-center transition-all"
           >
             ✕
           </button>
         </div>
 
-        <div class="p-6 space-y-6">
-          <!-- Patient Info -->
-          <div class="border-l-4 border-indigo-500 pl-4">
-            <h4 class="font-semibold text-slate-900 mb-2">Patient</h4>
-            <p class="text-sm text-slate-700"><strong>ID Patient:</strong> {{ selectedPrescription.idpatient }}</p>
-          </div>
+        <!-- Content -->
+        <div class="p-8 space-y-6">
+          <!-- Grid Layout -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Patient Card -->
+            <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="bg-blue-500 text-white p-2 rounded-lg">
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                  </svg>
+                </div>
+                <h4 class="font-bold text-lg text-slate-900">Patient</h4>
+              </div>
+              <div class="space-y-2">
+                <p class="text-sm"><span class="font-semibold text-slate-700">ID:</span> <span class="text-blue-700 font-mono font-bold">{{ selectedPrescription.idpatient }}</span></p>
+              </div>
+            </div>
 
-          <!-- Prescription Info -->
-          <div class="border-l-4 border-blue-500 pl-4">
-            <h4 class="font-semibold text-slate-900 mb-2">Informations de la Prescription</h4>
-            <div class="space-y-1 text-sm text-slate-700">
-              <p><strong>Date:</strong> {{ selectedPrescription.dateprescription }}</p>
-              <p><strong>Type de transport:</strong> <span class="px-2 py-1 rounded text-xs font-medium" :class="{
+            <!-- Medical Status Card -->
+            <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border border-green-200">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="bg-green-500 text-white p-2 rounded-lg">
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                  </svg>
+                </div>
+                <h4 class="font-bold text-lg text-slate-900">Statut</h4>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="px-3 py-1 rounded-full text-sm font-bold bg-green-500 text-white">✓ ACTIF</span>
+              </div>
+            </div>
+
+            <!-- Prescription Date Card -->
+            <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 border border-purple-200">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="bg-purple-500 text-white p-2 rounded-lg">
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/>
+                  </svg>
+                </div>
+                <h4 class="font-bold text-lg text-slate-900">Date</h4>
+              </div>
+              <p class="text-sm font-mono text-purple-700">{{ new Date(selectedPrescription.dateprescription).toLocaleDateString('fr-FR') }}</p>
+            </div>
+
+            <!-- Transport Type Card -->
+            <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6 border border-orange-200">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="bg-orange-500 text-white p-2 rounded-lg">
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm11 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM5 11l1.5-4.5h11L19 11H5z"/>
+                  </svg>
+                </div>
+                <h4 class="font-bold text-lg text-slate-900">Transport</h4>
+              </div>
+              <span class="px-3 py-2 rounded-lg text-sm font-bold inline-block" :class="{
                 'bg-blue-100 text-blue-700': selectedPrescription.typetransport === 'VSL',
                 'bg-red-100 text-red-700': selectedPrescription.typetransport === 'Ambulance',
                 'bg-yellow-100 text-yellow-700': selectedPrescription.typetransport === 'Taxi'
-              }">{{ selectedPrescription.typetransport }}</span></p>
+              }">
+                {{ selectedPrescription.typetransport }}
+              </span>
             </div>
           </div>
 
-          <!-- Médecin Info -->
-          <div class="border-l-4 border-green-500 pl-4">
-            <h4 class="font-semibold text-slate-900 mb-2">Médecin</h4>
-            <p class="text-sm text-slate-700"><strong>ID Médecin:</strong> {{ selectedPrescription.idmedecin }}</p>
+          <!-- Divider -->
+          <div class="h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent"></div>
+
+          <!-- Doctor Info Card -->
+          <div class="bg-gradient-to-r from-indigo-50 to-indigo-100 rounded-xl p-6 border border-indigo-200">
+            <div class="flex items-center gap-3 mb-4">
+              <div class="bg-indigo-600 text-white p-2 rounded-lg">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                </svg>
+              </div>
+              <h4 class="font-bold text-lg text-slate-900">Médecin Prescripteur</h4>
+            </div>
+            <p class="text-sm"><span class="font-semibold text-slate-700">ID Médecin:</span> <span class="text-indigo-700 font-mono font-bold">{{ selectedPrescription.idmedecin || 'N/A' }}</span></p>
           </div>
 
-          <!-- Status -->
-          <div class="border-l-4 border-yellow-500 pl-4">
-            <h4 class="font-semibold text-slate-900 mb-2">Statut</h4>
-            <p class="text-sm">
-              <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">Active</span>
-            </p>
-          </div>
-
-          <!-- Additional Details -->
-          <div class="bg-slate-50 p-4 rounded-lg">
-            <h4 class="font-semibold text-slate-900 mb-3">Autres détails</h4>
-            <div class="space-y-2 text-sm text-slate-700">
-              <p v-if="selectedPrescription.mode_transport"><strong>Mode de transport:</strong> {{ selectedPrescription.mode_transport }}</p>
-              <p v-if="selectedPrescription.nombre_transports"><strong>Nombre de transports:</strong> {{ selectedPrescription.nombre_transports }}</p>
-              <p><strong>Statut complet:</strong> Créée et active</p>
+          <!-- Summary Card -->
+          <div class="bg-slate-50 rounded-xl p-6 border border-slate-200">
+            <h4 class="font-bold text-lg text-slate-900 mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5 text-slate-600" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+              Récapitulatif
+            </h4>
+            <div class="grid grid-cols-2 gap-4 text-sm">
+              <div class="bg-white p-3 rounded-lg">
+                <p class="text-slate-600 text-xs uppercase tracking-wide">État</p>
+                <p class="font-bold text-slate-900 mt-1">Créée et Active</p>
+              </div>
+              <div class="bg-white p-3 rounded-lg">
+                <p class="text-slate-600 text-xs uppercase tracking-wide">Créée le</p>
+                <p class="font-bold text-slate-900 mt-1">{{ new Date(selectedPrescription.dateprescription).toLocaleDateString('fr-FR') }}</p>
+              </div>
             </div>
           </div>
         </div>
 
         <!-- Modal Actions -->
-        <div class="sticky bottom-0 bg-slate-50 px-6 py-4 flex gap-4 justify-between border-t border-slate-200">
-          <button
-            @click="downloadPDF(selectedPrescription)"
-            class="px-6 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors"
-          >
-            📥 Télécharger PDF
-          </button>
+        <div class="sticky bottom-0 bg-slate-50 px-8 py-5 flex gap-4 justify-end border-t border-slate-200 rounded-b-2xl">
           <button 
             @click="showViewModal = false"
-            class="px-6 py-2 border border-slate-300 text-slate-700 rounded-lg font-medium hover:bg-slate-100 transition-colors"
+            class="px-6 py-2.5 border border-slate-300 text-slate-700 rounded-lg font-semibold hover:bg-slate-100 transition-all"
           >
             Fermer
+          </button>
+          <button
+            @click="downloadPDF(selectedPrescription)"
+            class="px-6 py-2.5 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition-all flex items-center gap-2 shadow-md hover:shadow-lg"
+          >
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+            </svg>
+            Télécharger PDF
           </button>
         </div>
       </div>
