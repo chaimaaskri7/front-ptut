@@ -89,17 +89,17 @@
     </div>
 
     <!-- View Prescription Modal -->
-    <div v-if="showViewModal && selectedPrescription" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div v-if="showViewModal && selectedPrescription" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 p-4">
       <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
-        <!-- Header -->
-        <div class="sticky top-0 bg-gradient-to-r from-indigo-600 via-indigo-700 to-indigo-800 px-8 py-6 text-white flex justify-between items-start">
+        <!-- Header - Modern Light Design -->
+        <div class="sticky top-0 bg-white px-8 py-6 border-b border-slate-100 flex justify-between items-start">
           <div>
-            <h3 class="text-3xl font-bold">Détails de la Prescription</h3>
-            <p class="text-indigo-100 text-sm mt-2">Prescription ID: <span class="font-mono font-bold">#{{ selectedPrescription.idprescription }}</span></p>
+            <h3 class="text-3xl font-bold text-slate-900">📋 Détails de la Prescription</h3>
+            <p class="text-slate-500 text-sm mt-2">Prescription ID: <span class="font-mono font-bold text-slate-700">#{{ selectedPrescription.idprescription }}</span></p>
           </div>
           <button 
             @click="showViewModal = false"
-            class="text-white hover:bg-indigo-500 hover:rounded-full w-10 h-10 flex items-center justify-center transition-all"
+            class="text-slate-400 hover:text-slate-600 hover:bg-slate-100 w-10 h-10 flex items-center justify-center rounded-full transition-all text-2xl"
           >
             ✕
           </button>
