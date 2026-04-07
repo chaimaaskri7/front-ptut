@@ -89,14 +89,10 @@
     </div>
 
     <!-- View Prescription Modal -->
-    <div v-if="showViewModal && selectedPrescription" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 p-4">
+    <div v-if="showViewModal && selectedPrescription" class="fixed inset-0 bg-transparent flex items-center justify-center z-50 p-4">
       <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
-        <!-- Header - Modern Light Design -->
-        <div class="sticky top-0 bg-white px-8 py-6 border-b border-slate-100 flex justify-between items-start">
-          <div>
-            <h3 class="text-3xl font-bold text-slate-900">📋 Détails de la Prescription</h3>
-            <p class="text-slate-500 text-sm mt-2">Prescription ID: <span class="font-mono font-bold text-slate-700">#{{ selectedPrescription.idprescription }}</span></p>
-          </div>
+        <!-- Close Button at top right -->
+        <div class="flex justify-end p-4">
           <button 
             @click="showViewModal = false"
             class="text-slate-400 hover:text-slate-600 hover:bg-slate-100 w-10 h-10 flex items-center justify-center rounded-full transition-all text-2xl"
@@ -106,7 +102,13 @@
         </div>
 
         <!-- Content -->
-        <div class="p-8 space-y-6">
+        <div class="px-8 pt-6 pb-0 space-y-6">
+          <!-- Title -->
+          <div class="mb-6">
+            <h3 class="text-3xl font-bold text-slate-900">📋 Détails de la Prescription</h3>
+            <p class="text-slate-500 text-sm mt-2">Prescription ID: <span class="font-mono font-bold text-slate-700">#{{ selectedPrescription.idprescription }}</span></p>
+          </div>
+
           <!-- Grid Layout -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Patient Card -->
@@ -210,7 +212,7 @@
         </div>
 
         <!-- Modal Actions -->
-        <div class="sticky bottom-0 bg-slate-50 px-8 py-5 flex gap-4 justify-end border-t border-slate-200 rounded-b-2xl">
+        <div class="px-8 py-6 flex gap-4 justify-end border-t border-slate-200 rounded-b-2xl bg-white">
           <button 
             @click="showViewModal = false"
             class="px-6 py-2.5 border border-slate-300 text-slate-700 rounded-lg font-semibold hover:bg-slate-100 transition-all"
