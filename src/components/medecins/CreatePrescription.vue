@@ -251,14 +251,24 @@
     </div>
 
     <!-- Confirmation Modal -->
-    <div v-if="showConfirmation" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div class="sticky top-0 bg-gradient-to-r from-indigo-600 to-indigo-700 px-6 py-4 text-white">
-          <h3 class="text-2xl font-bold">Récapitulatif de la Prescription</h3>
-          <p class="text-indigo-100 text-sm mt-1">Vérifiez les informations avant de confirmer</p>
+    <div v-if="showConfirmation" class="fixed inset-0 bg-transparent flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+        <!-- Close Button -->
+        <div class="flex justify-end p-4">
+          <button 
+            @click="showConfirmation = false"
+            class="text-slate-400 hover:text-slate-600 hover:bg-slate-100 w-10 h-10 flex items-center justify-center rounded-full transition-all text-2xl"
+          >
+            ✕
+          </button>
         </div>
 
-        <div class="p-6 space-y-6">
+        <div class=\"px-6 pt-6 pb-0 space-y-6\">
+          <!-- Title -->
+          <div class="mb-6">
+            <h3 class="text-3xl font-bold text-slate-900">📋 Récapitulatif de la Prescription</h3>
+            <p class="text-slate-500 text-sm mt-2">Vérifiez les informations avant de confirmer</p>
+          </div>
           <!-- Situation Section -->
           <div class="border-l-4 border-indigo-500 pl-4">
             <h4 class="font-semibold text-slate-900 mb-2">1. Situation du patient</h4>
@@ -316,16 +326,16 @@
         </div>
 
         <!-- Modal Actions -->
-        <div class="sticky bottom-0 bg-slate-50 px-6 py-4 flex gap-4 justify-end border-t border-slate-200">
+        <div class="px-6 py-6 flex gap-4 justify-end border-t border-slate-200 bg-white rounded-b-2xl">
           <button 
             @click="showConfirmation = false"
-            class="px-6 py-2 border border-slate-300 text-slate-700 rounded-lg font-medium hover:bg-slate-100 transition-colors"
+            class="px-6 py-2.5 border border-slate-300 text-slate-700 rounded-lg font-semibold hover:bg-slate-100 transition-all"
           >
             Retour à la modification
           </button>
           <button 
             @click="confirmSubmission"
-            class="px-6 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors"
+            class="px-6 py-2.5 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition-all flex items-center gap-2"
           >
             ✓ Confirmer et envoyer
           </button>
