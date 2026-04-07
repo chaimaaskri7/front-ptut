@@ -263,7 +263,7 @@
           </button>
         </div>
 
-        <div class=\"px-6 pt-6 pb-0 space-y-6\">
+        <div class="px-6 pt-6 pb-0 space-y-6">
           <!-- Title -->
           <div class="mb-6">
             <h3 class="text-3xl font-bold text-slate-900">📋 Récapitulatif de la Prescription</h3>
