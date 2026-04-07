@@ -62,7 +62,10 @@
                   </span>
                 </td>
                 <td class="px-4 py-3 text-center">
-                  <button class="bg-blue-600 text-white px-3 py-1 rounded text-xs font-medium hover:bg-blue-700 transition-colors">
+                  <button 
+                    @click="viewPrescription(prescription)"
+                    class="bg-blue-600 text-white px-3 py-1 rounded text-xs font-medium hover:bg-blue-700 transition-colors"
+                  >
                     View
                   </button>
                 </td>
@@ -84,6 +87,85 @@
         </div>
       </div>
     </div>
+
+    <!-- View Prescription Modal -->
+    <div v-if="showViewModal && selectedPrescription" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="sticky top-0 bg-gradient-to-r from-indigo-600 to-indigo-700 px-6 py-4 text-white flex justify-between items-center">
+          <div>
+            <h3 class="text-2xl font-bold">Détails de la Prescription</h3>
+            <p class="text-indigo-100 text-sm mt-1">ID: {{ selectedPrescription.idprescription }}</p>
+          </div>
+          <button 
+            @click="showViewModal = false"
+            class="text-white hover:text-indigo-200 transition-colors"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div class="p-6 space-y-6">
+          <!-- Patient Info -->
+          <div class="border-l-4 border-indigo-500 pl-4">
+            <h4 class="font-semibold text-slate-900 mb-2">Patient</h4>
+            <p class="text-sm text-slate-700"><strong>ID Patient:</strong> {{ selectedPrescription.idpatient }}</p>
+          </div>
+
+          <!-- Prescription Info -->
+          <div class="border-l-4 border-blue-500 pl-4">
+            <h4 class="font-semibold text-slate-900 mb-2">Informations de la Prescription</h4>
+            <div class="space-y-1 text-sm text-slate-700">
+              <p><strong>Date:</strong> {{ selectedPrescription.dateprescription }}</p>
+              <p><strong>Type de transport:</strong> <span class="px-2 py-1 rounded text-xs font-medium" :class="{
+                'bg-blue-100 text-blue-700': selectedPrescription.typetransport === 'VSL',
+                'bg-red-100 text-red-700': selectedPrescription.typetransport === 'Ambulance',
+                'bg-yellow-100 text-yellow-700': selectedPrescription.typetransport === 'Taxi'
+              }">{{ selectedPrescription.typetransport }}</span></p>
+            </div>
+          </div>
+
+          <!-- Médecin Info -->
+          <div class="border-l-4 border-green-500 pl-4">
+            <h4 class="font-semibold text-slate-900 mb-2">Médecin</h4>
+            <p class="text-sm text-slate-700"><strong>ID Médecin:</strong> {{ selectedPrescription.idmedecin }}</p>
+          </div>
+
+          <!-- Status -->
+          <div class="border-l-4 border-yellow-500 pl-4">
+            <h4 class="font-semibold text-slate-900 mb-2">Statut</h4>
+            <p class="text-sm">
+              <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">Active</span>
+            </p>
+          </div>
+
+          <!-- Additional Details -->
+          <div class="bg-slate-50 p-4 rounded-lg">
+            <h4 class="font-semibold text-slate-900 mb-3">Autres détails</h4>
+            <div class="space-y-2 text-sm text-slate-700">
+              <p v-if="selectedPrescription.mode_transport"><strong>Mode de transport:</strong> {{ selectedPrescription.mode_transport }}</p>
+              <p v-if="selectedPrescription.nombre_transports"><strong>Nombre de transports:</strong> {{ selectedPrescription.nombre_transports }}</p>
+              <p><strong>Statut complet:</strong> Créée et active</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Actions -->
+        <div class="sticky bottom-0 bg-slate-50 px-6 py-4 flex gap-4 justify-between border-t border-slate-200">
+          <button
+            @click="downloadPDF(selectedPrescription)"
+            class="px-6 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors"
+          >
+            📥 Télécharger PDF
+          </button>
+          <button 
+            @click="showViewModal = false"
+            class="px-6 py-2 border border-slate-300 text-slate-700 rounded-lg font-medium hover:bg-slate-100 transition-colors"
+          >
+            Fermer
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -100,6 +182,8 @@ const currentPage = ref(1);
 const prescriptions = ref<any[]>([]);
 const loading = ref(false);
 const error = ref<string | null>(null);
+const showViewModal = ref(false);
+const selectedPrescription = ref<any>(null);
 
 const fetchPrescriptions = async () => {
   loading.value = true;
@@ -138,4 +222,35 @@ watch(() => route.path, (newPath) => {
     fetchPrescriptions();
   }
 });
+
+const viewPrescription = (prescription: any) => {
+  selectedPrescription.value = prescription;
+  showViewModal.value = true;
+};
+
+const downloadPDF = async (prescription: any) => {
+  try {
+    const pdfResponse = await fetch(`http://localhost:8081/prescriptions/${prescription.idprescription}/pdf`, {
+      method: 'GET',
+      credentials: 'include'
+    });
+    
+    if (pdfResponse.ok) {
+      const blob = await pdfResponse.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `prescription_${prescription.idprescription}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } else {
+      alert('Erreur lors du téléchargement du PDF');
+    }
+  } catch (err) {
+    console.error('Erreur:', err);
+    alert('Erreur lors du téléchargement du PDF');
+  }
+};
 </script>

@@ -249,6 +249,89 @@
         </div>
       </form>
     </div>
+
+    <!-- Confirmation Modal -->
+    <div v-if="showConfirmation" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="sticky top-0 bg-gradient-to-r from-indigo-600 to-indigo-700 px-6 py-4 text-white">
+          <h3 class="text-2xl font-bold">Récapitulatif de la Prescription</h3>
+          <p class="text-indigo-100 text-sm mt-1">Vérifiez les informations avant de confirmer</p>
+        </div>
+
+        <div class="p-6 space-y-6">
+          <!-- Situation Section -->
+          <div class="border-l-4 border-indigo-500 pl-4">
+            <h4 class="font-semibold text-slate-900 mb-2">1. Situation du patient</h4>
+            <div class="space-y-1">
+              <p v-if="form.situation1.length > 0" class="text-sm text-slate-700">
+                <strong>Justifications:</strong> {{ form.situation1.join(', ') }}
+              </p>
+              <p v-if="form.date_at_mp" class="text-sm text-slate-700">
+                <strong>Date AT/MP:</strong> {{ form.date_at_mp }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Transport Mode Section -->
+          <div class="border-l-4 border-blue-500 pl-4">
+            <h4 class="font-semibold text-slate-900 mb-2">2. Mode de transport</h4>
+            <p class="text-sm text-slate-700">{{ form.mode_transport || 'Non spécifié' }}</p>
+            <p class="text-sm text-slate-700 mt-1"><strong>Type de véhicule:</strong> {{ form.vehiculeType }}</p>
+          </div>
+
+          <!-- Journey Section -->
+          <div class="border-l-4 border-green-500 pl-4">
+            <h4 class="font-semibold text-slate-900 mb-3">3. Trajet du patient</h4>
+            <div class="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <strong class="text-slate-700">Départ:</strong>
+                <p class="text-slate-600 mt-1">
+                  {{ getLocationLabel(form.trajet_depart, form.trajet_depart_autre, form.trajet_depart_structure) }}
+                </p>
+              </div>
+              <div>
+                <strong class="text-slate-700">Arrivée:</strong>
+                <p class="text-slate-600 mt-1">
+                  {{ getLocationLabel(form.trajet_arrivee, form.trajet_arrivee_autre, form.trajet_arrivee_structure) }}
+                </p>
+              </div>
+            </div>
+            <p v-if="form.nombre_transports > 0" class="text-sm text-slate-700 mt-3">
+              <strong>Nombre de transports itératifs:</strong> {{ form.nombre_transports }}
+            </p>
+          </div>
+
+          <!-- Other Info Section -->
+          <div class="border-l-4 border-yellow-500 pl-4">
+            <h4 class="font-semibold text-slate-900 mb-2">4. Informations additionnelles</h4>
+            <div class="space-y-1 text-sm">
+              <p v-if="form.exoneration.length > 0" class="text-slate-700">
+                <strong>Exonération du ticket modérateur:</strong> {{ form.exoneration.join(', ') }}
+              </p>
+              <p v-if="form.pension_militaire.length > 0" class="text-slate-700">
+                <strong>Pension militaire d'invalidité:</strong> {{ form.pension_militaire.join(', ') }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Actions -->
+        <div class="sticky bottom-0 bg-slate-50 px-6 py-4 flex gap-4 justify-end border-t border-slate-200">
+          <button 
+            @click="showConfirmation = false"
+            class="px-6 py-2 border border-slate-300 text-slate-700 rounded-lg font-medium hover:bg-slate-100 transition-colors"
+          >
+            Retour à la modification
+          </button>
+          <button 
+            @click="confirmSubmission"
+            class="px-6 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors"
+          >
+            ✓ Confirmer et envoyer
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -281,6 +364,15 @@ const form = ref({
   pension_militaire: [] as string[]
 })
 
+const showConfirmation = ref(false)
+
+const getLocationLabel = (type: string, autre: string, structure: string) => {
+  if (type === 'domicile') return 'Domicile du patient'
+  if (type === 'autre') return autre || 'Autre lieu (non spécifié)'
+  if (type === 'structure') return structure || 'Structure de soins (non spécifiée)'
+  return 'Non spécifié'
+}
+
 const handleSubmit = async () => {
   try {
     // Vérifier que le type de véhicule est sélectionné
@@ -288,6 +380,16 @@ const handleSubmit = async () => {
       alert('Veuillez sélectionner un type de véhicule')
       return
     }
+    // Afficher le modal de confirmation
+    showConfirmation.value = true
+  } catch (error) {
+    console.error('Erreur:', error)
+  }
+}
+
+const confirmSubmission = async () => {
+  try {
+
 
     // Envoyer les données au backend pour génération PDF
     const prescriptionData = {
@@ -340,14 +442,17 @@ const handleSubmit = async () => {
         alert('Prescription créée avec succès ! Le PDF a été téléchargé.')
       }
       
+      showConfirmation.value = false
       router.push('/patients')
     } else {
       const error = await response.text()
       console.error('Erreur:', error)
       alert('Erreur lors de la création de la prescription')
+      showConfirmation.value = false
     }
   } catch (error) {
     console.error('Erreur:', error)
+    showConfirmation.value = false
     alert('Erreur lors de la création de la prescription: ' + error.message)
   }
 }
