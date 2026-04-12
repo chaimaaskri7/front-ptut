@@ -5,7 +5,7 @@ export interface Transaction {
   patientId: number;
   description: string;
   montant: number;
-  statutremboursement: 'Rembourse' | 'En attente' | 'Rejetée';
+  statutremboursement: 'Rembourse' | 'EN_ATTENTE' | 'Rejetée';
   dateremboursement: string;
   tauxprisencharge?: number;
   [key: string]: any;

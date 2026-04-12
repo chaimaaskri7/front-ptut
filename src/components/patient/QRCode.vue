@@ -110,17 +110,24 @@ const timeUntilExpiry = (expiresAt: string) => {
   return diffMins > 0 ? `${diffMins} min` : 'Expirant...'
 }
 
-onMounted(() => {
-  availableEtapes.value = [
-    { idetape: 6, statut: 'ARRIVE_HOPITAL', idtransport: 11 },
-    { idetape: 7, statut: 'RDV_FINI', idtransport: 11 },
-    { idetape: 8, statut: 'RETOUR_CHEZ_SOI', idtransport: 11 },
-    { idetape: 9, statut: 'DEPART', idtransport: 12 },
-    { idetape: 10, statut: 'DEPART', idtransport: 13 }
-  ]
-  
-  if (selectedEtape.value) {
-    fetchQRCodesForEtape(selectedEtape.value)
+onMounted(async () => {
+  try {
+    // Fetch all etapes with QR codes from API
+    const response = await fetch(`${API_BASE_URL}/qr-codes/etapes`)
+    if (response.ok) {
+      const data = await response.json()
+      // Filter to only show DEPART etapes (etapes that have QR codes)
+      availableEtapes.value = data
+      
+      if (availableEtapes.value.length > 0) {
+        selectedEtape.value = availableEtapes.value[0].idetape
+        fetchQRCodesForEtape(selectedEtape.value)
+      }
+    } else {
+      console.error('Failed to fetch etapes')
+    }
+  } catch (err) {
+    console.error('Error fetching etapes:', err)
   }
 })
 </script>

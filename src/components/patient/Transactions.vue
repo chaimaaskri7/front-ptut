@@ -13,7 +13,7 @@ const { userId } = useAuth()
 
 const stats = computed(() => {
   const completed = transactions.value.filter(t => t.statutremboursement === 'Rembourse').length
-  const pending = transactions.value.filter(t => t.statutremboursement === 'En attente').length
+  const pending = transactions.value.filter(t => t.statutremboursement === 'EN_ATTENTE').length
   const total = transactions.value.reduce((sum, t) => sum + t.montant, 0)
   
   return [
@@ -25,7 +25,7 @@ const stats = computed(() => {
 
 const filteredTransactions = computed(() => {
   if (filterTab.value === 'En cours') {
-    return transactions.value.filter(t => t.statutremboursement === 'En attente')
+    return transactions.value.filter(t => t.statutremboursement === 'EN_ATTENTE')
   } else if (filterTab.value === 'Remboursés') {
     return transactions.value.filter(t => t.statutremboursement === 'Rembourse')
   }
@@ -103,7 +103,7 @@ onMounted(() => {
             <p class="font-semibold">{{ transaction.description }}</p>
             <div class="flex gap-4 text-sm">
               <span :class="transaction.statutremboursement === 'Rembourse' ? 'text-green-600 font-semibold' : 'text-orange-600 font-semibold'">
-                {{ transaction.statutremboursement === 'Rembourse' ? 'Remboursé' : 'En cours' }}
+                {{ transaction.statutremboursement === 'Rembourse' ? 'Remboursé' : transaction.statutremboursement === 'EN_ATTENTE' ? 'En cours' : transaction.statutremboursement }}
               </span>
               <span class="text-gray-500">{{ new Date(transaction.dateremboursement).toLocaleDateString('fr-FR') }}</span>
             </div>
