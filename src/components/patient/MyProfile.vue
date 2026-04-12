@@ -144,7 +144,7 @@ onMounted(() => {
           <div class="flex-shrink-0">
             <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-[#f0f0f0]">
               <img 
-                :src="profile.image || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop'"
+                :src="profile.image || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop'"
                 :alt="`${profile.prenom} ${profile.nom}`"
                 class="w-full h-full object-cover"
               />
