@@ -113,11 +113,11 @@
             </svg>
             Distribution des Types de Transport
           </h2>
-          <div v-if="transportStats.labels && transportStats.labels.length > 0" class="flex items-center justify-center">
+          <div v-if="transportStats.labels && transportStats.labels.length > 0" class="flex items-center justify-center w-full max-w-sm aspect-square mx-auto">
             <Pie 
               :data="transportChartData" 
               :options="chartOptions"
-              class="w-full max-w-sm"
+              class="w-full h-full"
             />
           </div>
           <div v-else class="text-center py-8">
@@ -133,13 +133,10 @@
           </div>
         </div>
 
-
-      </div>
-
-      <!-- Prescriptions & Patients Section -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-        <!-- Recent Prescriptions -->
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden" v-if="prescriptions.length > 0">
+        <!-- Prescriptions & Patients Column -->
+        <div class="lg:col-span-1 flex flex-col gap-8">
+          <!-- Recent Prescriptions -->
+          <div class="bg-white rounded-xl shadow-lg overflow-hidden" v-if="prescriptions.length > 0">
           <div class="bg-gradient-to-r from-indigo-600 to-indigo-700 p-6">
             <h2 class="text-xl font-bold text-white flex items-center">
               <svg class="w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -184,6 +181,7 @@
               <p class="text-xs text-slate-500 mt-1">NSS: {{ patient.nss }}</p>
             </div>
           </div>
+        </div>
         </div>
       </div>
     </div>

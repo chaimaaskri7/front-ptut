@@ -11,10 +11,7 @@
         <!-- Logo Section -->
         <div class="text-center mb-16">
           <div class="flex items-center justify-center gap-3 mb-4">
-            <svg class="w-10 h-10" viewBox="0 0 40 40" fill="none">
-              <circle cx="20" cy="20" r="18" fill="#06B6D4" opacity="0.9"></circle>
-              <path d="M20 8L32 14V26L20 32L8 26V14L20 8Z" fill="#10B981"></path>
-            </svg>
+            <img src="@/assets/careway-logo.png" alt="CareWay" class="h-[60px] w-auto">
             <h1 class="text-5xl font-bold text-white">CareWay</h1>
           </div>
         </div>

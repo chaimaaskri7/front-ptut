@@ -1,6 +1,6 @@
 <template>
   <div class="w-full bg-[#f8f8f8] min-h-screen">
-    <Header subtitle="Prescription" />
+    <Header subtitle="Prescription" @search="handleSearch" />
     <div class="p-4 md:p-6 lg:p-8">
       <!-- Message d'erreur -->
       <div v-if="error" class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
@@ -38,12 +38,12 @@
             </thead>
             <tbody>
               <tr
-                v-for="(prescription, index) in prescriptions"
+                v-for="(prescription, index) in filteredPrescriptions"
                 :key="index"
                 class="border-b border-[#f0f0f0] hover:bg-[#f8f8f8] transition-colors"
               >
                 <td class="px-4 py-3 text-[13px] text-[#666666]">{{ prescription.dateprescription }}</td>
-                <td class="px-4 py-3 text-[13px] font-medium text-[#1b1b1b]">{{ prescription.idpatient }}</td>
+                <td class="px-4 py-3 text-[13px] font-medium text-[#1b1b1b]">{{ getPatientName(prescription.idpatient) }}</td>
                 <td class="px-4 py-3 hidden md:table-cell">
                   <span
                     class="px-3 py-1 rounded-full text-xs font-medium inline-block"
@@ -122,7 +122,7 @@
                 <h4 class="font-bold text-lg text-slate-900">Patient</h4>
               </div>
               <div class="space-y-2">
-                <p class="text-sm"><span class="font-semibold text-slate-700">ID:</span> <span class="text-blue-700 font-mono font-bold">{{ selectedPrescription.idpatient }}</span></p>
+                <p class="text-sm"><span class="font-semibold text-slate-700">Nom:</span> <span class="text-blue-700 font-mono font-bold">{{ getPatientName(selectedPrescription.idpatient) }}</span></p>
               </div>
             </div>
 
@@ -235,7 +235,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useAuth } from '../../composables/useAuth';
 import Header from '../Header.vue';
@@ -245,10 +245,56 @@ const auth = useAuth();
 const route = useRoute();
 const currentPage = ref(1);
 const prescriptions = ref<any[]>([]);
+const patients = ref<any[]>([]);
 const loading = ref(false);
 const error = ref<string | null>(null);
 const showViewModal = ref(false);
 const selectedPrescription = ref<any>(null);
+const searchQuery = ref<string>('');
+
+// Get patient name by ID
+const getPatientName = (patientId: number): string => {
+  const patient = patients.value.find(p => p.idpatient === patientId);
+  return patient ? `${patient.prenom} ${patient.nom}` : `Patient #${patientId}`;
+};
+
+// Filtered prescriptions based on search query
+const filteredPrescriptions = computed(() => {
+  if (!searchQuery.value.trim()) {
+    return prescriptions.value;
+  }
+  
+  const query = searchQuery.value.toLowerCase();
+  return prescriptions.value.filter(prescription => {
+    const patientName = getPatientName(prescription.idpatient).toLowerCase();
+    const motif = (prescription.motifmedical || '').toLowerCase();
+    const transport = (prescription.typetransport || '').toLowerCase();
+    
+    return patientName.includes(query) || motif.includes(query) || transport.includes(query);
+  });
+});
+
+// Handle search
+const handleSearch = (query: string) => {
+  searchQuery.value = query;
+};
+
+const fetchPatients = async () => {
+  try {
+    const response = await fetch(`http://localhost:8081/patients/medecin/${auth.userId.value}`, {
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+    
+    if (response.ok) {
+      patients.value = await response.json();
+    }
+  } catch (err) {
+    console.error('Erreur lors de la récupération des patients:', err);
+  }
+};
 
 const fetchPrescriptions = async () => {
   loading.value = true;
@@ -278,6 +324,7 @@ const fetchPrescriptions = async () => {
 };
 
 onMounted(() => {
+  fetchPatients();
   fetchPrescriptions();
 });
 

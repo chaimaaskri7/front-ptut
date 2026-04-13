@@ -2,13 +2,7 @@
   <aside class="sidebar bg-white border-r border-[#f0f0f0] h-screen flex flex-col fixed left-0 top-0 z-50">
     <!-- Logo -->
     <div class="flex gap-[6px] items-center px-[19px] py-[21px]">
-      <div class="flex items-center justify-center p-[13.522px] w-[40px] h-[34.872px]">
-        <div class="w-[30.392px] h-[23.259px] relative">
-          <svg class="absolute block w-full h-full" fill="none" preserveAspectRatio="none" viewBox="0 0 30.3916 23.2588">
-            <path d="M6.68457 8.41797C11.1889 8.41801 14.8398 12.0699 14.8398 16.5742V23.2588H10.7832V16.5742C10.7832 16.0945 10.7012 15.6339 10.5498 15.2061L4.59082 21.165L1.72266 18.2959L7.46875 12.5498C7.21494 12.5006 6.95275 12.4746 6.68457 12.4746H0V8.41797H6.68457ZM30.3916 12.4746H23.707C23.3313 12.4746 22.9667 12.5255 22.6211 12.6201L28.8545 18.8535L25.9863 21.7217L19.7529 15.4883C19.6582 15.834 19.6074 16.1985 19.6074 16.5742V23.2588H15.5508V16.5742C15.5508 12.0699 19.2027 8.41797 23.707 8.41797H30.3916V12.4746ZM15.1455 0C17.5351 0.000223412 19.4726 1.93746 19.4727 4.32715C19.4727 6.71684 17.5351 8.65407 15.1455 8.6543C12.7557 8.6543 10.8184 6.71698 10.8184 4.32715C10.8184 1.93733 12.7557 0 15.1455 0Z" fill="#168BD9" />
-          </svg>
-        </div>
-      </div>
+      <img src="@/assets/careway-logo.png" alt="CareWay" class="h-[40px] w-auto">
       <p class="font-bold text-[24px] text-[#0c284f] whitespace-nowrap" style="font-family: 'Geologica', sans-serif;">
         CareWay
       </p>
