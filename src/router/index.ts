@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, NavigationGuardNext, RouteLocationNormalized } from 'vue-router'
 import LoginPage from '../components/LoginPage.vue'
+import ResetPasswordPage from '../components/ResetPasswordPage.vue'
 import Dashboard from '../components/medecins/Dashboard.vue'
 import PatientsList from '../components/medecins/PatientsList.vue'
 import PrescriptionsList from '../components/medecins/PrescriptionsList.vue'
@@ -26,6 +27,11 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: LoginPage
+  },
+  {
+    path: '/reset-password',
+    name: 'ResetPassword',
+    component: ResetPasswordPage
   },
   {
     path: '/test',
