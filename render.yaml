@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: careway-frontend
+    plan: free
+    runtime: node
+    buildCommand: npm install && npm run build
+    startCommand: npm run preview
+    envVars:
+      - key: VITE_API_URL
+        value: ${BACKEND_URL:https://careway-backend.onrender.com}
