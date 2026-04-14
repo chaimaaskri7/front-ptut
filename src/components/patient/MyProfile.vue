@@ -121,7 +121,7 @@ onMounted(() => {
 
 <template>
   <div class="p-6 bg-white">
-    <h1 class="text-2xl font-bold mb-6">My Profile</h1>
+    <h1 class="text-2xl font-bold mb-6">Mon profil</h1>
 
     <!-- Error State -->
     <div v-if="error" class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">

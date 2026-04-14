@@ -16,7 +16,7 @@
       <div v-else class="bg-white border border-[#f0f0f0] rounded-[10px] p-4">
         <!-- Header -->
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <h2 class="font-semibold text-[18px] text-[#1b1b1b]">Prescriptions List</h2>
+          <h2 class="font-semibold text-[18px] text-[#1b1b1b]">Liste des prescriptions</h2>
           <div class="flex gap-2 w-full sm:w-auto">
             <button class="flex-1 sm:flex-none border border-[#f0f0f0] px-4 py-2 rounded-[8px] text-sm hover:bg-gray-50 transition-colors">
               Filter

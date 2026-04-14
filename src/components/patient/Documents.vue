@@ -78,7 +78,7 @@ onMounted(() => {
 
 <template>
   <div class="p-6 bg-white min-h-screen">
-    <h1 class="text-2xl font-bold mb-6">My documents</h1>
+    <h1 class="text-2xl font-bold mb-6">Mes documents</h1>
 
     <!-- Error Message -->
     <div v-if="error" class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">

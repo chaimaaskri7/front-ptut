@@ -81,7 +81,7 @@ const handleEvaluationSubmitted = () => {
 
 <template>
   <div class="p-6 bg-white">
-    <h1 class="text-2xl font-bold mb-6">My transports</h1>
+    <h1 class="text-2xl font-bold mb-6">Mes transports</h1>
 
     <!-- Error Message -->
     <div v-if="error" class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
@@ -95,7 +95,7 @@ const handleEvaluationSubmitted = () => {
 
     <!-- Content -->
     <div v-else>
-      <p class="text-gray-600 text-sm mb-6">Total transports: {{ transports.length }}</p>
+      <p class="text-gray-600 text-sm mb-6">Total : {{ transports.length }} transport(s)</p>
 
       <!-- Filter Tabs -->
       <div class="flex gap-2 mb-6 border-b border-gray-200">
@@ -153,7 +153,7 @@ const handleEvaluationSubmitted = () => {
                   'px-2 py-1 text-xs font-semibold rounded',
                   transport.statut === 'TERMINE' ? 'bg-green-800' : transport.statut === 'EN_COURS' ? 'bg-orange-800' : 'bg-blue-800'
                 ]">
-                  {{ transport.statut === 'TERMINE' ? '✓ Terminé' : transport.statut === 'EN_COURS' ? '⟳ En cours' : '📅 Planifié' }}
+                  {{ transport.statut === 'TERMINE' ? 'Terminé' : transport.statut === 'EN_COURS' ? 'En cours' : 'Planifié' }}
                 </span>
               </div>
             </div>
@@ -164,9 +164,9 @@ const handleEvaluationSubmitted = () => {
             </button>
           </div>
           <div class="flex gap-6 mt-4 text-sm opacity-90 flex-wrap">
-            <span>📅 {{ new Date(transport.datetransport).toLocaleDateString('fr-FR') }}</span>
-            <span>⏰ {{ new Date(transport.datetransport).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) }}</span>
-            <span>📍 {{ transport.lieudepart }} → {{ transport.lieuarrive }}</span>
+            <span>{{ new Date(transport.datetransport).toLocaleDateString('fr-FR') }}</span>
+            <span>{{ new Date(transport.datetransport).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) }}</span>
+            <span>{{ transport.lieudepart }} → {{ transport.lieuarrive }}</span>
           </div>
           <div class="mt-4 flex gap-2">
             <button @click="openDetailModal(transport)" class="flex-1 px-4 py-2 rounded font-semibold hover:opacity-90" :class="transport.statut === 'TERMINE' ? 'bg-white text-green-600' : transport.statut === 'EN_COURS' ? 'bg-white text-orange-600' : 'bg-white text-blue-600'">
