@@ -138,12 +138,12 @@ watch(() => props.isOpen, async (newVal) => {
   <div v-if="isOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div class="bg-white rounded-lg w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
       <!-- Header -->
-      <div class="bg-blue-600 text-white p-6 flex justify-between items-start">
+      <div class="bg-white border-b border-gray-200 p-6 flex justify-between items-start">
         <div>
-          <h2 class="text-2xl font-bold">Transport #{{ transport?.idtransport }}</h2>
-          <p class="text-blue-100 mt-1">{{ formattedDate }}</p>
+          <h2 class="text-2xl font-bold text-gray-800">Transport #{{ transport?.idtransport }}</h2>
+          <p class="text-gray-600 mt-1">{{ formattedDate }}</p>
         </div>
-        <button @click="onClose" class="text-2xl hover:text-blue-200">×</button>
+        <button @click="onClose" class="text-2xl text-gray-800 hover:text-gray-600">×</button>
       </div>
 
       <!-- Content -->
@@ -151,7 +151,13 @@ watch(() => props.isOpen, async (newVal) => {
         <!-- Driver Info -->
         <div v-if="transport?.transporteur" class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6">
           <div class="flex items-center gap-4">
-            <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+            <img 
+              v-if="transport.transporteur.image" 
+              :src="transport.transporteur.image"
+              :alt="transport.transporteur.prenom + ' ' + transport.transporteur.nom"
+              class="w-16 h-16 rounded-full object-cover border-2 border-blue-200"
+            />
+            <div v-else class="w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
               {{ transport.transporteur.prenom.charAt(0) }}{{ transport.transporteur.nom.charAt(0) }}
             </div>
             <div class="flex-1">
