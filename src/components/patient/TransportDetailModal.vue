@@ -63,7 +63,7 @@ const initMap = () => {
         minZoom: 1,
         crossOrigin: 'anonymous'
       }).addTo(map!)
-    }, 100)
+    }, 300)
 
     // Ajouter un cercle pour le départ (vert)
     const startCircle = L.circle(startCoords, {
@@ -126,10 +126,10 @@ watch(() => props.isOpen, async (newVal) => {
     // Attendre que le DOM soit à jour
     await nextTick()
     
-    // Puis attendre un peu plus pour que la hauteur soit correctement définie
+    // Puis attendre plus longtemps pour que la hauteur soit correctement définie
     setTimeout(() => {
       initMap()
-    }, 50)
+    }, 200)
   }
 })
 </script>
@@ -232,11 +232,6 @@ watch(() => props.isOpen, async (newVal) => {
             style="height: 400px; min-height: 400px;">
           </div>
         </div>
-
-        <!-- QR Code Button -->
-        <button class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all">
-          QR codes
-        </button>
       </div>
     </div>
   </div>
