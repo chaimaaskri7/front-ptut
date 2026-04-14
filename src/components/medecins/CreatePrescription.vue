@@ -240,6 +240,15 @@
                 class="mt-2 px-4 py-2 border border-slate-300 rounded-lg text-slate-900 w-full"
               >
             </div>
+            <div>
+              <label class="text-slate-700 font-medium">📅 Date du transport à programmer <span class="text-red-500">*</span></label>
+              <input 
+                type="date" 
+                v-model="form.date_transport" 
+                class="mt-2 px-4 py-2 border border-slate-300 rounded-lg text-slate-900 w-full focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              >
+              <p class="text-xs text-slate-500 mt-1">Cette date créera automatiquement un transport "En attente" pour le patient</p>
+            </div>
           </div>
         </div>
 
@@ -348,6 +357,9 @@
             <p v-if="form.nombre_transports > 0" class="text-sm text-slate-700 mt-3">
               <strong>Nombre de transports itératifs:</strong> {{ form.nombre_transports }}
             </p>
+            <p v-if="form.date_transport" class="text-sm text-slate-700 mt-3">
+              <strong>📅 Date du transport:</strong> {{ form.date_transport }}
+            </p>
           </div>
 
           <!-- Other Info Section -->
@@ -442,6 +454,7 @@ const form = ref({
   trajet_arrivee_autre: '',
   trajet_arrivee_structure: '',
   nombre_transports: 0,
+  date_transport: '',
   exoneration: [] as string[],
   pension_militaire: [] as string[]
 })
@@ -489,6 +502,7 @@ const confirmSubmission = async () => {
       trajet_arrivee_autre: form.value.trajet_arrivee_autre,
       trajet_arrivee_structure: form.value.trajet_arrivee_structure,
       nombre_transports: form.value.nombre_transports,
+      date_transport: form.value.date_transport,
       exoneration: form.value.exoneration,
       pension_militaire: form.value.pension_militaire
     }
