@@ -93,7 +93,7 @@
     </div>
 
     <!-- Forgot Password Modal -->
-    <div v-if="showForgotPasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div v-if="showForgotPasswordModal" class="fixed inset-0 bg-white flex items-center justify-center z-50 p-4">
       <div class="bg-white rounded-2xl max-w-md w-full p-8 shadow-2xl">
         <h2 class="text-2xl font-bold text-slate-900 mb-2">Reset Password</h2>
         <p class="text-slate-600 text-sm mb-6">Enter your email or code to receive a password reset link</p>

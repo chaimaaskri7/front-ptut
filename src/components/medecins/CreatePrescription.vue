@@ -165,32 +165,39 @@
             </div>
             <div class="space-y-3">
               <h3 class="font-medium text-slate-800">Lieu d'Arrivée</h3>
-              <label class="flex items-center gap-4 mb-3">
-                <input type="radio" v-model="form.trajet_arrivee" value="domicile" class="w-5 h-5">
-                <span class="text-slate-700">Domicile du patient</span>
-              </label>
-              <label class="flex items-center gap-4 mb-3">
-                <input type="radio" v-model="form.trajet_arrivee" value="autre" class="w-5 h-5">
-                <span class="text-slate-700">Autre lieu</span>
-              </label>
-              <input 
-                v-if="form.trajet_arrivee === 'autre'"
-                type="text" 
-                v-model="form.trajet_arrivee_autre" 
-                placeholder="Adresse du lieu d'arrivée"
-                class="ml-9 px-4 py-2 border border-slate-300 rounded-lg text-slate-900 w-full"
-              >
-              <label class="flex items-center gap-4 mb-3">
-                <input type="radio" v-model="form.trajet_arrivee" value="structure" class="w-5 h-5">
-                <span class="text-slate-700">Structure de soins</span>
-              </label>
-              <input 
-                v-if="form.trajet_arrivee === 'structure'"
-                type="text" 
-                v-model="form.trajet_arrivee_structure" 
-                placeholder="Adresse de la structure"
-                class="ml-9 px-4 py-2 border border-slate-300 rounded-lg text-slate-900 w-full"
-              >
+              <div>
+                <label class="block text-slate-700 font-medium mb-3">Hôpital ou Structure de Soin</label>
+                <div v-if="hospitalsLoading" class="px-4 py-3 bg-blue-50 border border-blue-200 rounded-lg text-blue-700 text-sm">
+                  ⏳ Chargement de la liste des hôpitaux...
+                </div>
+                <div v-else-if="hospitalsError" class="px-4 py-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                  ❌ {{ hospitalsError }}
+                </div>
+                <template v-else>
+                  <input 
+                    type="text"
+                    v-model="hospitalSearch"
+                    placeholder="Rechercher un hôpital (ex: Paris, Lyon, CHU...)"
+                    class="w-full px-4 py-2 border border-slate-300 rounded-lg text-slate-900 mb-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  >
+                  <select 
+                    v-model="form.trajet_arrivee_structure"
+                    class="w-full px-4 py-2 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  >
+                    <option value="">-- Sélectionner un hôpital --</option>
+                    <option 
+                      v-for="hospital in filteredHospitals" 
+                      :key="hospital"
+                      :value="hospital"
+                    >
+                      {{ hospital }}
+                    </option>
+                  </select>
+                  <div v-if="form.trajet_arrivee_structure" class="mt-2 p-3 bg-indigo-50 border border-indigo-200 rounded-lg">
+                    <p class="text-sm text-indigo-700"><strong>Sélectionné:</strong> {{ form.trajet_arrivee_structure }}</p>
+                  </div>
+                </template>
+              </div>
             </div>
             <div>
               <label class="text-slate-700 font-medium">Nombre de transports itératif</label>
@@ -346,7 +353,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import Header from '../Header.vue'
 import { useAuth } from '../../composables/useAuth'
@@ -358,6 +365,39 @@ const auth = useAuth()
 // Get patient ID from route params
 const patientId = route.params.patientId
 
+// État pour les hôpitaux
+const hospitals = ref<string[]>([])
+const hospitalsLoading = ref(true)
+const hospitalsError = ref('')
+const hospitalSearch = ref('')
+
+// Charger les hôpitaux au montage du composant
+onMounted(async () => {
+  try {
+    const response = await fetch('http://localhost:8081/hospitals/all', {
+      method: 'GET',
+      credentials: 'include'
+    })
+    
+    if (response.ok) {
+      hospitals.value = await response.json()
+    } else {
+      hospitalsError.value = 'Erreur lors du chargement des hôpitaux'
+    }
+  } catch (error) {
+    console.error('Erreur lors du chargement des hôpitaux:', error)
+    hospitalsError.value = 'Impossible de charger la liste des hôpitaux'
+  } finally {
+    hospitalsLoading.value = false
+  }
+})
+
+const filteredHospitals = computed(() => {
+  if (!hospitalSearch.value) return hospitals.value
+  const search = hospitalSearch.value.toLowerCase()
+  return hospitals.value.filter(h => h.toLowerCase().includes(search))
+})
+
 const form = ref({
   situation1: [] as string[],
   date_at_mp: '',
@@ -366,7 +406,7 @@ const form = ref({
   trajet_depart: 'domicile',
   trajet_depart_autre: '',
   trajet_depart_structure: '',
-  trajet_arrivee: 'domicile',
+  trajet_arrivee: 'structure',
   trajet_arrivee_autre: '',
   trajet_arrivee_structure: '',
   nombre_transports: 0,
