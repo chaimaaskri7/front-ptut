@@ -241,7 +241,7 @@
               >
             </div>
             <div>
-              <label class="text-slate-700 font-medium">📅 Date du transport à programmer <span class="text-red-500">*</span></label>
+              <label class="text-slate-700 font-medium">Date du transport à programmer <span class="text-red-500">*</span></label>
               <input 
                 type="date" 
                 v-model="form.date_transport" 
@@ -358,7 +358,7 @@
               <strong>Nombre de transports itératifs:</strong> {{ form.nombre_transports }}
             </p>
             <p v-if="form.date_transport" class="text-sm text-slate-700 mt-3">
-              <strong>📅 Date du transport:</strong> {{ form.date_transport }}
+              <strong>Date du transport:</strong> {{ form.date_transport }}
             </p>
           </div>
 
