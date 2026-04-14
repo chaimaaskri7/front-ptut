@@ -87,8 +87,91 @@
 
         <!-- Forgot Password -->
         <div class="text-center mt-8">
-          <a href="#" class="text-white font-semibold hover:underline text-sm opacity-90">Forgot password?</a>
+          <button @click="showForgotPasswordModal = true" class="text-white font-semibold hover:underline text-sm opacity-90">Forgot password?</button>
         </div>
+      </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div v-if="showForgotPasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-2xl max-w-md w-full p-8 shadow-2xl">
+        <h2 class="text-2xl font-bold text-slate-900 mb-2">Reset Password</h2>
+        <p class="text-slate-600 text-sm mb-6">Enter your email or code to receive a password reset link</p>
+
+        <!-- Reset Password Form -->
+        <form @submit.prevent="handleForgotPassword" class="space-y-4">
+          <!-- User Type Selection -->
+          <div class="flex gap-2 mb-4">
+            <button
+              type="button"
+              @click="forgotForm.userType = 'medecin'"
+              :class="[
+                'flex-1 py-2 text-sm font-semibold rounded-lg transition',
+                forgotForm.userType === 'medecin'
+                  ? 'bg-indigo-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              ]"
+            >
+              Medecin
+            </button>
+            <button
+              type="button"
+              @click="forgotForm.userType = 'patient'"
+              :class="[
+                'flex-1 py-2 text-sm font-semibold rounded-lg transition',
+                forgotForm.userType === 'patient'
+                  ? 'bg-indigo-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              ]"
+            >
+              Patient
+            </button>
+          </div>
+
+          <!-- Email Input -->
+          <input
+            v-model="forgotForm.email"
+            type="email"
+            placeholder="Email Address"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 text-gray-800"
+          />
+
+          <!-- Code Input (RPPS or NSS) -->
+          <input
+            v-model="forgotForm.code"
+            type="text"
+            :placeholder="forgotForm.userType === 'medecin' ? 'RPPS Code' : 'NSS Code'"
+            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 text-gray-800"
+          />
+
+          <!-- Error Message -->
+          <div v-if="forgotError" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-sm">
+            {{ forgotError }}
+          </div>
+
+          <!-- Success Message -->
+          <div v-if="forgotSuccess" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg text-sm">
+            {{ forgotSuccess }}
+          </div>
+
+          <!-- Buttons -->
+          <div class="flex gap-3 pt-4">
+            <button
+              type="button"
+              @click="closeForgotPasswordModal"
+              class="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-semibold transition"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              :disabled="isForgotLoading"
+              class="flex-1 px-4 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-70 font-semibold transition"
+            >
+              {{ isForgotLoading ? 'Sending...' : 'Send Reset Link' }}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -108,8 +191,62 @@ const form = ref({
   password: ''
 })
 
+const forgotForm = ref({
+  userType: 'medecin',
+  email: '',
+  code: ''
+})
+
 const isLoading = ref(false)
 const error = ref('')
+const showForgotPasswordModal = ref(false)
+const isForgotLoading = ref(false)
+const forgotError = ref('')
+const forgotSuccess = ref('')
+
+const closeForgotPasswordModal = () => {
+  showForgotPasswordModal.value = false
+  forgotForm.value = { userType: 'medecin', email: '', code: '' }
+  forgotError.value = ''
+  forgotSuccess.value = ''
+}
+
+const handleForgotPassword = async () => {
+  forgotError.value = ''
+  forgotSuccess.value = ''
+  isForgotLoading.value = true
+
+  try {
+    const response = await fetch('http://localhost:8081/auth/forgot-password', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userType: forgotForm.value.userType,
+        code: forgotForm.value.code,
+        email: forgotForm.value.email
+      })
+    })
+
+    const data = await response.json()
+
+    if (data.success) {
+      forgotSuccess.value = `Reset link sent! Token: ${data.resetToken} (check your email or save this token)`
+      // Auto close after 5 seconds on success
+      setTimeout(() => {
+        closeForgotPasswordModal()
+      }, 5000)
+    } else {
+      forgotError.value = data.message || 'Error requesting password reset'
+    }
+  } catch (err) {
+    forgotError.value = 'Error connecting to server'
+    console.error('Forgot password error:', err)
+  } finally {
+    isForgotLoading.value = false
+  }
+}
 
 const handleLogin = async () => {
   error.value = ''
