@@ -165,39 +165,71 @@
             </div>
             <div class="space-y-3">
               <h3 class="font-medium text-slate-800">Lieu d'Arrivée</h3>
-              <div>
-                <label class="block text-slate-700 font-medium mb-3">Hôpital ou Structure de Soin</label>
-                <div v-if="hospitalsLoading" class="px-4 py-3 bg-blue-50 border border-blue-200 rounded-lg text-blue-700 text-sm">
-                  ⏳ Chargement de la liste des hôpitaux...
+              
+              <!-- Options pour le lieu d'arrivée -->
+              <div class="space-y-4">
+                <label class="flex items-center gap-4 cursor-pointer hover:bg-slate-50 p-3 rounded-lg transition-colors">
+                  <input type="radio" v-model="form.trajet_arrivee" value="hospital" class="w-5 h-5">
+                  <span class="text-slate-700 font-medium">Hôpital (liste officielle)</span>
+                </label>
+                <label class="flex items-center gap-4 cursor-pointer hover:bg-slate-50 p-3 rounded-lg transition-colors">
+                  <input type="radio" v-model="form.trajet_arrivee" value="autre" class="w-5 h-5">
+                  <span class="text-slate-700 font-medium">Autre lieu (saisie manuelle)</span>
+                </label>
+              </div>
+
+              <!-- Sélection d'hôpital -->
+              <template v-if="form.trajet_arrivee === 'hospital'">
+                <div>
+                  <label class="block text-slate-700 font-medium mb-3">Sélectionner un hôpital</label>
+                  <div v-if="hospitalsLoading" class="px-4 py-3 bg-blue-50 border border-blue-200 rounded-lg text-blue-700 text-sm">
+                    ⏳ Chargement de la liste des hôpitaux...
+                  </div>
+                  <div v-else-if="hospitalsError" class="px-4 py-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                    ❌ {{ hospitalsError }}
+                  </div>
+                  <template v-else>
+                    <input 
+                      type="text"
+                      v-model="hospitalSearch"
+                      placeholder="Rechercher un hôpital (ex: Paris, Lyon, CHU...)"
+                      class="w-full px-4 py-2 border border-slate-300 rounded-lg text-slate-900 mb-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    >
+                    <select 
+                      v-model="form.trajet_arrivee_structure"
+                      class="w-full px-4 py-2 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    >
+                      <option value="">-- Sélectionner un hôpital --</option>
+                      <option 
+                        v-for="hospital in filteredHospitals" 
+                        :key="hospital"
+                        :value="hospital"
+                      >
+                        {{ hospital }}
+                      </option>
+                    </select>
+                    <div v-if="form.trajet_arrivee_structure" class="mt-2 p-3 bg-indigo-50 border border-indigo-200 rounded-lg">
+                      <p class="text-sm text-indigo-700"><strong>Sélectionné:</strong> {{ form.trajet_arrivee_structure }}</p>
+                    </div>
+                  </template>
                 </div>
-                <div v-else-if="hospitalsError" class="px-4 py-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-                  ❌ {{ hospitalsError }}
-                </div>
-                <template v-else>
+              </template>
+
+              <!-- Saisie manuelle d'autre lieu -->
+              <template v-if="form.trajet_arrivee === 'autre'">
+                <div>
+                  <label class="block text-slate-700 font-medium mb-3">Adresse du lieu d'arrivée</label>
                   <input 
                     type="text"
-                    v-model="hospitalSearch"
-                    placeholder="Rechercher un hôpital (ex: Paris, Lyon, CHU...)"
-                    class="w-full px-4 py-2 border border-slate-300 rounded-lg text-slate-900 mb-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  >
-                  <select 
-                    v-model="form.trajet_arrivee_structure"
+                    v-model="form.trajet_arrivee_autre"
+                    placeholder="Ex: Clinique Saint-Louis, 123 rue de la Paix, 75010 Paris"
                     class="w-full px-4 py-2 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   >
-                    <option value="">-- Sélectionner un hôpital --</option>
-                    <option 
-                      v-for="hospital in filteredHospitals" 
-                      :key="hospital"
-                      :value="hospital"
-                    >
-                      {{ hospital }}
-                    </option>
-                  </select>
-                  <div v-if="form.trajet_arrivee_structure" class="mt-2 p-3 bg-indigo-50 border border-indigo-200 rounded-lg">
-                    <p class="text-sm text-indigo-700"><strong>Sélectionné:</strong> {{ form.trajet_arrivee_structure }}</p>
+                  <div v-if="form.trajet_arrivee_autre" class="mt-2 p-3 bg-indigo-50 border border-indigo-200 rounded-lg">
+                    <p class="text-sm text-indigo-700"><strong>Saisie:</strong> {{ form.trajet_arrivee_autre }}</p>
                   </div>
-                </template>
-              </div>
+                </div>
+              </template>
             </div>
             <div>
               <label class="text-slate-700 font-medium">Nombre de transports itératif</label>
@@ -406,7 +438,7 @@ const form = ref({
   trajet_depart: 'domicile',
   trajet_depart_autre: '',
   trajet_depart_structure: '',
-  trajet_arrivee: 'structure',
+  trajet_arrivee: 'hospital',
   trajet_arrivee_autre: '',
   trajet_arrivee_structure: '',
   nombre_transports: 0,
@@ -420,6 +452,7 @@ const getLocationLabel = (type: string, autre: string, structure: string) => {
   if (type === 'domicile') return 'Domicile du patient'
   if (type === 'autre') return autre || 'Autre lieu (non spécifié)'
   if (type === 'structure') return structure || 'Structure de soins (non spécifiée)'
+  if (type === 'hospital') return structure || 'Hôpital (non spécifié)'
   return 'Non spécifié'
 }
 
