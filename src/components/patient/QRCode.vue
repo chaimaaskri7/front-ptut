@@ -150,7 +150,7 @@ onMounted(async () => {
         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4e55d7]"
       >
         <option v-for="etape in availableEtapes" :key="etape.idetape" :value="etape.idetape">
-          Étape {{ etape.idetape }} - {{ etape.statut }} (Transport {{ etape.idtransport }})
+          Étape {{ etape.idetape }} - {{ etape.statut }}
         </option>
       </select>
     </div>
