@@ -7,4 +7,6 @@ services:
     startCommand: npm run preview
     envVars:
       - key: VITE_API_URL
-        value: ${BACKEND_URL:https://careway-backend.onrender.com}
+        value: https://careway-backend.onrender.com
+      - key: NODE_ENV
+        value: production
