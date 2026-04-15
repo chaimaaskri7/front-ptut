@@ -8,8 +8,9 @@ WORKDIR /app
 # Copy package files
 COPY package.json package-lock.json ./
 
-# Install ALL dependencies (including devDependencies for build)
-RUN npm ci --legacy-peer-deps
+# Install ALL dependencies (including devDependencies and optional deps for build)
+# Use npm install instead of npm ci to handle optional dependencies properly
+RUN npm install --legacy-peer-deps
 
 # Copy source code
 COPY . .
@@ -26,7 +27,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 
 # Install only production dependencies
-RUN npm ci --legacy-peer-deps --omit=dev --omit=optional
+RUN npm install --legacy-peer-deps --omit=dev --omit=optional
 
 # Copy built app from builder stage
 COPY --from=builder /app/dist ./dist
