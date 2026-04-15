@@ -12,7 +12,7 @@
       </svg>
       <input 
         type="text" 
-        placeholder="Search" 
+        placeholder="Rechercher" 
         v-model="searchQuery"
         @input="$emit('search', searchQuery)"
         class="bg-transparent border-none outline-none font-normal text-sm md:text-[14px] text-[#7f7f7f] flex-1 w-full"

@@ -115,10 +115,10 @@ const setDriverRating = (stars: number) => {
 
         <!-- Feedback -->
         <div>
-          <label class="block text-sm font-semibold mb-3 text-gray-700">Can you tell us more?</label>
+          <label class="block text-sm font-semibold mb-3 text-gray-700">Pouvez-vous nous en dire plus ?</label>
           <textarea 
             v-model="feedback"
-            placeholder="Add feedback"
+            placeholder="Ajouter des commentaires"
             class="w-full border border-gray-300 rounded-lg px-4 py-3 text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
             rows="4"
           ></textarea>
@@ -127,7 +127,7 @@ const setDriverRating = (stars: number) => {
         <!-- Rate the driver -->
         <div class="border-t border-gray-200 pt-6">
           <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-bold text-gray-800">Rate the driver!</h3>
+            <h3 class="text-lg font-bold text-gray-800">Évaluer le conducteur !</h3>
             <button @click="closeModal" class="text-gray-500 hover:text-gray-700">
               ✕
             </button>

@@ -99,31 +99,31 @@ const handleReturn = () => {
 
         <form @submit.prevent="changePassword" class="space-y-4">
           <div>
-            <label class="block text-sm font-semibold mb-2">Password</label>
+            <label class="block text-sm font-semibold mb-2">Mot de passe</label>
             <input
               v-model="passwords.current"
               type="password"
-              placeholder="Enter your password"
+              placeholder="Entrez votre mot de passe"
               class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4e55d7]"
               :disabled="loading"
             />
           </div>
           <div>
-            <label class="block text-sm font-semibold mb-2">New Password</label>
+            <label class="block text-sm font-semibold mb-2">Nouveau mot de passe</label>
             <input
               v-model="passwords.new"
               type="password"
-              placeholder="Enter your new password"
+              placeholder="Entrez votre nouveau mot de passe"
               class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4e55d7]"
               :disabled="loading"
             />
           </div>
           <div>
-            <label class="block text-sm font-semibold mb-2">Confirm Password</label>
+            <label class="block text-sm font-semibold mb-2">Confirmer le mot de passe</label>
             <input
               v-model="passwords.confirm"
               type="password"
-              placeholder="Re-enter your new password"
+              placeholder="Confirmez votre nouveau mot de passe"
               class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#4e55d7]"
               :disabled="loading"
             />
@@ -133,7 +133,7 @@ const handleReturn = () => {
             class="w-full bg-[#4e55d7] text-white py-2 rounded font-semibold hover:opacity-90 mt-6 transition disabled:opacity-50"
             :disabled="loading"
           >
-            {{ loading ? 'Mise à jour en cours...' : 'Update Password' }}
+            {{ loading ? 'Mise à jour en cours...' : 'Mettre à jour le mot de passe' }}
           </button>
         </form>
       </div>
