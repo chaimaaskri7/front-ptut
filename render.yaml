@@ -2,9 +2,8 @@ services:
   - type: web
     name: careway-frontend
     plan: free
-    runtime: node
-    buildCommand: npm install --include=dev && npm run build
-    startCommand: npm run preview
+    runtime: docker
+    region: frankfurt
     envVars:
       - key: VITE_API_URL
         value: https://careway-backend.onrender.com
