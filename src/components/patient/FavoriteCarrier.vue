@@ -65,11 +65,24 @@ const handleTransporteurChange = async (typeTransport: string, transporteurId: n
   if (!userId.value) return
   
   try {
+    loading.value = true
+    error.value = null
+    
+    // Si un favoris existe déjà pour ce type, le supprimer d'abord
+    if (selectedTransporteurs.value[typeTransport]) {
+      await favoriteCarrierService.removeFavoriteCarrier(userId.value, typeTransport)
+    }
+    
+    // Créer le nouveau favoris
     await favoriteCarrierService.setFavoriteCarrier(userId.value, transporteurId, typeTransport)
+    
+    // Rafraîchir les données
     await fetchFavoriteCarriers()
   } catch (err) {
     console.error('Erreur:', err)
     error.value = `Impossible de définir le transporteur favori pour ${typeTransport}`
+  } finally {
+    loading.value = false
   }
 }
 
@@ -77,12 +90,17 @@ const removeFavoriteCarrier = async (typeTransport: string) => {
   if (!userId.value) return
   
   try {
+    loading.value = true
+    error.value = null
+    
     await favoriteCarrierService.removeFavoriteCarrier(userId.value, typeTransport)
     selectedTransporteurs.value[typeTransport] = null
     await fetchFavoriteCarriers()
   } catch (err) {
     console.error('Erreur:', err)
     error.value = `Impossible de supprimer le transporteur favori pour ${typeTransport}`
+  } finally {
+    loading.value = false
   }
 }
 

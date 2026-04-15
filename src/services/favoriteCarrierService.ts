@@ -71,7 +71,7 @@ export const favoriteCarrierService = {
   async removeFavoriteCarrier(patientId: number, typeTransport: string): Promise<void> {
     const response = await fetch(
       `${API_BASE_URL}/patient-favori/remove?patientId=${patientId}&typeTransport=${typeTransport}`,
-      { method: 'SUPPRIMER' }
+      { method: 'DELETE' }
     )
     if (!response.ok) throw new Error('Échec de la suppression du transporteur favori')
   }
