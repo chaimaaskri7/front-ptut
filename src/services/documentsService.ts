@@ -15,7 +15,7 @@ export const documentsService = {
    */
   async getPrescriptions(patientId: number): Promise<Prescription[]> {
     const response = await fetch(`${API_BASE_URL}/prescriptions/patient/${patientId}`)
-    if (!response.ok) throw new Error('Failed to fetch prescriptions')
+    if (!response.ok) throw new Error('Échec de la récupération des prescriptions')
     return response.json()
   },
 
@@ -27,7 +27,7 @@ export const documentsService = {
       const response = await fetch(`${API_BASE_URL}/prescriptions/${prescriptionId}/pdf`)
       
       if (!response.ok) {
-        throw new Error('Failed to download PDF')
+        throw new Error('Échec du téléchargement du PDF')
       }
 
       // Créer un blob et le télécharger
@@ -41,7 +41,7 @@ export const documentsService = {
       document.body.removeChild(link)
       window.URL.revokeObjectURL(url)
     } catch (err) {
-      console.error('Error downloading PDF:', err)
+      console.error('Erreur lors du téléchargement du PDF:', err)
       throw err
     }
   }

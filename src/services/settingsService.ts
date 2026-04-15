@@ -12,7 +12,7 @@ export const settingsService = {
    */
   async getPatientInfo(patientId: number) {
     const response = await fetch(`${API_BASE_URL}/patients/${patientId}`)
-    if (!response.ok) throw new Error('Failed to fetch patient info')
+    if (!response.ok) throw new Error('Échec de la récupération des infos du patient')
     return response.json()
   },
 
@@ -36,7 +36,7 @@ export const settingsService = {
     const text = await response.text()
 
     if (!response.ok) {
-      throw new Error(text || 'Failed to change password')
+      throw new Error(text || 'Échec du changement de mot de passe')
     }
 
     return text

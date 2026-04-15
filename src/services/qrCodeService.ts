@@ -20,7 +20,7 @@ export const qrCodeService = {
    */
   async getCurrentQRCode(etapeId: number): Promise<QRCode> {
     const response = await fetch(`${API_BASE_URL}/qr-codes/current/${etapeId}`)
-    if (!response.ok) throw new Error('Failed to fetch current QR code')
+    if (!response.ok) throw new Error('Échec de la récupération du code QR actuel')
     return response.json()
   },
 
@@ -29,7 +29,7 @@ export const qrCodeService = {
    */
   async getQRCodesByEtape(etapeId: number): Promise<QRCode[]> {
     const response = await fetch(`${API_BASE_URL}/qr-codes/etape/${etapeId}`)
-    if (!response.ok) throw new Error('Failed to fetch QR codes')
+    if (!response.ok) throw new Error('Échec de la récupération des codes QR')
     return response.json()
   },
 
@@ -40,7 +40,7 @@ export const qrCodeService = {
     const response = await fetch(`${API_BASE_URL}/qr-codes/scan?code=${code}`, {
       method: 'POST'
     })
-    if (!response.ok) throw new Error('Failed to scan QR code')
+    if (!response.ok) throw new Error('Échec de la lecture du code QR')
     return response.json()
   },
 
@@ -52,7 +52,7 @@ export const qrCodeService = {
       `${API_BASE_URL}/qr-codes/generate?etapeId=${etapeId}&expirationMinutes=${expirationMinutes}`,
       { method: 'POST' }
     )
-    if (!response.ok) throw new Error('Failed to generate QR code')
+    if (!response.ok) throw new Error('Échec de la génération du code QR')
     return response.json()
   },
 
@@ -61,7 +61,7 @@ export const qrCodeService = {
    */
   async isExpired(qrCodeId: number): Promise<boolean> {
     const response = await fetch(`${API_BASE_URL}/qr-codes/${qrCodeId}/expired`)
-    if (!response.ok) throw new Error('Failed to check QR code expiration')
+    if (!response.ok) throw new Error('Échec de la vérification d\'expiration du code QR')
     return response.json()
   },
 
@@ -70,7 +70,7 @@ export const qrCodeService = {
    */
   async getQRCodeById(qrCodeId: number): Promise<QRCode> {
     const response = await fetch(`${API_BASE_URL}/qr-codes/${qrCodeId}`)
-    if (!response.ok) throw new Error('Failed to fetch QR code by ID')
+    if (!response.ok) throw new Error('Échec de la récupération du code QR par ID')
     return response.json()
   }
 }

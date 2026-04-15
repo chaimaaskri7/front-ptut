@@ -21,7 +21,7 @@ export const patientService = {
   },
 
   // Récupérer un patient par ID
-  getPatientById: async (id: number): Promise<Patient> => {
+  obtenirPatientParId: async (id: number): Promise<Patient> => {
     try {
       return await fetchData<Patient>(`/patients/${id}`);
     } catch (error) {
@@ -31,7 +31,7 @@ export const patientService = {
   },
 
   // Créer un nouveau patient
-  createPatient: async (patientData: Patient): Promise<Patient> => {
+  creerPatient: async (patientData: Patient): Promise<Patient> => {
     try {
       return await postData<Patient>('/patients', patientData);
     } catch (error) {
@@ -41,7 +41,7 @@ export const patientService = {
   },
 
   // Mettre à jour un patient
-  updatePatient: async (id: number, patientData: Patient): Promise<Patient> => {
+  mettreAJourPatient: async (id: number, patientData: Patient): Promise<Patient> => {
     try {
       return await putData<Patient>(`/patients/${id}`, patientData);
     } catch (error) {
@@ -51,7 +51,7 @@ export const patientService = {
   },
 
   // Supprimer un patient
-  deletePatient: async (id: number): Promise<void> => {
+  supprimerPatient: async (id: number): Promise<void> => {
     try {
       await deleteData(`/patients/${id}`);
     } catch (error) {

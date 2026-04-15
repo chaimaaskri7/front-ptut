@@ -124,10 +124,10 @@ onMounted(async () => {
         fetchQRCodesForEtape(selectedEtape.value)
       }
     } else {
-      console.error('Failed to fetch etapes')
+      console.error('Échec de la récupération des étapes')
     }
   } catch (err) {
-    console.error('Error fetching etapes:', err)
+    console.error('Erreur lors de la récupération des étapes:', err)
   }
 })
 </script>

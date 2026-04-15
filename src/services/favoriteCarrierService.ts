@@ -27,7 +27,7 @@ export const favoriteCarrierService = {
    */
   async getFavoriteCarriers(patientId: number): Promise<FavoriteCarrier[]> {
     const response = await fetch(`${API_BASE_URL}/patient-favori/patient/${patientId}`)
-    if (!response.ok) throw new Error('Failed to fetch favorite carriers')
+    if (!response.ok) throw new Error('Échec de la récupération des transporteurs favoris')
     return response.json()
   },
 
@@ -43,7 +43,7 @@ export const favoriteCarrierService = {
       `${API_BASE_URL}/patient-favori/set?patientId=${patientId}&transporteurId=${transporteurId}&typeTransport=${typeTransport}`,
       { method: 'POST' }
     )
-    if (!response.ok) throw new Error('Failed to set favorite carrier')
+    if (!response.ok) throw new Error('Échec de la définition du transporteur favori')
     return response.json()
   },
 
@@ -52,7 +52,7 @@ export const favoriteCarrierService = {
    */
   async getAllTransporteurs(): Promise<TransporteurOption[]> {
     const response = await fetch(`${API_BASE_URL}/transporteurs`)
-    if (!response.ok) throw new Error('Failed to fetch transporteurs')
+    if (!response.ok) throw new Error('Échec de la récupération des transporteurs')
     return response.json()
   },
 
@@ -61,7 +61,7 @@ export const favoriteCarrierService = {
    */
   async getTransporteursByType(typeTransport: string): Promise<TransporteurOption[]> {
     const response = await fetch(`${API_BASE_URL}/transporteurs/type/${typeTransport}`)
-    if (!response.ok) throw new Error(`Failed to fetch transporteurs for type ${typeTransport}`)
+    if (!response.ok) throw new Error(`Échec de la récupération des transporteurs pour le type ${typeTransport}`)
     return response.json()
   },
 
@@ -71,8 +71,8 @@ export const favoriteCarrierService = {
   async removeFavoriteCarrier(patientId: number, typeTransport: string): Promise<void> {
     const response = await fetch(
       `${API_BASE_URL}/patient-favori/remove?patientId=${patientId}&typeTransport=${typeTransport}`,
-      { method: 'DELETE' }
+      { method: 'SUPPRIMER' }
     )
-    if (!response.ok) throw new Error('Failed to remove favorite carrier')
+    if (!response.ok) throw new Error('Échec de la suppression du transporteur favori')
   }
 }
