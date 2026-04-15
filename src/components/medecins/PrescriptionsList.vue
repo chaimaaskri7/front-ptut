@@ -282,9 +282,10 @@ const handleSearch = (query: string) => {
 
 const fetchPatients = async () => {
   try {
-    // Load all patients and filter client-side
+    // Load ALL patients (not filtered) so we can resolve ANY patient name
     const allPatients = await fetchData(`/patients`);
-    patients.value = allPatients.filter((p: any) => p.idmedecin === auth.userId.value);
+    patients.value = allPatients;
+    console.log(`Loaded ${allPatients.length} patients for name resolution`);
   } catch (err) {
     console.error('Erreur lors de la récupération des patients:', err);
   }
@@ -313,9 +314,10 @@ const fetchPrescriptions = async () => {
   }
 };
 
-onMounted(() => {
-  fetchPatients();
-  fetchPrescriptions();
+onMounted(async () => {
+  // Load patients FIRST so getPatientName() will find them
+  await fetchPatients();
+  await fetchPrescriptions();
 });
 
 // Auto-refresh when returning to the prescriptions page
