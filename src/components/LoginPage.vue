@@ -56,7 +56,7 @@
           <input
             v-model="form.password"
             type="password"
-            placeholder="PASSWORD"
+            placeholder="MOT DE PASSE"
             class="w-full px-6 py-4 bg-white text-gray-800 placeholder-gray-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 transition text-lg font-medium"
           />
 
@@ -71,7 +71,7 @@
             :disabled="isLoading"
             class="w-full bg-white text-indigo-600 font-bold py-4 px-6 rounded-xl hover:shadow-xl disabled:opacity-70 transition text-lg uppercase tracking-widest"
           >
-            {{ isLoading ? 'Connexion...' : 'Login' }}
+            {{ isLoading ? 'Connexion...' : 'CONNEXION' }}
           </button>
         </form>
 
@@ -87,7 +87,7 @@
 
         <!-- Forgot Password -->
         <div class="text-center mt-8">
-          <button @click="showForgotPasswordModal = true" class="text-white font-semibold hover:underline text-sm opacity-90">Forgot password?</button>
+          <button @click="showForgotPasswordModal = true" class="text-white font-semibold hover:underline text-sm opacity-90">Mot de passe oublié ?</button>
         </div>
       </div>
     </div>
@@ -95,8 +95,8 @@
     <!-- Forgot Password Modal -->
     <div v-if="showForgotPasswordModal" class="fixed inset-0 bg-white flex items-center justify-center z-50 p-4">
       <div class="bg-white rounded-2xl max-w-md w-full p-8 shadow-2xl">
-        <h2 class="text-2xl font-bold text-slate-900 mb-2">Reset Password</h2>
-        <p class="text-slate-600 text-sm mb-6">Enter your email or code to receive a password reset link</p>
+        <h2 class="text-2xl font-bold text-slate-900 mb-2">Réinitialiser le mot de passe</h2>
+        <p class="text-slate-600 text-sm mb-6">Entrez votre email ou code pour recevoir un lien de réinitialisation</p>
 
         <!-- Reset Password Form -->
         <form @submit.prevent="handleForgotPassword" class="space-y-4">
@@ -132,7 +132,7 @@
           <input
             v-model="forgotForm.email"
             type="email"
-            placeholder="Email Address"
+            placeholder="Adresse email"
             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 text-gray-800"
           />
 
@@ -140,7 +140,7 @@
           <input
             v-model="forgotForm.code"
             type="text"
-            :placeholder="forgotForm.userType === 'medecin' ? 'RPPS Code' : 'NSS Code'"
+            :placeholder="forgotForm.userType === 'medecin' ? 'Code RPPS' : 'Code NSS'"
             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-600 text-gray-800"
           />
 
@@ -161,14 +161,14 @@
               @click="closeForgotPasswordModal"
               class="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-semibold transition"
             >
-              Cancel
+              Annuler
             </button>
             <button
               type="submit"
               :disabled="isForgotLoading"
               class="flex-1 px-4 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-70 font-semibold transition"
             >
-              {{ isForgotLoading ? 'Sending...' : 'Send Reset Link' }}
+              {{ isForgotLoading ? 'Envoi...' : 'Envoyer le lien' }}
             </button>
           </div>
         </form>
@@ -225,16 +225,16 @@ const handleForgotPassword = async () => {
     })
 
     if (data.success) {
-      forgotSuccess.value = `Reset link sent! Token: ${data.resetToken} (check your email or save this token)`
+      forgotSuccess.value = `Lien de réinitialisation envoyé ! Jeton : ${data.resetToken} (Consultez votre email ou sauvegardez ce jeton)`
       // Auto close after 5 seconds on success
       setTimeout(() => {
         closeForgotPasswordModal()
       }, 5000)
     } else {
-      forgotError.value = data.message || 'Error requesting password reset'
+      forgotError.value = data.message || 'Erreur lors de la demande de réinitialisation du mot de passe'
     }
   } catch (err) {
-    forgotError.value = 'Error connecting to server'
+    forgotError.value = 'Erreur de connexion au serveur'
     console.error('Forgot password error:', err)
   } finally {
     isForgotLoading.value = false
