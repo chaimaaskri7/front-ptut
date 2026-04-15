@@ -374,18 +374,33 @@ const fetchStats = async () => {
     const uniqueMedecins = new Set(allPrescriptions.map(p => p.medecin || p.idmedecin))
     const avgPrescriptions = allPrescriptions.length / uniqueMedecins.size
     
+    // Get top disease from patients
+    let topDisease = 'N/A'
+    if (patients.value.length > 0) {
+      const diseaseMap: Record<string, number> = {}
+      patients.value.forEach(patient => {
+        if (patient.maladie) {
+          diseaseMap[patient.maladie] = (diseaseMap[patient.maladie] || 0) + 1
+        }
+      })
+      
+      if (Object.keys(diseaseMap).length > 0) {
+        topDisease = Object.entries(diseaseMap).sort((a, b) => b[1] - a[1])[0][0]
+      }
+    }
+    
     stats.value = {
-      medecinId: auth.userId.value,
       prescriptionsCount: medecinPrescriptions.length,
       patientsCount: uniquePatientIds.size,
       averagePrescriptions: avgPrescriptions,
-      topDiseaseByMedecin: 'N/A'
+      topDiseaseByMedecin: topDisease,
+      topTransportType: 'N/A'
     }
     
     console.log('Stats calculated:', stats.value)
   } catch (error) {
     console.error('Erreur lors du chargement des stats:', error)
-    stats.value = { prescriptionsCount: 0, patientsCount: 0, averagePrescriptions: 0 }
+    stats.value = { prescriptionsCount: 0, patientsCount: 0, averagePrescriptions: 0, topDiseaseByMedecin: 'N/A', topTransportType: 'N/A' }
   }
 }
 
@@ -437,9 +452,14 @@ const fetchPatients = async () => {
   }
 }
 
-onMounted(() => {
-  fetchStats()
-  fetchPrescriptions()
-  fetchPatients()
+onMounted(async () => {
+  try {
+    // Load patients first so we can use them in stats calculation
+    await fetchPatients()
+    await fetchPrescriptions()
+    await fetchStats()
+  } catch (error) {
+    console.error('Erreur lors du chargement du dashboard:', error)
+  }
 })
 </script>
