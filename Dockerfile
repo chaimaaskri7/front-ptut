@@ -1,7 +1,7 @@
 # Multi-stage build for Vue 3 + Vite frontend
 
-# Build stage
-FROM node:22-alpine AS builder
+# Build stage - use full node image for better build support
+FROM node:22 AS builder
 
 WORKDIR /app
 
