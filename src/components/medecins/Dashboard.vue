@@ -200,6 +200,7 @@ import {
 } from 'chart.js'
 import Header from '../Header.vue'
 import { useAuth } from '../../composables/useAuth'
+import { fetchData } from '../../services/api-config'
 
 ChartJS.register(ArcElement, Tooltip, Legend)
 
@@ -360,10 +361,7 @@ const calculateTransportStats = () => {
 
 const fetchStats = async () => {
   try {
-    const response = await fetch(`http://localhost:8081/medecins/${auth.userId.value}/stats`)
-    if (response.ok) {
-      stats.value = await response.json()
-    }
+    stats.value = await fetchData(`/medecins/${auth.userId.value}/stats`)
   } catch (error) {
     console.error('Erreur lors du chargement des stats:', error)
   }
@@ -371,12 +369,9 @@ const fetchStats = async () => {
 
 const fetchPrescriptions = async () => {
   try {
-    const response = await fetch(`http://localhost:8081/prescriptions/medecin/${auth.userId.value}`)
-    if (response.ok) {
-      const data = await response.json()
-      prescriptions.value = Array.isArray(data) ? data : [data]
-      calculateTransportStats()
-    }
+    const data = await fetchData(`/prescriptions/medecin/${auth.userId.value}`)
+    prescriptions.value = Array.isArray(data) ? data : [data]
+    calculateTransportStats()
   } catch (error) {
     console.error('Erreur lors du chargement des prescriptions:', error)
   }
@@ -384,10 +379,7 @@ const fetchPrescriptions = async () => {
 
 const fetchPatients = async () => {
   try {
-    const response = await fetch(`http://localhost:8081/patients/medecin/${auth.userId.value}`)
-    if (response.ok) {
-      patients.value = await response.json()
-    }
+    patients.value = await fetchData(`/patients/medecin/${auth.userId.value}`)
   } catch (error) {
     console.error('Erreur lors du chargement des patients:', error)
   }

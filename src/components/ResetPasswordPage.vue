@@ -49,6 +49,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { postData } from '../services/api-config'
 
 const route = useRoute()
 const router = useRouter()
@@ -98,18 +99,10 @@ const handleResetPassword = async () => {
   loading.value = true
 
   try {
-    const response = await fetch('http://localhost:8081/auth/reset-password', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        resetToken: resetToken.value,
-        newPassword: newPassword.value
-      })
+    const data = await postData('/auth/reset-password', {
+      resetToken: resetToken.value,
+      newPassword: newPassword.value
     })
-
-    const data = await response.json()
 
     if (data.success) {
       success.value = true

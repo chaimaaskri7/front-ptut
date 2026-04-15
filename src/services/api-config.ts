@@ -95,4 +95,26 @@ export const deleteData = async (endpoint: string): Promise<void> => {
   }
 };
 
+// Fonction générique pour télécharger des fichiers (PDF, images, etc.)
+export const fetchFile = async (endpoint: string): Promise<Blob> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': getHeaders()['Authorization'] || '',
+      } as any,
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      throw new Error(`Erreur ${response.status}: ${response.statusText}`);
+    }
+
+    return await response.blob();
+  } catch (error) {
+    console.error(`Erreur lors du téléchargement du fichier ${endpoint}:`, error);
+    throw error;
+  }
+};
+
 export { API_BASE_URL };

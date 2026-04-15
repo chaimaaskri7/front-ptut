@@ -240,6 +240,7 @@ import { useRoute } from 'vue-router';
 import { useAuth } from '../../composables/useAuth';
 import Header from '../Header.vue';
 import Pagination from '../Pagination.vue';
+import { fetchData, fetchFile } from '../../services/api-config';
 
 const auth = useAuth();
 const route = useRoute();
@@ -281,16 +282,7 @@ const handleSearch = (query: string) => {
 
 const fetchPatients = async () => {
   try {
-    const response = await fetch(`http://localhost:8081/patients/medecin/${auth.userId.value}`, {
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    });
-    
-    if (response.ok) {
-      patients.value = await response.json();
-    }
+    patients.value = await fetchData(`/patients/medecin/${auth.userId.value}`);
   } catch (err) {
     console.error('Erreur lors de la récupération des patients:', err);
   }
@@ -300,19 +292,7 @@ const fetchPrescriptions = async () => {
   loading.value = true;
   error.value = null;
   try {
-    // Fetch prescriptions for the connected medecin
-    const response = await fetch(`http://localhost:8081/prescriptions/medecin/${auth.userId.value}`, {
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    });
-    
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-    
-    const data = await response.json();
+    const data = await fetchData(`/prescriptions/medecin/${auth.userId.value}`);
     console.log('Prescriptions du médecin reçues:', data);
     prescriptions.value = data;
   } catch (err: any) {
@@ -342,24 +322,15 @@ const viewPrescription = (prescription: any) => {
 
 const downloadPDF = async (prescription: any) => {
   try {
-    const pdfResponse = await fetch(`http://localhost:8081/prescriptions/${prescription.idprescription}/pdf`, {
-      method: 'GET',
-      credentials: 'include'
-    });
-    
-    if (pdfResponse.ok) {
-      const blob = await pdfResponse.blob();
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `prescription_${prescription.idprescription}.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-    } else {
-      alert('Erreur lors du téléchargement du PDF');
-    }
+    const blob = await fetchFile(`/prescriptions/${prescription.idprescription}/pdf`);
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `prescription_${prescription.idprescription}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
   } catch (err) {
     console.error('Erreur:', err);
     alert('Erreur lors du téléchargement du PDF');

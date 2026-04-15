@@ -181,6 +181,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '../composables/useAuth'
+import { postData } from '../services/api-config'
 
 const router = useRouter()
 const auth = useAuth()
@@ -217,19 +218,11 @@ const handleForgotPassword = async () => {
   isForgotLoading.value = true
 
   try {
-    const response = await fetch('http://localhost:8081/auth/forgot-password', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        userType: forgotForm.value.userType,
-        code: forgotForm.value.code,
-        email: forgotForm.value.email
-      })
+    const data = await postData('/auth/forgot-password', {
+      userType: forgotForm.value.userType,
+      code: forgotForm.value.code,
+      email: forgotForm.value.email
     })
-
-    const data = await response.json()
 
     if (data.success) {
       forgotSuccess.value = `Reset link sent! Token: ${data.resetToken} (check your email or save this token)`
@@ -253,20 +246,11 @@ const handleLogin = async () => {
   isLoading.value = true
 
   try {
-    const response = await fetch('http://localhost:8081/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        userType: form.value.userType,
-        code: form.value.code,
-        password: form.value.password
-      }),
-      credentials: 'include'
+    const data = await postData('/auth/login', {
+      userType: form.value.userType,
+      code: form.value.code,
+      password: form.value.password
     })
-
-    const data = await response.json()
 
     if (data.success) {
       auth.login(data.userId, data.userType, data.userName, data.specialite, data.mail)
