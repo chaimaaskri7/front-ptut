@@ -147,34 +147,47 @@ const initMap = () => {
 }
 
 const fetchEtapesAndQRCodes = async () => {
-  if (!props.transport?.idtransport) return
+  if (!props.transport?.idtransport) {
+    console.warn('Pas de transport ID')
+    return
+  }
   
   loadingEtapes.value = true
   try {
     // Charger les étapes du transport
+    console.log(`Fetching étapes for transport ${props.transport.idtransport}`)
     const etapesRes = await fetch(`${API_BASE_URL}/etapes/transport/${props.transport.idtransport}`)
+    
     if (etapesRes.ok) {
       const etapesData = await etapesRes.json()
+      console.log(`Étapes trouvées:`, etapesData)
       etapes.value = etapesData
       
       // Charger les QR codes pour chaque étape
       const qrCodesList: QRCodeData[] = []
       for (const etape of etapesData) {
         try {
+          console.log(`Fetching QR codes for étape ${etape.idetape}`)
           const qrRes = await fetch(`${API_BASE_URL}/qr-codes/etape/${etape.idetape}`)
           if (qrRes.ok) {
             const qrData = await qrRes.json()
+            console.log(`QR codes for étape ${etape.idetape}:`, qrData)
             qrCodesList.push(...qrData)
+          } else {
+            console.warn(`Pas de QR codes pour étape ${etape.idetape}`)
           }
         } catch (err) {
           console.error(`Erreur chargement QR codes pour l'étape ${etape.idetape}:`, err)
         }
       }
       qrcodes.value = qrCodesList
+      console.log(`Total QR codes:`, qrCodesList.length)
       
       // Générer les QR codes
       await nextTick()
       await generateQRCodes()
+    } else {
+      console.warn(`Pas d'étapes trouvées pour le transport ${props.transport.idtransport}`)
     }
   } catch (err) {
     console.error('Erreur lors du chargement des étapes:', err)
@@ -326,18 +339,25 @@ watch(() => props.isOpen, async (newVal) => {
         </div>
 
         <!-- Étapes & QR Codes -->
-        <div v-if="etapes.length > 0" class="space-y-4">
+        <div class="space-y-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
           <h3 class="text-lg font-bold text-gray-800">Étapes du transport</h3>
           
           <div v-if="loadingEtapes" class="text-center py-4">
             <p class="text-gray-500">Chargement des étapes et QR codes...</p>
           </div>
 
+          <div v-else-if="etapes.length === 0" class="text-center py-4 bg-yellow-50 border border-yellow-200 rounded p-3">
+            <p class="text-yellow-700">
+              ℹ️ Aucune étape trouvée pour ce transport.<br>
+              <span class="text-sm text-yellow-600">Transport ID: {{ props.transport?.idtransport }}</span>
+            </p>
+          </div>
+
           <div v-else class="space-y-4">
             <div 
               v-for="(etape, idx) in etapes" 
               :key="etape.idetape"
-              class="border-l-4 border-blue-500 pl-4 py-2"
+              class="border-l-4 border-blue-500 pl-4 py-2 bg-white p-3 rounded"
             >
               <div class="flex items-center gap-2 mb-3">
                 <span class="inline-flex items-center justify-center w-6 h-6 bg-blue-500 text-white rounded-full text-sm font-bold">
