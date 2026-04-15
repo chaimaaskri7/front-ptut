@@ -154,56 +154,49 @@ const fetchEtapesAndQRCodes = async () => {
   
   loadingEtapes.value = true
   try {
-    // Charger les étapes disponibles (endpoint qui fonctionne dans QRCode.vue)
+    // Charger TOUTES les étapes + QR codes (même endpoint que QRCode.vue)
     console.log(`Fetching étapes (using /qr-codes/etapes)`)
     const etapesRes = await fetch(`${API_BASE_URL}/qr-codes/etapes`)
     
     if (etapesRes.ok) {
       const allEtapes = await etapesRes.json()
       console.log(`Toutes les étapes disponibles:`, allEtapes)
+      console.log(`Transport ID à filtrer: ${props.transport.idtransport}`)
       
-      // Charger les QR codes pour ce transport spécifique
-      console.log(`Fetching QR codes for transport ${props.transport.idtransport}`)
-      const qrRes = await fetch(`${API_BASE_URL}/qr-codes/transport/${props.transport.idtransport}`)
+      // Filtrer les étapes pour ce transport spécifique
+      const transportEtapes = allEtapes.filter((etape: any) => {
+        console.log(`Comparing etape.idtransport (${etape.idtransport}) with props.transport.idtransport (${props.transport.idtransport})`)
+        return etape.idtransport === props.transport.idtransport
+      })
+      console.log(`Étapes du transport ${props.transport.idtransport}:`, transportEtapes)
       
-      if (qrRes.ok) {
-        const qrCodesData = await qrRes.json()
-        console.log(`QR codes for transport:`, qrCodesData)
-        
-        // Extraire les étapes uniques des QR codes
-        const etapeIds = new Set(qrCodesData.map((qr: any) => qr.etape?.idetape).filter(Boolean))
-        console.log(`Étapes avec QR codes:`, Array.from(etapeIds))
-        
-        // Filtrer les étapes pour ne garder que celles avec des QR codes
-        const filteredEtapes = allEtapes.filter((etape: any) => etapeIds.has(etape.idetape))
-        console.log(`Étapes filtrées pour ce transport:`, filteredEtapes)
-        
-        etapes.value = filteredEtapes
-        qrcodes.value = qrCodesData
-        
-        // Générer les QR codes
-        await nextTick()
-        await generateQRCodes()
-      } else {
-        console.warn(`Pas de QR codes trouvés pour transport ${props.transport.idtransport}`)
-        // Essayer un endpoint alternatif
-        console.log(`Essai endpoint alternatif...`)
-        const allQRRes = await fetch(`${API_BASE_URL}/qr-codes/etapes`)
-        if (allQRRes.ok) {
-          const allQRCodes = await allQRRes.json()
-          console.log(`Tous les QR codes:`, allQRCodes)
-          qrcodes.value = allQRCodes
-          
-          // Un seul endpoint fonctionne - afficher tous les QR codes
-          const uniqueEtapes = Array.from(new Set(allQRCodes.map((qr: any) => qr.etape?.idetape)))
-          etapes.value = allEtapes.filter((etape: any) => uniqueEtapes.includes(etape.idetape))
-          
-          await nextTick()
-          await generateQRCodes()
+      // Charger les QR codes pour ce transport
+      let qrCodesData: any[] = []
+      for (const etape of transportEtapes) {
+        try {
+          console.log(`Fetching QR codes for étape ${etape.idetape}`)
+          const qrRes = await fetch(`${API_BASE_URL}/qr-codes/etape/${etape.idetape}`)
+          if (qrRes.ok) {
+            const qrCodes = await qrRes.json()
+            console.log(`QR codes for étape ${etape.idetape}:`, qrCodes)
+            qrCodesData.push(...qrCodes)
+          } else {
+            console.warn(`Pas de QR codes pour étape ${etape.idetape}`)
+          }
+        } catch (err) {
+          console.error(`Erreur fetching QR codes for étape ${etape.idetape}:`, err)
         }
       }
+      console.log(`Total QR codes for transport: ${qrCodesData.length}`)
+      
+      etapes.value = transportEtapes
+      qrcodes.value = qrCodesData
+      
+      // Générer les QR codes (même s'il y en a 0)
+      await nextTick()
+      await generateQRCodes()
     } else {
-      console.warn(`Pas d'étapes trouvées`)
+      console.warn(`Erreur fetching étapes: ${etapesRes.status}`)
     }
   } catch (err) {
     console.error('Erreur lors du chargement des étapes:', err)
