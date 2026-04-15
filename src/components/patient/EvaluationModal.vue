@@ -164,14 +164,14 @@ const setDriverRating = (stars: number) => {
               :disabled="isSubmitting"
               class="flex-1 px-4 py-2 border border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition disabled:opacity-50"
             >
-              Cancel
+              Annuler
             </button>
             <button 
               @click="submitEvaluation"
               :disabled="isSubmitting"
               class="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition disabled:opacity-50"
             >
-              {{ isSubmitting ? 'Submitting...' : 'Submit' }}
+              {{ isSubmitting ? 'Envoi en cours...' : 'Envoyer' }}
             </button>
           </div>
         </div>
