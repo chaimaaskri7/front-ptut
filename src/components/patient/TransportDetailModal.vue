@@ -240,9 +240,6 @@ watch(() => props.isOpen, async (newVal) => {
             class="w-full"
             style="height: 400px; min-height: 400px;">
           </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
