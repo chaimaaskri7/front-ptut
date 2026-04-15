@@ -406,26 +406,32 @@ const fetchPrescriptions = async () => {
 
 const fetchPatients = async () => {
   try {
-    console.log('=== DASHBOARD: FETCHING PATIENTS ===');
-    console.log('Current medecin ID:', auth.userId.value, typeof auth.userId.value);
-    
-    // Get all prescriptions to find which patients are assigned to this medecin
+    // Get all prescriptions
     const allPrescriptions = await fetchData(`/prescriptions`)
+    
+    // Get medecin ID
+    const medecinId = auth.userId.value
+    
+    // Filter prescriptions for this medecin
     const medecinPrescriptions = allPrescriptions.filter((p: any) => 
-      p.medecin === auth.userId.value || p.idmedecin === auth.userId.value
+      p.medecin === medecinId || p.idmedecin === medecinId
     )
     
-    console.log('Total prescriptions:', allPrescriptions.length)
-    console.log('Prescriptions for this medecin:', medecinPrescriptions.length)
+    // Extract unique patient IDs - NO SET, just simple array
+    const patientIds = []
+    for (const p of medecinPrescriptions) {
+      if (!patientIds.includes(p.idpatient)) {
+        patientIds.push(p.idpatient)
+      }
+    }
     
-    // Get unique patient IDs from medecin's prescriptions
-    const medecinPatientIds = new Set(medecinPrescriptions.map(p => p.idpatient))
+    // Load all patients
+    const allPats = await fetchData(`/patients`)
     
-    // Load all patients and filter to only those who have prescriptions from this medecin
-    const allPatients = await fetchData(`/patients`)
-    patients.value = allPatients.filter((p: any) => medecinPatientIds.has(p.idpatient))
+    // Filter patients manually
+    patients.value = allPats.filter((p: any) => patientIds.includes(p.idpatient))
     
-    console.log(`✓ Loaded ${patients.value.length} patients for medecin ${auth.userId.value}`)
+    console.log(`✓ Dashboard: Loaded ${patients.value.length} patients for medecin ${medecinId}`)
   } catch (error) {
     console.error('Erreur lors du chargement des patients:', error)
   }

@@ -157,42 +157,53 @@ const fetchPatients = async () => {
   loading.value = true;
   error.value = null;
   try {
-    console.log('=== FETCHING PATIENTS ===');
-    console.log('Current medecin ID:', auth.userId.value, typeof auth.userId.value);
+    console.log('🔍 PatientsList - Fetching data...');
     
-    // Get all prescriptions to find which patients are assigned to this medecin
+    // Step 1: Get all prescriptions
     const allPrescriptions = await fetchData(`/prescriptions`);
-    console.log('Total prescriptions from server:', allPrescriptions.length);
-    console.log('First prescription sample:', allPrescriptions[0]);
+    console.log(`📋 Total prescriptions: ${allPrescriptions.length}`);
     
-    const medecinPrescriptions = allPrescriptions.filter((p: any) => {
-      const match = p.medecin === auth.userId.value || p.idmedecin === auth.userId.value;
-      return match;
-    });
+    // Step 2: Get medecin ID
+    const medecinId = auth.userId.value;
+    console.log(`🏥 Medecin ID: ${medecinId} (type: ${typeof medecinId})`);
     
-    console.log('Prescriptions for this medecin:', medecinPrescriptions.length);
-    console.log('Patient IDs in prescriptions:', medecinPrescriptions.map(p => p.idpatient));
+    // Step 3: Filter prescriptions for this medecin - ULTRA DETAILED
+    const medecinPrescriptions = [];
+    for (const p of allPrescriptions) {
+      console.log(`  Checking prescription ${p.idprescription}: medecin=${p.medecin}, idmedecin=${p.idmedecin}, match=${p.medecin === medecinId || p.idmedecin === medecinId}`);
+      if (p.medecin === medecinId || p.idmedecin === medecinId) {
+        medecinPrescriptions.push(p);
+      }
+    }
+    console.log(`✅ Prescriptions for this medecin: ${medecinPrescriptions.length}`);
     
-    // Extract unique patient IDs from medecin's prescriptions
-    const medecinPatientIds = new Set(medecinPrescriptions.map(p => p.idpatient));
-    console.log('Unique patient IDs:', Array.from(medecinPatientIds));
+    // Step 4: Extract patient IDs manually
+    const patientIds = [];
+    for (const p of medecinPrescriptions) {
+      if (!patientIds.includes(p.idpatient)) {
+        patientIds.push(p.idpatient);
+      }
+    }
+    console.log(`👥 Patient IDs from prescriptions: [${patientIds.join(', ')}]`);
     
-    // Load all patients and filter to only those who have prescriptions from this medecin
+    // Step 5: Load all patients
     const allData = await fetchData(`/patients`);
-    console.log('Total patients from server:', allData.length);
+    console.log(`📊 Total patients from API: ${allData.length}`);
     
-    const medecinPatients = allData.filter((p: any) => {
-      const has = medecinPatientIds.has(p.idpatient);
-      return has;
-    });
+    // Step 6: Filter patients manually
+    const result = [];
+    for (const patient of allData) {
+      if (patientIds.includes(patient.idpatient)) {
+        result.push(patient);
+        console.log(`  ✓ Added patient ${patient.idpatient}: ${patient.prenom} ${patient.nom}`);
+      }
+    }
     
-    console.log('=== FINAL RESULT ===');
-    console.log('Filtered patients for medecin:', medecinPatients.length);
-    console.log('Patients:', medecinPatients.map(p => `${p.prenom} ${p.nom}`));
+    console.log(`🎉 FINAL: ${result.length} patients for medecin ${medecinId}`);
+    allPatients.value = result;
     
-    allPatients.value = medecinPatients;
   } catch (err: any) {
-    console.error('❌ ERREUR lors de la récupération des patients:', err);
+    console.error('❌ ERROR:', err);
     error.value = `Erreur: ${err.message}`;
   } finally {
     loading.value = false;
