@@ -304,10 +304,17 @@ const fetchPrescriptions = async () => {
       p.medecin === auth.userId.value || p.idmedecin === auth.userId.value
     );
     
+    // Trier par date décroissante (plus récentes en premier)
+    medecinPrescriptions.sort((a: any, b: any) => {
+      const dateA = new Date(a.dateprescription || 0).getTime()
+      const dateB = new Date(b.dateprescription || 0).getTime()
+      return dateB - dateA
+    })
+    
     console.log(`Prescriptions filtered for medecin ${auth.userId.value}:`, medecinPrescriptions.length);
     prescriptions.value = medecinPrescriptions;
   } catch (err: any) {
-    console.error('Erreur lors de la récupération des prescriptions:', err);
+    console.error('Erreur lors du chargement des prescriptions:', err);
     error.value = `Erreur: ${err.message}`;
   } finally {
     loading.value = false;
