@@ -2,7 +2,6 @@
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import QRCode from 'qrcode'
 
 interface Props {
   transport: any
@@ -10,32 +9,8 @@ interface Props {
   onClose: () => void
 }
 
-interface Etape {
-  idetape: number
-  statut: string
-  idtransport: number
-}
-
-interface QRCodeData {
-  id: number
-  code: string
-  scanned: boolean
-  generatedAt: string
-  expiresAt: string
-  scannedAt?: string
-  etape?: {
-    id: number
-    statut: string
-    idetape: number
-  }
-}
-
 const props = defineProps<Props>()
 const mapContainer = ref<HTMLElement | null>(null)
-const etapes = ref<Etape[]>([])
-const qrcodes = ref<QRCodeData[]>([])
-const loadingEtapes = ref(false)
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://careway-backend.onrender.com'
 
 let map: L.Map | null = null
 
@@ -146,93 +121,13 @@ const initMap = () => {
   }
 }
 
-const fetchEtapesAndQRCodes = async () => {
-  if (!props.transport?.idtransport) {
-    console.warn('Pas de transport ID')
-    return
-  }
-  
-  loadingEtapes.value = true
-  try {
-    // Charger TOUTES les étapes + QR codes (même endpoint que QRCode.vue)
-    console.log(`Fetching étapes (using /qr-codes/etapes)`)
-    const etapesRes = await fetch(`${API_BASE_URL}/qr-codes/etapes`)
-    
-    if (etapesRes.ok) {
-      const allEtapes = await etapesRes.json()
-      console.log(`Toutes les étapes disponibles:`, allEtapes)
-      console.log(`Transport ID à filtrer: ${props.transport.idtransport}`)
-      
-      // Filtrer les étapes pour ce transport spécifique
-      const transportEtapes = allEtapes.filter((etape: any) => {
-        console.log(`Comparing etape.idtransport (${etape.idtransport}) with props.transport.idtransport (${props.transport.idtransport})`)
-        return etape.idtransport === props.transport.idtransport
-      })
-      console.log(`Étapes du transport ${props.transport.idtransport}:`, transportEtapes)
-      
-      // Charger les QR codes pour ce transport
-      let qrCodesData: any[] = []
-      for (const etape of transportEtapes) {
-        try {
-          console.log(`Fetching QR codes for étape ${etape.idetape}`)
-          const qrRes = await fetch(`${API_BASE_URL}/qr-codes/etape/${etape.idetape}`)
-          if (qrRes.ok) {
-            const qrCodes = await qrRes.json()
-            console.log(`QR codes for étape ${etape.idetape}:`, qrCodes)
-            qrCodesData.push(...qrCodes)
-          } else {
-            console.warn(`Pas de QR codes pour étape ${etape.idetape}`)
-          }
-        } catch (err) {
-          console.error(`Erreur fetching QR codes for étape ${etape.idetape}:`, err)
-        }
-      }
-      console.log(`Total QR codes for transport: ${qrCodesData.length}`)
-      
-      etapes.value = transportEtapes
-      qrcodes.value = qrCodesData
-      
-      // Générer les QR codes (même s'il y en a 0)
-      await nextTick()
-      await generateQRCodes()
-    } else {
-      console.warn(`Erreur fetching étapes: ${etapesRes.status}`)
-    }
-  } catch (err) {
-    console.error('Erreur lors du chargement des étapes:', err)
-  } finally {
-    loadingEtapes.value = false
-  }
-}
 
-const generateQRCodes = async () => {
-  for (const qrCode of qrcodes.value) {
-    try {
-      const canvas = document.getElementById(`qr-canvas-modal-${qrCode.id}`) as HTMLCanvasElement
-      if (canvas) {
-        await QRCode.toCanvas(canvas, qrCode.code, {
-          width: 150,
-          margin: 2,
-          color: {
-            dark: '#000000',
-            light: '#ffffff'
-          }
-        })
-      }
-    } catch (err) {
-      console.error(`Erreur génération QR code ${qrCode.id}:`, err)
-    }
-  }
-}
 
 // Initialiser la carte quand le modal s'ouvre
 watch(() => props.isOpen, async (newVal) => {
   if (newVal) {
     // Attendre que le DOM soit à jour
     await nextTick()
-    
-    // Charger les étapes et QR codes
-    await fetchEtapesAndQRCodes()
     
     // Puis attendre plus longtemps pour que la hauteur soit correctement définie
     setTimeout(() => {
@@ -345,59 +240,6 @@ watch(() => props.isOpen, async (newVal) => {
             class="w-full"
             style="height: 400px; min-height: 400px;">
           </div>
-        </div>
-
-        <!-- Étapes & QR Codes -->
-        <div class="space-y-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
-          <h3 class="text-lg font-bold text-gray-800">Étapes du transport</h3>
-          
-          <div v-if="loadingEtapes" class="text-center py-4">
-            <p class="text-gray-500">Chargement des étapes et QR codes...</p>
-          </div>
-
-          <div v-else-if="etapes.length === 0" class="text-center py-4 bg-yellow-50 border border-yellow-200 rounded p-3">
-            <p class="text-yellow-700">
-              ℹ️ Aucune étape trouvée pour ce transport.<br>
-              <span class="text-sm text-yellow-600">Transport ID: {{ props.transport?.idtransport }}</span>
-            </p>
-          </div>
-
-          <div v-else class="space-y-4">
-            <div 
-              v-for="(etape, idx) in etapes" 
-              :key="etape.idetape"
-              class="border-l-4 border-blue-500 pl-4 py-2 bg-white p-3 rounded"
-            >
-              <div class="flex items-center gap-2 mb-3">
-                <span class="inline-flex items-center justify-center w-6 h-6 bg-blue-500 text-white rounded-full text-sm font-bold">
-                  {{ idx + 1 }}
-                </span>
-                <h4 class="font-semibold text-gray-800">{{ etape.statut }}</h4>
-              </div>
-
-              <!-- QR Codes for this étape -->
-              <div v-if="qrcodes.filter(q => q.etape?.idetape === etape.idetape).length > 0" class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div 
-                  v-for="qr in qrcodes.filter(q => q.etape?.idetape === etape.idetape)"
-                  :key="qr.id"
-                  class="bg-gray-50 rounded p-3 flex flex-col items-center"
-                >
-                  <canvas 
-                    :id="`qr-canvas-modal-${qr.id}`"
-                    width="150"
-                    height="150"
-                    class="border-2 border-gray-300 rounded bg-white mb-2"
-                  ></canvas>
-                  <div :class="[
-                    'inline-block px-2 py-1 rounded text-xs font-semibold',
-                    qr.scanned ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
-                  ]">
-                    {{ qr.scanned ? '✓ Scanné' : 'En attente' }}
-                  </div>
-                </div>
-              </div>
-              <div v-else class="text-sm text-gray-500 italic">
-                Aucun QR code pour cette étape
               </div>
             </div>
           </div>
