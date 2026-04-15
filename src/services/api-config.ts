@@ -1,5 +1,5 @@
 // Configuration de l'URL de base du backend
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8081';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://careway-backend.onrender.com';
 
 // Fonction pour créer les headers avec le token JWT si disponible
 const getHeaders = () => {

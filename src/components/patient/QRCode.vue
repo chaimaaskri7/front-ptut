@@ -30,7 +30,7 @@ const loading = ref(false)
 const error = ref<string | null>(null)
 const selectedEtape = ref<number>(6)
 
-const API_BASE_URL = 'http://localhost:8081'
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://careway-backend.onrender.com'
 
 const fetchQRCodesForEtape = async (id: number) => {
   loading.value = true

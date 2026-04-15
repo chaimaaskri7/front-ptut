@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { API_BASE_URL } from '@/services/api-config'
 
 const patients = ref<any[]>([])
 const prescriptions = ref<any[]>([])
@@ -13,9 +14,9 @@ const fetchAllData = async () => {
     error.value = ''
     
     // Test direct fetch without service layer
-    const patientsRes = await fetch('http://localhost:8081/patients')
-    const prescriptionsRes = await fetch('http://localhost:8081/prescriptions')
-    const transportsRes = await fetch('http://localhost:8081/transports')
+    const patientsRes = await fetch(`${API_BASE_URL}/patients`)
+    const prescriptionsRes = await fetch(`${API_BASE_URL}/prescriptions`)
+    const transportsRes = await fetch(`${API_BASE_URL}/transports`)
     
     if (!patientsRes.ok) throw new Error(`Patients: ${patientsRes.status}`)
     if (!prescriptionsRes.ok) throw new Error(`Prescriptions: ${prescriptionsRes.status}`)

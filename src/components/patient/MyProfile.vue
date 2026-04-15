@@ -29,7 +29,8 @@ const fetchPatientProfile = async () => {
   loading.value = true
   error.value = null
   try {
-    const response = await fetch(`http://localhost:8081/patients/${auth.userId.value}`, {
+    const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://careway-backend.onrender.com'
+    const response = await fetch(`${API_BASE_URL}/patients/${auth.userId.value}`, {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
@@ -67,7 +68,8 @@ const fetchPatientProfile = async () => {
 
 const updateProfile = async () => {
   try {
-    const response = await fetch(`http://localhost:8081/patients/${auth.userId.value}`, {
+    const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://careway-backend.onrender.com'
+    const response = await fetch(`${API_BASE_URL}/patients/${auth.userId.value}`, {
       method: 'PUT',
       credentials: 'include',
       headers: {
