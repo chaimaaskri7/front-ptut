@@ -102,6 +102,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { useAuth } from '../../composables/useAuth';
 import Header from '../Header.vue';
+import { fetchData } from '../../services/api-config';
 
 interface Patient {
   idpatient: number
@@ -156,18 +157,7 @@ const fetchPatients = async () => {
   loading.value = true;
   error.value = null;
   try {
-    const response = await fetch(`http://localhost:8081/patients/medecin/${auth.userId.value}`, {
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    });
-    
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-    
-    const data = await response.json();
+    const data = await fetchData(`/patients/medecin/${auth.userId.value}`);
     console.log('Patients du médecin reçus:', data);
     allPatients.value = data;
   } catch (err: any) {

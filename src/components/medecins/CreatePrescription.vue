@@ -401,6 +401,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import Header from '../Header.vue'
 import { useAuth } from '../../composables/useAuth'
+import { fetchData, postData, fetchFile } from '../../services/api-config'
 
 const router = useRouter()
 const route = useRoute()
@@ -418,16 +419,7 @@ const hospitalSearch = ref('')
 // Charger les hôpitaux au montage du composant
 onMounted(async () => {
   try {
-    const response = await fetch('http://localhost:8081/hospitals/all', {
-      method: 'GET',
-      credentials: 'include'
-    })
-    
-    if (response.ok) {
-      hospitals.value = await response.json()
-    } else {
-      hospitalsError.value = 'Erreur lors du chargement des hôpitaux'
-    }
+    hospitals.value = await fetchData('/hospitals/all')
   } catch (error) {
     console.error('Erreur lors du chargement des hôpitaux:', error)
     hospitalsError.value = 'Impossible de charger la liste des hôpitaux'
@@ -507,50 +499,27 @@ const confirmSubmission = async () => {
       pension_militaire: form.value.pension_militaire
     }
 
-    const response = await fetch('http://localhost:8081/prescriptions/create-with-pdf', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(prescriptionData)
-    })
-
-    if (response.ok) {
-      const prescription = await response.json()
-      
+    const prescription = await postData('/prescriptions/create-with-pdf', prescriptionData)
+    
       // Télécharger le PDF généré
-      const pdfResponse = await fetch(`http://localhost:8081/prescriptions/${prescription.idprescription}/pdf`, {
-        method: 'GET',
-        credentials: 'include'
-      })
+      const blob = await fetchFile(`/prescriptions/${prescription.idprescription}/pdf`)
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `prescription_${prescription.idprescription}.pdf`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(url)
       
-      if (pdfResponse.ok) {
-        const blob = await pdfResponse.blob()
-        const url = window.URL.createObjectURL(blob)
-        const link = document.createElement('a')
-        link.href = url
-        link.download = `prescription_${prescription.idprescription}.pdf`
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-        window.URL.revokeObjectURL(url)
-        
-        alert('Prescription créée avec succès ! Le PDF a été téléchargé.')
-      }
+      alert('Prescription créée avec succès ! Le PDF a été téléchargé.')
       
       showConfirmation.value = false
       router.push('/patients')
-    } else {
-      const error = await response.text()
-      console.error('Erreur:', error)
-      alert('Erreur lors de la création de la prescription')
-      showConfirmation.value = false
-    }
   } catch (error) {
     console.error('Erreur:', error)
     showConfirmation.value = false
-    alert('Erreur lors de la création de la prescription: ' + error.message)
+    alert('Erreur lors de la création de la prescription: ' + (error as any).message)
   }
 }
 </script>
