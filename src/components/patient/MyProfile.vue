@@ -159,7 +159,7 @@ onMounted(() => {
         </div>
 
         <button @click="isEditing = !isEditing" class="bg-[#4e55d7] text-white px-6 py-2 rounded font-semibold">
-          {{ isEditing ? 'Annuler' : 'Edit' }}
+          {{ isEditing ? 'Annuler' : 'Modifier' }}
         </button>
 
         <button @click="logout" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded font-semibold transition">
@@ -170,15 +170,15 @@ onMounted(() => {
       <!-- Form Content (Edit Mode & Display Mode) -->
       <div v-if="isEditing" class="grid grid-cols-2 gap-6 mb-8">
         <div>
-          <label class="block text-sm font-semibold mb-2">Last Name</label>
+          <label class="block text-sm font-semibold mb-2">Nom</label>
           <input v-model="profile.nom" type="text" class="w-full border border-gray-300 rounded px-3 py-2" />
         </div>
         <div>
-          <label class="block text-sm font-semibold mb-2">First Name</label>
+          <label class="block text-sm font-semibold mb-2">Prénom</label>
           <input v-model="profile.prenom" type="text" class="w-full border border-gray-300 rounded px-3 py-2" />
         </div>
         <div>
-          <label class="block text-sm font-semibold mb-2">Gender</label>
+          <label class="block text-sm font-semibold mb-2">Sexe</label>
           <select v-model="profile.genre" class="w-full border border-gray-300 rounded px-3 py-2">
             <option value="">Sélectionner...</option>
             <option>Femme</option>
@@ -186,23 +186,23 @@ onMounted(() => {
           </select>
         </div>
         <div>
-          <label class="block text-sm font-semibold mb-2">Country</label>
+          <label class="block text-sm font-semibold mb-2">Pays</label>
           <input v-model="profile.pays" type="text" class="w-full border border-gray-300 rounded px-3 py-2" />
         </div>
         <div class="col-span-2">
-          <label class="block text-sm font-semibold mb-2">Address</label>
+          <label class="block text-sm font-semibold mb-2">Adresse</label>
           <input v-model="profile.adresse" type="text" class="w-full border border-gray-300 rounded px-3 py-2" />
         </div>
         <div>
-          <label class="block text-sm font-semibold mb-2">Phone Number</label>
+          <label class="block text-sm font-semibold mb-2">Numéro de téléphone</label>
           <input v-model="profile.telephone" type="text" class="w-full border border-gray-300 rounded px-3 py-2" />
         </div>
         <div>
-          <label class="block text-sm font-semibold mb-2">NSS (Social Security)</label>
+          <label class="block text-sm font-semibold mb-2">NSS</label>
           <input v-model="profile.nss" type="text" class="w-full border border-gray-300 rounded px-3 py-2" disabled />
         </div>
         <div>
-          <label class="block text-sm font-semibold mb-2">Health Condition</label>
+          <label class="block text-sm font-semibold mb-2">État de santé</label>
           <input v-model="profile.maladie" type="text" class="w-full border border-gray-300 rounded px-3 py-2" />
         </div>
         <button @click="updateProfile" type="button" class="col-span-2 bg-[#4e55d7] text-white py-2 rounded font-semibold hover:opacity-90">
@@ -214,52 +214,52 @@ onMounted(() => {
         <!-- Display Mode - All Fields -->
         <div class="grid grid-cols-2 gap-6 mb-8">
           <div>
-            <label class="block text-xs text-gray-500 font-semibold mb-1">Last Name</label>
+            <label class="block text-xs text-gray-500 font-semibold mb-1">Nom</label>
             <p class="text-gray-800 font-medium">{{ profile.nom }}</p>
           </div>
           <div>
-            <label class="block text-xs text-gray-500 font-semibold mb-1">First Name</label>
+            <label class="block text-xs text-gray-500 font-semibold mb-1">Prénom</label>
             <p class="text-gray-800 font-medium">{{ profile.prenom }}</p>
           </div>
           <div>
-            <label class="block text-xs text-gray-500 font-semibold mb-1">Gender</label>
+            <label class="block text-xs text-gray-500 font-semibold mb-1">Sexe</label>
             <p class="text-gray-800 font-medium">{{ profile.genre || 'Non spécifié' }}</p>
           </div>
           <div>
-            <label class="block text-xs text-gray-500 font-semibold mb-1">Country</label>
+            <label class="block text-xs text-gray-500 font-semibold mb-1">Pays</label>
             <p class="text-gray-800 font-medium">{{ profile.pays || 'Non spécifié' }}</p>
           </div>
           <div class="col-span-2">
-            <label class="block text-xs text-gray-500 font-semibold mb-1">Address</label>
+            <label class="block text-xs text-gray-500 font-semibold mb-1">Adresse</label>
             <p class="text-gray-800 font-medium">{{ profile.adresse || 'Non spécifié' }}</p>
           </div>
           <div>
-            <label class="block text-xs text-gray-500 font-semibold mb-1">Phone Number</label>
+            <label class="block text-xs text-gray-500 font-semibold mb-1">Numéro de téléphone</label>
             <p class="text-gray-800 font-medium">{{ profile.telephone || 'Non spécifié' }}</p>
           </div>
           <div>
-            <label class="block text-xs text-gray-500 font-semibold mb-1">NSS (Social Security)</label>
+            <label class="block text-xs text-gray-500 font-semibold mb-1">NSS</label>
             <p class="text-gray-800 font-medium">{{ profile.nss }}</p>
           </div>
           <div>
-            <label class="block text-xs text-gray-500 font-semibold mb-1">Health Condition</label>
+            <label class="block text-xs text-gray-500 font-semibold mb-1">État de santé</label>
             <p class="text-gray-800 font-medium">{{ profile.maladie || 'Non spécifié' }}</p>
           </div>
         </div>
 
         <!-- Email Section -->
         <div class="mb-8">
-          <h2 class="text-lg font-bold mb-4">My email Address</h2>
+          <h2 class="text-lg font-bold mb-4">Mon adresse email</h2>
           <div class="bg-blue-50 rounded-lg p-4 flex items-center justify-between mb-4">
             <div class="flex items-center gap-3">
               <div class="w-6 h-6 bg-blue-500 rounded flex items-center justify-center text-white text-sm">✓</div>
               <div>
                 <p class="font-semibold text-gray-800">{{ profile.email }}</p>
-                <p class="text-sm text-gray-600">1 month ago</p>
+                <p class="text-sm text-gray-600">il y a 1 mois</p>
               </div>
             </div>
           </div>
-          <button class="text-[#4e55d7] font-semibold text-sm">+ Add Email Address</button>
+          <button class="text-[#4e55d7] font-semibold text-sm">+ Ajouter une adresse email</button>
         </div>
       </div>
     </div>
