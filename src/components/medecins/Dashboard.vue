@@ -406,12 +406,17 @@ const fetchPrescriptions = async () => {
 
 const fetchPatients = async () => {
   try {
-    // Load ALL patients
-    // Note: Patients don't have medecin relationship, so derive from prescriptions
+    console.log('=== DASHBOARD: FETCHING PATIENTS ===');
+    console.log('Current medecin ID:', auth.userId.value, typeof auth.userId.value);
+    
+    // Get all prescriptions to find which patients are assigned to this medecin
     const allPrescriptions = await fetchData(`/prescriptions`)
     const medecinPrescriptions = allPrescriptions.filter((p: any) => 
       p.medecin === auth.userId.value || p.idmedecin === auth.userId.value
     )
+    
+    console.log('Total prescriptions:', allPrescriptions.length)
+    console.log('Prescriptions for this medecin:', medecinPrescriptions.length)
     
     // Get unique patient IDs from medecin's prescriptions
     const medecinPatientIds = new Set(medecinPrescriptions.map(p => p.idpatient))
@@ -420,7 +425,7 @@ const fetchPatients = async () => {
     const allPatients = await fetchData(`/patients`)
     patients.value = allPatients.filter((p: any) => medecinPatientIds.has(p.idpatient))
     
-    console.log(`Loaded ${patients.value.length} patients for medecin ${auth.userId.value}`)
+    console.log(`✓ Loaded ${patients.value.length} patients for medecin ${auth.userId.value}`)
   } catch (error) {
     console.error('Erreur lors du chargement des patients:', error)
   }

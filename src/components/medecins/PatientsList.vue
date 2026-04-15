@@ -157,23 +157,42 @@ const fetchPatients = async () => {
   loading.value = true;
   error.value = null;
   try {
+    console.log('=== FETCHING PATIENTS ===');
+    console.log('Current medecin ID:', auth.userId.value, typeof auth.userId.value);
+    
     // Get all prescriptions to find which patients are assigned to this medecin
     const allPrescriptions = await fetchData(`/prescriptions`);
-    const medecinPrescriptions = allPrescriptions.filter((p: any) => 
-      p.medecin === auth.userId.value || p.idmedecin === auth.userId.value
-    );
+    console.log('Total prescriptions from server:', allPrescriptions.length);
+    console.log('First prescription sample:', allPrescriptions[0]);
+    
+    const medecinPrescriptions = allPrescriptions.filter((p: any) => {
+      const match = p.medecin === auth.userId.value || p.idmedecin === auth.userId.value;
+      return match;
+    });
+    
+    console.log('Prescriptions for this medecin:', medecinPrescriptions.length);
+    console.log('Patient IDs in prescriptions:', medecinPrescriptions.map(p => p.idpatient));
     
     // Extract unique patient IDs from medecin's prescriptions
     const medecinPatientIds = new Set(medecinPrescriptions.map(p => p.idpatient));
+    console.log('Unique patient IDs:', Array.from(medecinPatientIds));
     
     // Load all patients and filter to only those who have prescriptions from this medecin
     const allData = await fetchData(`/patients`);
-    const medecinPatients = allData.filter((p: any) => medecinPatientIds.has(p.idpatient));
+    console.log('Total patients from server:', allData.length);
     
-    console.log(`Loaded ${medecinPatients.length} patients for medecin ${auth.userId.value}`);
+    const medecinPatients = allData.filter((p: any) => {
+      const has = medecinPatientIds.has(p.idpatient);
+      return has;
+    });
+    
+    console.log('=== FINAL RESULT ===');
+    console.log('Filtered patients for medecin:', medecinPatients.length);
+    console.log('Patients:', medecinPatients.map(p => `${p.prenom} ${p.nom}`));
+    
     allPatients.value = medecinPatients;
   } catch (err: any) {
-    console.error('Erreur lors de la récupération des patients:', err);
+    console.error('❌ ERREUR lors de la récupération des patients:', err);
     error.value = `Erreur: ${err.message}`;
   } finally {
     loading.value = false;
