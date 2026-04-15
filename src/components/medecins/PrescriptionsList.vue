@@ -282,7 +282,9 @@ const handleSearch = (query: string) => {
 
 const fetchPatients = async () => {
   try {
-    patients.value = await fetchData(`/patients/medecin/${auth.userId.value}`);
+    // Load all patients and filter client-side
+    const allPatients = await fetchData(`/patients`);
+    patients.value = allPatients.filter((p: any) => p.idmedecin === auth.userId.value);
   } catch (err) {
     console.error('Erreur lors de la récupération des patients:', err);
   }
@@ -292,9 +294,17 @@ const fetchPrescriptions = async () => {
   loading.value = true;
   error.value = null;
   try {
-    const data = await fetchData(`/prescriptions/medecin/${auth.userId.value}`);
-    console.log('Prescriptions du médecin reçues:', data);
-    prescriptions.value = data;
+    // Load ALL prescriptions and filter client-side by medecin ID
+    const allPrescriptions = await fetchData(`/prescriptions`);
+    console.log('Total prescriptions from API:', allPrescriptions.length);
+    
+    // Filter for current medecin (using 'medecin' field which is the medecinId)
+    const medecinPrescriptions = allPrescriptions.filter((p: any) => 
+      p.medecin === auth.userId.value || p.idmedecin === auth.userId.value
+    );
+    
+    console.log(`Prescriptions filtered for medecin ${auth.userId.value}:`, medecinPrescriptions.length);
+    prescriptions.value = medecinPrescriptions;
   } catch (err: any) {
     console.error('Erreur lors de la récupération des prescriptions:', err);
     error.value = `Erreur: ${err.message}`;

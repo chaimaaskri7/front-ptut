@@ -361,16 +361,47 @@ const calculateTransportStats = () => {
 
 const fetchStats = async () => {
   try {
-    stats.value = await fetchData(`/medecins/${auth.userId.value}/stats`)
+    // Load all medecins data for comparison stats
+    const allMedecins = await fetchData(`/medecins`)
+    const currentMedecinStats = allMedecins.find((m: any) => m.idmedecin === auth.userId.value)
+    
+    // If direct stats fail, calculate from prescriptions
+    if (!currentMedecinStats) {
+      // Fallback: calculate from all prescriptions
+      const allPrescriptions = await fetchData(`/prescriptions`)
+      const medecinPrescriptions = allPrescriptions.filter((p: any) => 
+        p.medecin === auth.userId.value || p.idmedecin === auth.userId.value
+      )
+      
+      stats.value = {
+        medecinId: auth.userId.value,
+        prescriptionsCount: medecinPrescriptions.length,
+        patientsCount: new Set(medecinPrescriptions.map(p => p.idpatient)).size,
+        averagePrescriptions: allPrescriptions.length / allMedecins.length,
+        topDiseaseByMedecin: 'N/A'
+      }
+    } else {
+      // Use directly from backend
+      stats.value = currentMedecinStats
+    }
+    
+    console.log('Stats loaded:', stats.value)
   } catch (error) {
     console.error('Erreur lors du chargement des stats:', error)
+    // Set default stats on error
+    stats.value = { prescriptionsCount: 0, patientsCount: 0, averagePrescriptions: 0 }
   }
 }
 
 const fetchPrescriptions = async () => {
   try {
-    const data = await fetchData(`/prescriptions/medecin/${auth.userId.value}`)
-    prescriptions.value = Array.isArray(data) ? data : [data]
+    // Load ALL prescriptions and filter client-side
+    const allPrescriptions = await fetchData(`/prescriptions`)
+    const medecinPrescriptions = allPrescriptions.filter((p: any) => 
+      p.medecin === auth.userId.value || p.idmedecin === auth.userId.value
+    )
+    prescriptions.value = Array.isArray(medecinPrescriptions) ? medecinPrescriptions : [medecinPrescriptions]
+    console.log(`Loaded ${medecinPrescriptions.length} prescriptions for medecin ${auth.userId.value}`)
     calculateTransportStats()
   } catch (error) {
     console.error('Erreur lors du chargement des prescriptions:', error)
@@ -379,7 +410,10 @@ const fetchPrescriptions = async () => {
 
 const fetchPatients = async () => {
   try {
-    patients.value = await fetchData(`/patients/medecin/${auth.userId.value}`)
+    // Load ALL patients and filter client-side
+    const allPatients = await fetchData(`/patients`)
+    patients.value = allPatients.filter((p: any) => p.idmedecin === auth.userId.value)
+    console.log(`Loaded ${patients.value.length} patients for medecin ${auth.userId.value}`)
   } catch (error) {
     console.error('Erreur lors du chargement des patients:', error)
   }

@@ -157,9 +157,11 @@ const fetchPatients = async () => {
   loading.value = true;
   error.value = null;
   try {
-    const data = await fetchData(`/patients/medecin/${auth.userId.value}`);
-    console.log('Patients du médecin reçus:', data);
-    allPatients.value = data;
+    // Load ALL patients and filter client-side by medecin
+    const allData = await fetchData(`/patients`);
+    const medecinPatients = allData.filter((p: any) => p.idmedecin === auth.userId.value);
+    console.log(`Loaded ${medecinPatients.length} patients for medecin ${auth.userId.value}`);
+    allPatients.value = medecinPatients;
   } catch (err: any) {
     console.error('Erreur lors de la récupération des patients:', err);
     error.value = `Erreur: ${err.message}`;
