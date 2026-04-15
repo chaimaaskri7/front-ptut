@@ -361,34 +361,30 @@ const calculateTransportStats = () => {
 
 const fetchStats = async () => {
   try {
-    // Load all medecins data for comparison stats
-    const allMedecins = await fetchData(`/medecins`)
-    const currentMedecinStats = allMedecins.find((m: any) => m.idmedecin === auth.userId.value)
+    // Load prescriptions and derive stats from them (backend filter endpoints are broken)
+    const allPrescriptions = await fetchData(`/prescriptions`)
+    const medecinPrescriptions = allPrescriptions.filter((p: any) => 
+      p.medecin === auth.userId.value || p.idmedecin === auth.userId.value
+    )
     
-    // If direct stats fail, calculate from prescriptions
-    if (!currentMedecinStats) {
-      // Fallback: calculate from all prescriptions
-      const allPrescriptions = await fetchData(`/prescriptions`)
-      const medecinPrescriptions = allPrescriptions.filter((p: any) => 
-        p.medecin === auth.userId.value || p.idmedecin === auth.userId.value
-      )
-      
-      stats.value = {
-        medecinId: auth.userId.value,
-        prescriptionsCount: medecinPrescriptions.length,
-        patientsCount: new Set(medecinPrescriptions.map(p => p.idpatient)).size,
-        averagePrescriptions: allPrescriptions.length / allMedecins.length,
-        topDiseaseByMedecin: 'N/A'
-      }
-    } else {
-      // Use directly from backend
-      stats.value = currentMedecinStats
+    // Extract unique patient IDs from prescriptions
+    const uniquePatientIds = new Set(medecinPrescriptions.map(p => p.idpatient))
+    
+    // Calculate average across all medecins (assume 2 medecins from data.sql)
+    const uniqueMedecins = new Set(allPrescriptions.map(p => p.medecin || p.idmedecin))
+    const avgPrescriptions = allPrescriptions.length / uniqueMedecins.size
+    
+    stats.value = {
+      medecinId: auth.userId.value,
+      prescriptionsCount: medecinPrescriptions.length,
+      patientsCount: uniquePatientIds.size,
+      averagePrescriptions: avgPrescriptions,
+      topDiseaseByMedecin: 'N/A'
     }
     
-    console.log('Stats loaded:', stats.value)
+    console.log('Stats calculated:', stats.value)
   } catch (error) {
     console.error('Erreur lors du chargement des stats:', error)
-    // Set default stats on error
     stats.value = { prescriptionsCount: 0, patientsCount: 0, averagePrescriptions: 0 }
   }
 }
@@ -410,9 +406,20 @@ const fetchPrescriptions = async () => {
 
 const fetchPatients = async () => {
   try {
-    // Load ALL patients and filter client-side
+    // Load ALL patients
+    // Note: Patients don't have medecin relationship, so derive from prescriptions
+    const allPrescriptions = await fetchData(`/prescriptions`)
+    const medecinPrescriptions = allPrescriptions.filter((p: any) => 
+      p.medecin === auth.userId.value || p.idmedecin === auth.userId.value
+    )
+    
+    // Get unique patient IDs from medecin's prescriptions
+    const medecinPatientIds = new Set(medecinPrescriptions.map(p => p.idpatient))
+    
+    // Load all patients and filter to only those who have prescriptions from this medecin
     const allPatients = await fetchData(`/patients`)
-    patients.value = allPatients.filter((p: any) => p.idmedecin === auth.userId.value)
+    patients.value = allPatients.filter((p: any) => medecinPatientIds.has(p.idpatient))
+    
     console.log(`Loaded ${patients.value.length} patients for medecin ${auth.userId.value}`)
   } catch (error) {
     console.error('Erreur lors du chargement des patients:', error)

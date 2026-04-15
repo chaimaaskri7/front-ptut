@@ -157,9 +157,19 @@ const fetchPatients = async () => {
   loading.value = true;
   error.value = null;
   try {
-    // Load ALL patients and filter client-side by medecin
+    // Get all prescriptions to find which patients are assigned to this medecin
+    const allPrescriptions = await fetchData(`/prescriptions`);
+    const medecinPrescriptions = allPrescriptions.filter((p: any) => 
+      p.medecin === auth.userId.value || p.idmedecin === auth.userId.value
+    );
+    
+    // Extract unique patient IDs from medecin's prescriptions
+    const medecinPatientIds = new Set(medecinPrescriptions.map(p => p.idpatient));
+    
+    // Load all patients and filter to only those who have prescriptions from this medecin
     const allData = await fetchData(`/patients`);
-    const medecinPatients = allData.filter((p: any) => p.idmedecin === auth.userId.value);
+    const medecinPatients = allData.filter((p: any) => medecinPatientIds.has(p.idpatient));
+    
     console.log(`Loaded ${medecinPatients.length} patients for medecin ${auth.userId.value}`);
     allPatients.value = medecinPatients;
   } catch (err: any) {
