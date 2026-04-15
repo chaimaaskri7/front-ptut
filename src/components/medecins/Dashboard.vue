@@ -148,13 +148,19 @@
           <div class="divide-y divide-slate-200">
             <div v-for="(prescription, idx) in prescriptions.slice(0, 3)" :key="idx" class="p-4 hover:bg-slate-50 transition-colors">
               <div class="flex justify-between items-start mb-2">
-                <p class="font-semibold text-slate-900">{{ prescription.motifmedical }}</p>
-                <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full">
-                  ID: {{ prescription.idprescription }}
+                <div class="flex-1">
+                  <p class="font-semibold text-slate-900">{{ prescription.patientPrenom }} {{ prescription.patientNom }}</p>
+                  <p class="text-sm text-slate-600 mt-1">{{ prescription.motifmedical }}</p>
+                </div>
+                <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full ml-2">
+                  {{ prescription.typetransport }}
                 </span>
               </div>
-              <p class="text-sm text-slate-600">Transport: <span class="font-medium">{{ prescription.typetransport }}</span></p>
-              <p class="text-xs text-slate-500 mt-1">Patient ID: {{ prescription.idpatient }}</p>
+              <p class="text-xs text-slate-500 mt-2">
+                <span v-if="prescription.datecreation">
+                  {{ new Date(prescription.datecreation).toLocaleDateString('fr-FR') }}
+                </span>
+              </p>
             </div>
           </div>
         </div>
@@ -220,6 +226,9 @@ interface Prescription {
   typetransport: string
   idpatient: number
   medecin: string
+  patientPrenom?: string
+  patientNom?: string
+  datecreation?: string
 }
 
 interface Patient {
@@ -411,8 +420,26 @@ const fetchPrescriptions = async () => {
     const medecinPrescriptions = allPrescriptions.filter((p: any) => 
       p.medecin === auth.userId.value || p.idmedecin === auth.userId.value
     )
-    prescriptions.value = Array.isArray(medecinPrescriptions) ? medecinPrescriptions : [medecinPrescriptions]
-    console.log(`Loaded ${medecinPrescriptions.length} prescriptions for medecin ${auth.userId.value}`)
+    
+    // Enrichir les prescriptions avec les noms des patients
+    const enrichedPrescriptions = medecinPrescriptions.map((p: any) => {
+      const patient = patients.value.find(pat => pat.idpatient === p.idpatient)
+      return {
+        ...p,
+        patientPrenom: patient?.prenom || 'Inconnu',
+        patientNom: patient?.nom || 'Inconnu'
+      }
+    })
+    
+    // Trier par date de création (plus récentes d'abord)
+    enrichedPrescriptions.sort((a: any, b: any) => {
+      const dateA = new Date(a.datecreation || 0).getTime()
+      const dateB = new Date(b.datecreation || 0).getTime()
+      return dateB - dateA
+    })
+    
+    prescriptions.value = Array.isArray(enrichedPrescriptions) ? enrichedPrescriptions : [enrichedPrescriptions]
+    console.log(`Loaded ${enrichedPrescriptions.length} prescriptions for medecin ${auth.userId.value}`)
     calculateTransportStats()
   } catch (error) {
     console.error('Erreur lors du chargement des prescriptions:', error)
@@ -454,7 +481,7 @@ const fetchPatients = async () => {
 
 onMounted(async () => {
   try {
-    // Load patients first so we can use them in stats calculation
+    // Load patients first so we can use them in stats and prescription enrichment
     await fetchPatients()
     await fetchPrescriptions()
     await fetchStats()
